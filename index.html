@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vladflore.fit</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        height: 100%;
+        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 1)),
+          url("logo.jpeg") center center / cover no-repeat;
+      }
+      .center-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .brand-title {
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 2px;
+        margin-bottom: 2rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      }
+      .tiles-row {
+        gap: 2rem;
+      }
+      .tile {
+        min-width: 220px;
+        min-height: 160px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: transform 0.18s, box-shadow 0.18s;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+        border: none;
+        outline: none;
+      }
+      .tile:hover {
+        transform: translateY(-6px) scale(1.04);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+      }
+      .tile-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.7rem;
+      }
+      @media (max-width: 600px) {
+        .tiles-row {
+          flex-direction: column !important;
+          gap: 1.2rem;
+        }
+        .tile {
+          min-width: 180px;
+          min-height: 120px;
+          font-size: 1.1rem;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+  </head>
+  <body>
+    <div class="center-container">
+      <div class="d-flex tiles-row">
+        <a href="./flexary/index.html" target="_blank" class="text-decoration-none">
+          <div
+            class="tile text-white border border-2 rounded-4"
+            style="
+              background: linear-gradient(
+                180deg,
+                rgba(186, 148, 94, 0.95) 0%,
+                rgba(186, 148, 94, 0.65) 100%
+              );
+            "
+          >
+            <div class="tile-icon">
+              <span style="font-size: 30px">🏋️</span>
+            </div>
+            <div>Flexary</div>
+          </div>
+        </a>
+        <a href="./scheduler/index.html" target="_blank" class="text-decoration-none">
+          <div
+            class="tile text-white border border-2 rounded-4"
+            style="
+              background: linear-gradient(
+                180deg,
+                rgba(186, 148, 94, 0.95) 0%,
+                rgba(186, 148, 94, 0.65) 100%
+              );
+            "
+          >
+            <div class="tile-icon">
+              <span style="font-size: 30px">📅</span>
+            </div>
+            <div>Classes Scheduler</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
