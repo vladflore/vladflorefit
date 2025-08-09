@@ -1,0 +1,364 @@
+{
+  "fitness_classes": [
+    {
+      "name": "Explosión Cardio",
+      "start": "2025-08-05T09:00:00",
+      "end": "2025-08-05T10:00:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#D32F2F"
+      }
+    },
+    {
+      "name": "Fortalecimiento de Core",
+      "start": "2025-08-05T10:30:00",
+      "end": "2025-08-05T11:15:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#FFD54F"
+      }
+    },
+    {
+      "name": "Zumba",
+      "start": "2025-08-05T18:00:00",
+      "end": "2025-08-05T19:00:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#F06292"
+      }
+    },
+    {
+      "name": "Spinning",
+      "start": "2025-08-06T08:00:00",
+      "end": "2025-08-06T09:00:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#8E24AA"
+      }
+    },
+    {
+      "name": "Pilates",
+      "start": "2025-08-06T09:30:00",
+      "end": "2025-08-06T10:30:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#64B5F6"
+      }
+    },
+    {
+      "name": "Boxeo Básico",
+      "start": "2025-08-06T18:00:00",
+      "end": "2025-08-06T19:00:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#212121"
+      }
+    },
+    {
+      "name": "Yoga",
+      "start": "2025-08-07T07:30:00",
+      "end": "2025-08-07T08:30:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#43A047"
+      }
+    },
+    {
+      "name": "Entrenamiento de Fuerza",
+      "start": "2025-08-07T09:00:00",
+      "end": "2025-08-07T10:00:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#FFA726"
+      }
+    },
+    {
+      "name": "Baile Fitness",
+      "start": "2025-08-07T18:30:00",
+      "end": "2025-08-07T19:30:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#E1BEE7"
+      }
+    },
+    {
+      "name": "Pilates",
+      "start": "2025-08-08T09:00:00",
+      "end": "2025-08-08T10:00:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#64B5F6"
+      }
+    },
+    {
+      "name": "Entrenamiento Funcional",
+      "start": "2025-08-08T10:30:00",
+      "end": "2025-08-08T11:15:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#388E3C"
+      }
+    },
+    {
+      "name": "Yoga Nocturno",
+      "start": "2025-08-08T18:00:00",
+      "end": "2025-08-08T19:00:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#43A047"
+      }
+    },
+    {
+      "name": "Yoga",
+      "start": "2025-08-09T08:00:00",
+      "end": "2025-08-09T09:00:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#388E3C"
+      }
+    },
+    {
+      "name": "Bootcamp",
+      "start": "2025-08-09T09:30:00",
+      "end": "2025-08-09T10:30:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#D32F2F"
+      }
+    },
+    {
+      "name": "Estiramiento y Movilidad",
+      "start": "2025-08-09T11:00:00",
+      "end": "2025-08-09T12:00:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#B2DFDB"
+      }
+    },
+    {
+      "name": "Pilates",
+      "start": "2025-08-10T09:00:00",
+      "end": "2025-08-10T10:00:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#1E88E5"
+      }
+    },
+    {
+      "name": "Fitness Familiar",
+      "start": "2025-08-10T10:30:00",
+      "end": "2025-08-10T11:15:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#FBC02D"
+      }
+    },
+    {
+      "name": "Meditación",
+      "start": "2025-08-10T18:00:00",
+      "end": "2025-08-10T18:45:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#E1BEE7"
+      }
+    },
+    {
+      "name": "Explosión Cardio",
+      "start": "2025-08-11T09:00:00",
+      "end": "2025-08-11T10:00:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#D32F2F"
+      }
+    },
+    {
+      "name": "Fortalecimiento de Core",
+      "start": "2025-08-11T10:30:00",
+      "end": "2025-08-11T11:15:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#FFD54F"
+      }
+    },
+    {
+      "name": "Zumba",
+      "start": "2025-08-11T18:00:00",
+      "end": "2025-08-11T19:00:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#F06292"
+      }
+    },
+    {
+      "name": "Spinning",
+      "start": "2025-08-12T08:00:00",
+      "end": "2025-08-12T09:00:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#8E24AA"
+      }
+    },
+    {
+      "name": "Pilates",
+      "start": "2025-08-12T09:30:00",
+      "end": "2025-08-12T10:30:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#64B5F6"
+      }
+    },
+    {
+      "name": "Boxeo Básico",
+      "start": "2025-08-12T18:00:00",
+      "end": "2025-08-12T19:00:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#212121"
+      }
+    },
+    {
+      "name": "Yoga",
+      "start": "2025-08-13T07:30:00",
+      "end": "2025-08-13T08:30:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#43A047"
+      }
+    },
+    {
+      "name": "Entrenamiento de Fuerza",
+      "start": "2025-08-13T09:00:00",
+      "end": "2025-08-13T10:00:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#FFA726"
+      }
+    },
+    {
+      "name": "Baile Fitness",
+      "start": "2025-08-13T18:30:00",
+      "end": "2025-08-13T19:30:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#E1BEE7"
+      }
+    },
+    {
+      "name": "Pilates",
+      "start": "2025-08-14T09:00:00",
+      "end": "2025-08-14T10:00:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#64B5F6"
+      }
+    },
+    {
+      "name": "Entrenamiento Funcional",
+      "start": "2025-08-14T10:30:00",
+      "end": "2025-08-14T11:15:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#388E3C"
+      }
+    },
+    {
+      "name": "Yoga Nocturno",
+      "start": "2025-08-14T18:00:00",
+      "end": "2025-08-14T19:00:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#43A047"
+      }
+    },
+    {
+      "name": "Yoga",
+      "start": "2025-08-15T08:00:00",
+      "end": "2025-08-15T09:00:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#388E3C"
+      }
+    },
+    {
+      "name": "Bootcamp",
+      "start": "2025-08-15T09:30:00",
+      "end": "2025-08-15T10:30:00",
+      "instructor": "Bob Johnson",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#D32F2F"
+      }
+    },
+    {
+      "name": "Estiramiento y Movilidad",
+      "start": "2025-08-15T11:00:00",
+      "end": "2025-08-15T12:00:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#B2DFDB"
+      }
+    },
+    {
+      "name": "Pilates",
+      "start": "2025-08-16T09:00:00",
+      "end": "2025-08-16T10:00:00",
+      "instructor": "Cathy Lee",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#1E88E5"
+      }
+    },
+    {
+      "name": "Fitness Familiar",
+      "start": "2025-08-16T10:30:00",
+      "end": "2025-08-16T11:15:00",
+      "instructor": "Alice Smith",
+      "render_config": {
+        "text_color": "#FFFFFF",
+        "background_color": "#FBC02D"
+      }
+    },
+    {
+      "name": "Meditación",
+      "start": "2025-08-16T18:00:00",
+      "end": "2025-08-16T18:45:00",
+      "instructor": "Eva Green",
+      "render_config": {
+        "text_color": "#000000",
+        "background_color": "#E1BEE7"
+      }
+    }
+  ]
+}

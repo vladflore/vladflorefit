@@ -1,0 +1,10 @@
+name = "My Fitness App"
+description = "A simple fitness app to track fitness exercises."
+
+packages = ["fpdf2==2.8.3", "pillow==10.0.0"]
+
+[files]
+"./exercises_library.csv" = "exercises.csv"
+"./common.py" = "common.py"
+"./info.txt" = "info.txt"
+"./assets/logo-for-pdf.png" = "logo-for-pdf.png"

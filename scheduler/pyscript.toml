@@ -1,0 +1,13 @@
+name = "Scheduler"
+description = ""
+
+packages = ["fpdf2==2.8.3", "pillow==10.0.0", "requests==2.31.0"]
+
+[files]
+"./data.py" = "data.py"
+"./classes_en.json" = "classes_en.json"
+"./classes_es.json" = "classes_es.json"
+"./classes_cat.json" = "classes_cat.json"
+"./config.py" = "config.py"
+"./assets/images/logo.jpeg" = "logo.jpeg"
+"./assets/images/logo-nobg.png" = "logo-nobg.png"

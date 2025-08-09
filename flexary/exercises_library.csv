@@ -1,0 +1,43 @@
+id,name,category,body_parts,primary_muscles,secondary_muscles,thumbnail_url,yt_video_id,instructions,key_cues,alternatives
+1,Body Weight Squat,Strength,Legs,"Quadriceps,Gluteus Maximus,Hamstrings","Erector Spinae,Core,Adductors,Calves",body_weight_squat.png,l83R5PblSMA,"Stand with feet shoulder-width apart. Engage core, push hips back, and bend knees to lower down. Keep chest up and back straight. Lower until thighs are parallel to the floor. Push through heels to stand back up.","Keep knees tracking over toes, Engage core, Back straight","8,9"
+2,Chin-Up,Strength,"Arms,Back,Core","Latissimus Dorsi,Biceps Brachii,Brachialis,Brachioradialis","Rhomboids,Trapezius,Pectoralis Minor,Deltoids,Core",placeholder.png,Dl9vrk_AquU,"Grasp the bar with an underhand grip, shoulder-width apart. Start from a dead hang. Pull yourself up until your chin is above the bar. Lower yourself back down with control to the starting position.","Keep core tight, Elbows down and back, Avoid swinging","10,11"
+3,Pull-Up,Strength,"Arms,Back,Core","Latissimus Dorsi,Trapezius,Rhomboids,Teres Major","Biceps Brachii,Brachialis,Brachioradialis,Deltoids,Core",pull_up.png,aAggnpPyR6E,"Grasp the bar with an overhand grip, slightly wider than shoulder-width. Hang with arms extended. Pull yourself up until your chin clears the bar. Lower down slowly to the starting position.","Pull with your back not arms, Avoid using momentum","12,13"
+4,90/90 Hip Rotation,Mobility,Hips,Hip Rotators,"Glutes, Adductors",9090_hip_rotation.png,juOtDljPfws,Sit on the floor with front leg at 90° and back leg at 90°. Keep torso upright. Rotate knees and switch sides while keeping feet planted. Use hands for support if needed.,"Keep chest tall, Rotate from hips, Don’t force the range",14
+5,Nordic Hamstring Curls,Strength,Legs,Hamstrings,Gastrocnemius,nhs.png,kjv4WQXWl_A,"Kneel on a pad and lower the body under control while the ankles are held in place by a partner, a loaded barbell or other immovable object.
+Keep body straight and slowly lean forward from the knees, resisting the descent. Use hands to catch yourself if needed, then push back up.
+To control the descent to the floor in the second half of the movement, use a band around your chest attached behind and above you
+ - this ensures full activation under a full range of motion.
+This exercise primarily builds eccentric, i.e. going down, strength.
+The position of the ankle, plantarflexed, i.e. toes pointed down, or dorsiflexed, i.e. toes pointed up, makes the exercise more difficult, or easier, respectively.","Maintain straight body line, Engage hamstrings","6,7"
+6,Suspended Hamstring Curl w/ Straps,Strength,Legs,Hamstrings,Gastrocnemius,placeholder.png,aG4F0VoSCbI,tbd,tbd,
+7,Supine Slider Runners,Strength,Legs,Hamstrings,Gastrocnemius,placeholder.png,GinCNlxq_HA,tbd,tbd,
+8,Goblet Squat,Strength,Legs,"Quadriceps,Gluteus Maximus,Hamstrings","Erector Spinae,Core,Adductors,Calves",goblet_squat.png,MWHIs0zxkCU,tbd,tbd,
+9,Wall Sit,Strength,Legs,"Quadriceps,Gluteus Maximus,Hamstrings","Erector Spinae,Core,Adductors,Calves",wall_sit.png,6Li55TURhVg,"Lean against a wall, slide down until knees are at 90°, hold the position","Keep back flat, Knees above ankles, Engage core","15,16"
+10,Assisted Chin-Up,Strength,"Arms,Back,Core","Latissimus Dorsi,Biceps Brachii,Brachialis,Brachioradialis","Rhomboids,Trapezius,Pectoralis Minor,Deltoids,Core",placeholder.png,kNy-STcVmJY,tbd,tbd,
+11,Negative Chin-Up,Strength,"Arms,Back,Core","Latissimus Dorsi,Biceps Brachii,Brachialis,Brachioradialis","Rhomboids,Trapezius,Pectoralis Minor,Deltoids,Core",placeholder.png,mjNHoibfrMo,tbd,tbd,
+12,Band-Assisted Pull-Up,Strength,"Arms,Back,Core","Latissimus Dorsi,Trapezius,Rhomboids,Teres Major","Biceps Brachii,Brachialis,Brachioradialis,Deltoids,Core",placeholder.png,5rR_bzBc1NA,tbd,tbd,
+13,Lat Pulldown,Strength,"Arms,Back,Core","Latissimus Dorsi,Trapezius,Rhomboids,Teres Major","Biceps Brachii,Brachialis,Brachioradialis,Deltoids,Core",placeholder.png,NAIEnMjN-6w,tbd,tbd,
+14,Hip CARs,Mobility,Hips,Hip Rotators,"Glutes, Adductors",placeholder.png,2mY_PkJ4Hl4,tbd,tbd,
+15,Weighted Wall Sit,Strength,Legs,"Quadriceps,Gluteus Maximus,Hamstrings","Erector Spinae,Core,Adductors,Calves",placeholder.png,3pf2ZQEAKyM,"Lean against a wall, slide down until knees are at 90°, place a weight on the thighs, hold the position","Keep back flat, Knees above ankles, Engage core",
+16,Single-Leg Wall Sit,Strength,Legs,"Quadriceps,Gluteus Maximus,Hamstrings","Erector Spinae,Core,Adductors,Calves",placeholder.png,7Tgb8wVzbcY,"Lean against a wall, slide down until knees are at 90°, lift one leg off ground, hold the position","Keep back flat, Knee above ankle, Engage core",
+17,Push-Ups,Strength,Upper Body,Chest (Pectorals),"Triceps, Shoulders, Core",placeholder.png,_l3ySVKYVJ8,"Start in plank, lower chest to floor, push back up","Keep elbows at 45°, Engage core, Full range of motion",
+18,Monster Walks w/ Bands,Strength,Lower Body,Gluteus Medius,"Gluteus Maximus, Hip Flexors, Quads",placeholder.png,m4qWBY-6ylQ,"With band around feet, step side-to-side maintaining squat position","Keep tension on band, Control knees, Stay low",
+19,Standing Dumbbell Curl To Press,Strength,Upper Body,Biceps,"Deltoids, Triceps, Core",placeholder.png,zdQOmPMGjOY,"Curl dumbbells, rotate palms up, press overhead, reverse back down","Control the curl, Don’t sway, Lock core",
+20,Low Plank Reach,Strength,Core,Abdominals,"Shoulders, Glutes",placeholder.png,LK4KpWC1Y8I,"From forearm plank, reach one arm forward, alternate sides","Keep hips level, Avoid torso twist",
+21,Low Plank Hold,Strength,Core,Abdominals,"Shoulders, Glutes",placeholder.png,VmK1Ro159BU,"Hold forearm plank, straight line head to heels","Engage glutes and quads, Don’t let hips sag",
+22,Mountain Climbers,Strength,Full Body,Abdominals,"Hip Flexors, Shoulders",placeholder.png,kLh-uczlPLg,"Start in high plank, drive knees towards chest alternately","Keep hips low, Steady pace, Engage core",
+23,Dead Bug w/ Roller Squeeze,Strength,Core,Abdominals,"Hip Flexors, Shoulders",placeholder.png,8upYo8IGURo,"Lay on back, hold roller between hands and knees, extend opposite arm/leg","Keep core braced, Back flat, Controlled movement",
+24,Jumping Jacks,Conditioning,Full Body,Calves,"Deltoids, Hip Abductors",placeholder.png,uLVt6u15L98,"Start with feet together, arms by sides, jump out spreading legs and arms overhead","Keep rhythm, Land softly, Engage core",
+25,Burpees,Conditioning,Full Body,Chest,"Quadriceps, Shoulders, Core",placeholder.png,auBLPXO8Fww,"From standing, drop to plank, perform push-up (optional), jump feet in, leap up","Move smoothly, Land softly, Engage core",
+26,Walking Lunges,Strength,Lower Body,Quadriceps,"Glutes, Hamstrings, Core",placeholder.png,DlhojghkaQ0,"Stand tall with feet hip-width apart, hands on hips or holding dumbbells by your sides.
+Step forward with your right leg, lowering your hips until both knees are bent at about 90°.
+The back knee should hover just above the floor, front knee directly above the ankle.
+Push through your front heel to bring your back leg forward and stand up into the next step.
+Repeat, alternating legs as you move forward.","Keep chest upright,Engage core throughout the movement, Step far enough forward so your front knee stays over your ankle,Drive through the heel of your front foot when standing up,Keep hips level and avoid wobbling side to side,Control the descent",
+27,Stability Ball  - Plank,Strength,Core,"Rectus Abdominis, Transverse Abdominis","Obliques, Deltoids, Gluteus Maximus, Quadriceps, Erector Spinae, Hip Flexors",placeholder.png,4xODTD0UL-o,"Place your forearms on a stability (Swiss) ball, elbows directly under your shoulders.
+Extend your legs behind you so your body forms a straight line from head to heels.
+Engage your core, glutes, and quads to hold your body steady.
+Maintain a neutral neck and spine position.
+Hold for the desired time, keeping the ball as still as possible.","Brace your core,Squeeze glutes and quads,Keep body in a straight line,Keep the ball steady,Look slightly ahead or down",
+28,Hollow Hold,Strength,Core,Rectus Abdominis,"Obliques, Hip Flexors",placeholder.png,4xRpGgttca8,"Lay on back, lift shoulders and legs off floor, hold",Lower back stays pressed to floor,
+29,Hollow Rock,Strength,Core,Rectus Abdominis,"Obliques, Hip Flexors",placeholder.png,p7j02V1fIzU,"Lay on back, lift shoulders and legs off floor, rock gently",Lower back stays pressed to floor,

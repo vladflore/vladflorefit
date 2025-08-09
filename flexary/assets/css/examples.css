@@ -1,0 +1,170 @@
+body {
+  margin: 0;
+}
+
+.pyscript {
+  margin: 0.5rem;
+}
+
+html {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  line-height: 1.5;
+}
+
+nav {
+  position: sticky;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.logo {
+  height: 60px;
+  max-width: 100%;
+}
+
+.title {
+  text-decoration: none;
+  /* text-decoration-line: none;
+  text-decoration-style: initial;
+  text-decoration-color: initial; */
+  font-weight: 400;
+  font-size: 1.5em;
+  line-height: 2em;
+  white-space: nowrap;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+}
+
+@media (max-width: 576px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .title {
+    font-size: 1.25em;
+    line-height: 1.5em;
+  }
+
+  .logo {
+    height: 60px;
+  }
+}
+
+.exercise-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exercise-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  max-height: 200px;
+  object-fit: contain;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.badge-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+#loading {
+  outline: none;
+  border: none;
+  background: transparent;
+}
+
+.workout-sidebar {
+  position: fixed;
+  top: 68px;
+  left: 0;
+  right: auto;
+  width: 300px;
+  height: calc(100vh - 68px);
+  background-color: rgba(245, 245, 250, 0.95);
+  border-right: 1px solid #dee2e6;
+  border-left: none;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
+  z-index: 1050;
+  overflow-y: auto;
+  border-radius: 0 12px 12px 0;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+
+.btn-outline-gold {
+  color: #ba945e;
+  border: 1px solid #ba945e;
+  background-color: transparent;
+}
+
+.btn-outline-gold:hover {
+  background-color: #ba945e;
+  color: #fff;
+}
+
+.add-ex-hover:hover {
+  color: #ba945e !important;
+}
+
+.workout-layover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+.workout-item-remove {
+  color: red;
+  cursor: pointer;
+}
+
+.workout-item-remove:hover {
+  transform: scale(1.2);
+  transition: color 0.2s, transform 0.2s;
+}
+
+#toggle-workout-sidebar {
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1100;
+}
+
+body:not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
+  left: 320px !important;
+}
+
+#workout-sidebar.d-none ~ #toggle-workout-sidebar {
+  left: 20px !important;
+}
+
+.add-exes-hint {
+  display: block;
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.golden-text {
+  font-size: 1.1rem;
+  color: #ba945e;
+  letter-spacing: 0.5px;
+}

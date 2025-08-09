@@ -1,0 +1,26 @@
+<section style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+  <h2 style="text-align: center; margin-bottom: 1rem;">Your Fitness Exercises Library</h2>
+  <p style="text-align: center; margin-bottom: 2rem;">
+    A growing resource to support your training with clear guidance and flexible workout tools.
+  </p>
+  <ul style="list-style: none; padding: 0;">
+    <li style="margin-bottom: 1rem;">
+      🏋️ <strong>Expanding Exercise Collection</strong> — Includes instructions, tips, and muscle focus for each movement.
+    </li>
+    <li style="margin-bottom: 1rem;">
+      🧰 <strong>Create and Customize Workouts</strong> — Combine your favorite exercises into routines that fit your goals.
+    </li>
+    <li style="margin-bottom: 1rem;">
+      🖨️ <strong>Export to PDF</strong> — Print your workout and take it with you wherever you train.
+    </li>
+    <li style="margin-bottom: 1rem;">
+      🔍 <strong>Search Functionality</strong> — Quickly find exercises by name.
+    </li>
+    <li style="margin-bottom: 1rem;">
+      📆 <strong>Export to Calendar</strong> — Coming soon: add your workouts to your calendar with a simple ICS export.
+    </li>
+  </ul>
+  <p style="text-align: center; color: #666; margin-top: 2rem;">
+    More features on the way. Stay consistent and keep training smart!
+  </p>
+</section>

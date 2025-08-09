@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-1Q5PTQ3F7Y"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-1Q5PTQ3F7Y");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://pyscript.net/releases/2024.1.1/core.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./assets/css/examples.css" />
+    <script
+      type="module"
+      src="https://pyscript.net/releases/2024.1.1/core.js"
+    ></script>
+    <script type="module">
+      const loading = document.getElementById("loading");
+      const container = document.getElementById("container");
+      addEventListener("py:ready", () => {
+        loading.close();
+        container.classList.remove("d-none");
+      });
+      loading.showModal();
+    </script>
+    <title>Fitness Exercises Library</title>
+    <link rel="icon" type="image/png" href="./assets/favicon.jpeg" />
+  </head>
+
+  <body>
+    <dialog id="loading">
+      <h1>Loading...</h1>
+    </dialog>
+
+    <nav
+      class="navbar sticky-top py-1"
+      style="background-color: #000000; min-height: 60px"
+    >
+      <div
+        class="container-fluid d-flex align-items-center justify-content-between"
+      >
+        <a href="index.html">
+          <img src="./assets/logo.jpeg" class="logo" alt="Logo" />
+        </a>
+      </div>
+    </nav>
+
+    <section class="pyscript">
+      <main>
+        <section>
+          <div id="container" class="container py-5 d-none">
+            <div class="text-center mb-4">
+              <h2 id="exercise-name" class="mb-4 text-center"></h2>
+            </div>
+            <div
+              id="badges-container"
+              class="badge-group mb-4 d-flex justify-content-center"
+            >
+              <span id="category-badge" class="badge me-1"></span>
+              <span id="body-parts-badge" class="badge"></span>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="video-container">
+                  <iframe
+                    id="exercise-video"
+                    class="w-100"
+                    height="315"
+                    src=""
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="instructions">
+                  <h3>Instructions</h3>
+                  <p id="exercise-instructions"></p>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">Targeted Muscles</h5>
+                    <p
+                      id="primary-muscles"
+                      class="card-text mb-1 text-left text-sm-start"
+                    ></p>
+                    <p
+                      id="secondary-muscles"
+                      class="card-text text-left text-sm-start"
+                      style="opacity: 0.7"
+                    ></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">Key Cues</h5>
+                    <ul id="key-cues-container" class="card-text d-none">
+                      <li id="key-cue"></li>
+                    </ul>
+                    <span id="cues-not-available" class="d-none"
+                      >Not available</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title">Alternative Exercises</h5>
+                    <ul id="alt-ex-container" class="card-text d-none">
+                      <li
+                        id="alt-ex"
+                        class="text-primary text-decoration-underline"
+                        style="cursor: pointer"
+                      ></li>
+                    </ul>
+                    <span id="alt-not-available" class="d-none"
+                      >Not available</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </section>
+    <footer id="footer" class="bg-dark text-white d-none p-3 mt-auto">
+      <div class="container text-center">
+        <p id="copyright" class="mb-1"></p>
+        <p id="version" class="mb-0"></p>
+      </div>
+    </footer>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+      }
+      main {
+        flex: 1;
+      }
+    </style>
+    <script type="py" src="./detail.py" config="./pyscript.toml"></script>
+  </body>
+</html>
