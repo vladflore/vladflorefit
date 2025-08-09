@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-1Q5PTQ3F7Y"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-1Q5PTQ3F7Y");
+    </script>
+    
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link
@@ -130,7 +145,7 @@
       tabindex="-1"
       aria-labelledby="infoModalLabel"
       aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="infoModalLabel"></h5>
@@ -142,6 +157,9 @@
               ></button>
             </div>
           <div id="modal-body" class="modal-body"></div>
+          <div class="modal-footer justify-content-between">
+            <span id="version" class="text-muted small"></span>
+          </div>
         </div>
       </div>
     </div>

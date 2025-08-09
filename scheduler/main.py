@@ -387,6 +387,7 @@ modal = pydom["#infoModalLabel"][0]
 modal._js.innerHTML = TRANSLATIONS[LANGUAGE]["info_modal_title"]
 
 modal_body = pydom["#modal-body"][0]
+version_element = pydom["#version"][0]
 
 
 def load_modal_content():
@@ -394,3 +395,4 @@ def load_modal_content():
 
 
 modal_body._js.innerHTML = load_modal_content()
+version_element._js.innerHTML = "Version: 10.08.2025"
