@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-1Q5PTQ3F7Y"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-1Q5PTQ3F7Y");
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>vladflore.fit</title>
@@ -12,7 +26,7 @@
       body,
       html {
         height: 100%;
-        background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 1)),
+        background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 1)),
           url("logo.jpeg") center center / cover no-repeat;
       }
       .center-container {
@@ -77,7 +91,11 @@
   <body>
     <div class="center-container">
       <div class="d-flex tiles-row">
-        <a href="./flexary/index.html" target="_blank" class="text-decoration-none">
+        <a
+          href="./flexary/index.html"
+          target="_blank"
+          class="text-decoration-none"
+        >
           <div
             class="tile text-white border border-2 rounded-4"
             style="
@@ -86,15 +104,36 @@
                 rgba(186, 148, 94, 0.95) 0%,
                 rgba(186, 148, 94, 0.65) 100%
               );
+              width: 260px;
+              height: 180px;
+              max-width: 260px;
+              max-height: 180px;
             "
           >
-            <div class="tile-icon">
-              <span style="font-size: 30px">🏋️</span>
+            <div class="tile-icon mb-2">
+              <span style="font-size: 2.2rem">🏋️</span>
             </div>
-            <div>Flexary</div>
+            <div class="fw-semibold" style="font-size: 1.25rem">Flexary</div>
+            <div
+              style="
+                font-size: 1rem;
+                color: #fffbe845;
+                font-weight: 400;
+                letter-spacing: 0.01em;
+                text-align: center;
+                line-height: 1.3;
+                margin: 0.8rem;
+              "
+            >
+              <em>A compendium of fitness exercises.</em>
+            </div>
           </div>
         </a>
-        <a href="./scheduler/index.html" target="_blank" class="text-decoration-none">
+        <a
+          href="./scheduler/index.html"
+          target="_blank"
+          class="text-decoration-none"
+        >
           <div
             class="tile text-white border border-2 rounded-4"
             style="
@@ -103,16 +142,46 @@
                 rgba(186, 148, 94, 0.95) 0%,
                 rgba(186, 148, 94, 0.65) 100%
               );
+              width: 260px;
+              height: 180px;
+              max-width: 260px;
+              max-height: 180px;
             "
           >
             <div class="tile-icon">
               <span style="font-size: 30px">📅</span>
             </div>
             <div>Classes Scheduler</div>
+            <div
+              style="
+                font-size: 1rem;
+                color: #fffbe845;
+                font-weight: 400;
+                letter-spacing: 0.01em;
+                text-align: center;
+                line-height: 1.3;
+                margin: 0.8rem;
+              "
+            >
+              <em>Your simple solution for effortless class scheduling.</em>
+            </div>
           </div>
         </a>
       </div>
     </div>
+    <footer
+      class="text-center text-white-50 py-3"
+      style="background: rgba(0, 0, 0, 0.3); font-size: 1rem"
+    >
+      &copy; 2025 ·
+      <a
+        href="https://vladflore.fit"
+        class="text-white-50 text-decoration-underline"
+        target="_blank"
+        >vladflore.fit</a
+      >
+      · All rights reserved.
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
