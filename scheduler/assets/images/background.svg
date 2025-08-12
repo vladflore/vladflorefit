@@ -1,0 +1,237 @@
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <!-- Base gradient background -->
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color: #f8fafc; stop-opacity: 1" />
+            <stop offset="50%" style="stop-color: #e2e8f0; stop-opacity: 1" />
+            <stop offset="100%" style="stop-color: #cbd5e1; stop-opacity: 1" />
+        </linearGradient>
+
+        <!-- Calendar grid pattern -->
+        <pattern
+            id="calendarGrid"
+            x="0"
+            y="0"
+            width="40"
+            height="40"
+            patternUnits="userSpaceOnUse"
+        >
+            <rect
+                width="40"
+                height="40"
+                fill="none"
+                stroke="#e2e8f0"
+                stroke-width="0.5"
+                opacity="0.3"
+            />
+        </pattern>
+
+        <!-- Clock pattern -->
+        <pattern
+            id="clockPattern"
+            x="0"
+            y="0"
+            width="120"
+            height="120"
+            patternUnits="userSpaceOnUse"
+        >
+            <circle
+                cx="60"
+                cy="60"
+                r="25"
+                fill="none"
+                stroke="#cbd5e1"
+                stroke-width="1"
+                opacity="0.15"
+            />
+            <circle cx="60" cy="60" r="2" fill="#94a3b8" opacity="0.2" />
+            <line
+                x1="60"
+                y1="60"
+                x2="60"
+                y2="45"
+                stroke="#94a3b8"
+                stroke-width="1.5"
+                opacity="0.2"
+            />
+            <line
+                x1="60"
+                y1="60"
+                x2="70"
+                y2="60"
+                stroke="#94a3b8"
+                stroke-width="1"
+                opacity="0.2"
+            />
+        </pattern>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1200" height="800" fill="url(#bgGradient)" />
+
+    <!-- Grid overlay -->
+    <rect width="1200" height="800" fill="url(#calendarGrid)" />
+
+    <!-- Clock pattern overlay -->
+    <rect width="1200" height="800" fill="url(#clockPattern)" />
+
+    <!-- Large calendar elements -->
+    <g opacity="0.08">
+        <!-- Calendar 1 -->
+        <rect
+            x="100"
+            y="120"
+            width="280"
+            height="200"
+            rx="8"
+            fill="white"
+            stroke="#64748b"
+            stroke-width="2"
+        />
+        <rect x="100" y="120" width="280" height="40" fill="#3b82f6" rx="8" />
+        <rect x="100" y="160" width="280" height="160" rx="0" fill="white" />
+
+        <!-- Calendar grid -->
+        <g stroke="#e2e8f0" stroke-width="1">
+            <line x1="140" y1="160" x2="140" y2="320" />
+            <line x1="180" y1="160" x2="180" y2="320" />
+            <line x1="220" y1="160" x2="220" y2="320" />
+            <line x1="260" y1="160" x2="260" y2="320" />
+            <line x1="300" y1="160" x2="300" y2="320" />
+            <line x1="340" y1="160" x2="340" y2="320" />
+
+            <line x1="100" y1="200" x2="380" y2="200" />
+            <line x1="100" y1="240" x2="380" y2="240" />
+            <line x1="100" y1="280" x2="380" y2="280" />
+        </g>
+
+        <!-- Calendar dates -->
+        <circle cx="120" cy="220" r="8" fill="#ef4444" />
+        <circle cx="160" cy="260" r="8" fill="#22c55e" />
+        <circle cx="240" cy="220" r="8" fill="#f59e0b" />
+        <circle cx="320" cy="300" r="8" fill="#3b82f6" />
+    </g>
+
+    <!-- Clock elements -->
+    <g opacity="0.06">
+        <!-- Large clock -->
+        <circle
+            cx="900"
+            cy="200"
+            r="80"
+            fill="white"
+            stroke="#64748b"
+            stroke-width="3"
+        />
+        <circle cx="900" cy="200" r="5" fill="#64748b" />
+        <!-- Clock hands -->
+        <line
+            x1="900"
+            y1="200"
+            x2="900"
+            y2="150"
+            stroke="#64748b"
+            stroke-width="4"
+            stroke-linecap="round"
+        />
+        <line
+            x1="900"
+            y1="200"
+            x2="940"
+            y2="200"
+            stroke="#64748b"
+            stroke-width="3"
+            stroke-linecap="round"
+        />
+
+        <!-- Hour markers -->
+        <g stroke="#64748b" stroke-width="2">
+            <line x1="900" y1="130" x2="900" y2="140" />
+            <line x1="970" y1="200" x2="960" y2="200" />
+            <line x1="900" y1="270" x2="900" y2="260" />
+            <line x1="830" y1="200" x2="840" y2="200" />
+        </g>
+    </g>
+
+    <!-- Task list elements -->
+    <g opacity="0.05">
+        <rect
+            x="600"
+            y="450"
+            width="300"
+            height="250"
+            rx="8"
+            fill="white"
+            stroke="#64748b"
+            stroke-width="2"
+        />
+        <rect x="600" y="450" width="300" height="30" fill="#8b5cf6" rx="8" />
+
+        <!-- Task items -->
+        <g fill="#64748b">
+            <circle cx="620" cy="510" r="6" />
+            <rect x="640" y="505" width="180" height="10" rx="2" />
+
+            <circle cx="620" cy="540" r="6" />
+            <rect x="640" y="535" width="220" height="10" rx="2" />
+
+            <circle cx="620" cy="570" r="6" />
+            <rect x="640" y="565" width="160" height="10" rx="2" />
+
+            <circle cx="620" cy="600" r="6" />
+            <rect x="640" y="595" width="200" height="10" rx="2" />
+        </g>
+    </g>
+
+    <!-- Gantt chart elements -->
+    <g opacity="0.04">
+        <rect
+            x="50"
+            y="550"
+            width="400"
+            height="180"
+            rx="8"
+            fill="white"
+            stroke="#64748b"
+            stroke-width="2"
+        />
+
+        <!-- Gantt bars -->
+        <rect x="70" y="580" width="80" height="15" fill="#3b82f6" rx="2" />
+        <rect x="170" y="580" width="120" height="15" fill="#10b981" rx="2" />
+
+        <rect x="70" y="610" width="60" height="15" fill="#f59e0b" rx="2" />
+        <rect x="150" y="610" width="100" height="15" fill="#ef4444" rx="2" />
+
+        <rect x="70" y="640" width="90" height="15" fill="#8b5cf6" rx="2" />
+        <rect x="180" y="640" width="80" height="15" fill="#06b6d4" rx="2" />
+
+        <rect x="70" y="670" width="110" height="15" fill="#84cc16" rx="2" />
+    </g>
+
+    <!-- Floating geometric elements for modern touch -->
+    <g opacity="0.03">
+        <circle cx="200" cy="400" r="30" fill="#3b82f6" />
+        <rect x="800" y="500" width="60" height="60" rx="12" fill="#10b981" />
+        <polygon points="1000,350 1030,400 970,400" fill="#f59e0b" />
+        <circle cx="400" cy="100" r="25" fill="#ef4444" />
+        <rect x="50" y="50" width="40" height="40" rx="8" fill="#8b5cf6" />
+    </g>
+
+    <!-- Timeline elements -->
+    <g opacity="0.04">
+        <line
+            x1="100"
+            y1="750"
+            x2="1100"
+            y2="750"
+            stroke="#64748b"
+            stroke-width="3"
+        />
+        <circle cx="200" cy="750" r="8" fill="#3b82f6" />
+        <circle cx="400" cy="750" r="8" fill="#10b981" />
+        <circle cx="600" cy="750" r="8" fill="#f59e0b" />
+        <circle cx="800" cy="750" r="8" fill="#ef4444" />
+        <circle cx="1000" cy="750" r="8" fill="#8b5cf6" />
+    </g>
+</svg>
