@@ -36,51 +36,201 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        padding: 1rem;
       }
       .brand-title {
         font-family: "Segoe UI", Arial, sans-serif;
-        font-size: 2.8rem;
+        font-size: clamp(2rem, 5vw, 2.8rem);
         font-weight: 700;
         color: #fff;
         letter-spacing: 2px;
         margin-bottom: 2rem;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        background: linear-gradient(
+          135deg,
+          rgba(186, 148, 94, 0.9) 0%,
+          rgba(186, 148, 94, 0.7) 50%,
+          rgba(255, 255, 255, 0.9) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        padding: 0.5rem 1rem;
+        border: 2px solid rgba(186, 148, 94, 0.3);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        background-color: rgba(186, 148, 94, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
       }
-      .tiles-row {
-        gap: 2rem;
+
+      .brand-title::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.8s ease;
+      }
+
+      .brand-title:hover::before {
+        left: 100%;
+      }
+      .tiles-container {
+        width: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: row;
+        gap: 1.5rem;
+        justify-content: center;
+        align-items: stretch;
       }
       .tile {
-        min-width: 220px;
-        min-height: 160px;
+        flex: 1;
+        min-height: 180px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 1.4rem;
+        font-size: 1.25rem;
         font-weight: 500;
         cursor: pointer;
         transition: transform 0.18s, box-shadow 0.18s;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
         border: none;
         outline: none;
+        text-decoration: none;
+        background: linear-gradient(
+          180deg,
+          rgba(186, 148, 94, 0.95) 0%,
+          rgba(186, 148, 94, 0.65) 100%
+        );
+        padding: 1rem;
       }
       .tile:hover {
         transform: translateY(-6px) scale(1.04);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+        text-decoration: none;
+        color: inherit;
       }
       .tile-icon {
-        font-size: 2.5rem;
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
         margin-bottom: 0.7rem;
       }
-      @media (max-width: 600px) {
-        .tiles-row {
-          flex-direction: column !important;
-          gap: 1.2rem;
+      .tile-title {
+        font-size: clamp(1.1rem, 3vw, 1.25rem);
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 0.5rem;
+      }
+      .tile-description {
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        text-align: center;
+        line-height: 1.3;
+        margin: 0.5rem 0;
+      }
+      .tile-note {
+        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        color: rgba(255, 255, 255, 0.6);
+        text-align: center;
+        margin-top: auto;
+        padding-top: 0.5rem;
+      }
+
+      /* Tablet breakpoint */
+      @media (max-width: 768px) and (min-width: 481px) {
+        .center-container {
+          padding: 1.5rem;
+        }
+        .tiles-container {
+          gap: 1.25rem;
         }
         .tile {
-          min-width: 180px;
+          min-height: 160px;
+          padding: 0.875rem;
+        }
+        .brand-title {
+          margin-bottom: 1.75rem;
+        }
+      }
+
+      /* Mobile breakpoint */
+      @media (max-width: 480px) {
+        .center-container {
+          padding: 1rem;
+          justify-content: flex-start;
+          padding-top: 10vh;
+        }
+        .brand-title {
+          margin-bottom: 1.5rem;
+          letter-spacing: 1px;
+        }
+        .tiles-container {
+          flex-direction: column;
+          gap: 1rem;
+          max-width: 100%;
+        }
+        .tile {
+          min-height: 140px;
+          padding: 1rem 0.75rem;
+          width: 100%;
+          max-width: 320px;
+          margin: 0 auto;
+        }
+        .tile:hover {
+          transform: translateY(-3px) scale(1.02);
+        }
+        .tile-icon {
+          margin-bottom: 0.5rem;
+        }
+        .tile-description {
+          margin: 0.4rem 0;
+        }
+      }
+
+      /* Extra small mobile */
+      @media (max-width: 360px) {
+        .center-container {
+          padding: 0.75rem;
+          padding-top: 8vh;
+        }
+        .tile {
+          min-height: 130px;
+          padding: 0.875rem 0.625rem;
+        }
+        .tiles-container {
+          gap: 0.875rem;
+        }
+      }
+
+      /* Landscape mobile */
+      @media (max-height: 600px) and (orientation: landscape) {
+        .center-container {
+          padding-top: 2vh;
+          min-height: 100vh;
+        }
+        .brand-title {
+          margin-bottom: 1rem;
+          font-size: clamp(1.5rem, 4vw, 2.2rem);
+        }
+        .tiles-container {
+          flex-direction: row;
+          gap: 1rem;
+        }
+        .tile {
           min-height: 120px;
-          font-size: 1.1rem;
         }
       }
     </style>
@@ -88,91 +238,35 @@
   </head>
   <body>
     <div class="center-container">
-      <div class="d-flex tiles-row">
+      <!-- <h1 class="brand-title">vladflore.fit</h1> -->
+      <div class="tiles-container">
         <a
           href="./flexary/index.html"
           target="_blank"
-          class="text-decoration-none"
+          class="tile text-white border border-2 rounded-4"
         >
-          <div
-            class="tile text-white border border-2 rounded-4"
-            style="
-              background: linear-gradient(
-                180deg,
-                rgba(186, 148, 94, 0.95) 0%,
-                rgba(186, 148, 94, 0.65) 100%
-              );
-              width: 260px;
-              height: 180px;
-              max-width: 260px;
-              max-height: 180px;
-            "
-          >
-            <div class="tile-icon mb-2">
-              <span style="font-size: 2.2rem">🏋️</span>
-            </div>
-            <div class="fw-semibold" style="font-size: 1.25rem">Flexary</div>
-            <div
-              style="
-                font-size: 1rem;
-                color: #fffbe845;
-                font-weight: 400;
-                letter-spacing: 0.01em;
-                text-align: center;
-                line-height: 1.3;
-                margin: 0.8rem;
-              "
-            >
-              <em>A compendium of fitness exercises.</em>
-            </div>
+          <div class="tile-icon">
+            <span>🏋️</span>
+          </div>
+          <div class="tile-title">Flexary</div>
+          <div class="tile-description">
+            <em>A compendium of fitness exercises.</em>
           </div>
         </a>
         <a
           href="./scheduler/index.html"
           target="_blank"
-          class="text-decoration-none"
+          class="tile text-white border border-2 rounded-4"
         >
-          <div
-            class="tile text-white border border-2 rounded-4"
-            style="
-              background: linear-gradient(
-                180deg,
-                rgba(186, 148, 94, 0.95) 0%,
-                rgba(186, 148, 94, 0.65) 100%
-              );
-              width: 260px;
-              height: 180px;
-              max-width: 260px;
-              max-height: 180px;
-            "
-          >
-            <div class="tile-icon">
-              <span style="font-size: 30px">📅</span>
-            </div>
-            <div
-              class="fw-semibold"
-              style="font-size: 1.25rem; text-align: center"
-            >
-              Classes Scheduler
-            </div>
-            <div
-              style="font-size: 0.6rem; color: #fffbe899; text-align: center"
-            >
-              <em>Best viewed on screens larger than a tablet.</em>
-            </div>
-            <div
-              style="
-                font-size: 1rem;
-                color: #fffbe845;
-                font-weight: 400;
-                letter-spacing: 0.01em;
-                text-align: center;
-                line-height: 1.3;
-                margin: 0.8rem;
-              "
-            >
-              <em>Your simple solution for effortless class scheduling.</em>
-            </div>
+          <div class="tile-icon">
+            <span>📅</span>
+          </div>
+          <div class="tile-title">Classes Scheduler</div>
+          <div class="tile-note">
+            <em>Best viewed on screens larger than a tablet.</em>
+          </div>
+          <div class="tile-description">
+            <em>Your simple solution for effortless class scheduling.</em>
           </div>
         </a>
       </div>
