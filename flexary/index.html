@@ -292,10 +292,10 @@
 
     <footer id="footer" class="bg-dark text-white d-none py-2">
       <div class="container d-flex justify-content-center align-items-center">
-      <div class="text-center w-100">
-        <p id="copyright" class="mb-1" style="font-size: 0.875rem"></p>
-        <p id="version" class="mb-0" style="font-size: 0.875rem"></p>
-      </div>
+        <div class="text-center w-100">
+          <p id="copyright" class="mb-1" style="font-size: 0.875rem"></p>
+          <p id="version" class="mb-0" style="font-size: 0.875rem"></p>
+        </div>
       </div>
     </footer>
 
@@ -341,5 +341,27 @@
         });
       });
     </script>
+
+    <button
+      id="whatsapp-button"
+      class="btn position-fixed"
+      style="
+        background-color: #ba945e;
+        color: #fff;
+        bottom: 24px;
+        right: 24px;
+        z-index: 2000;
+        border-radius: 50%;
+        width: 56px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+      title="Contact via WhatsApp"
+      onclick="window.open('https://wa.me/+34613429288', '_blank')"
+    >
+      <i class="bi bi-whatsapp" style="font-size: 2rem; color: #fff"></i>
+    </button>
   </body>
 </html>
