@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minimal JSON Editor</title>
+  <link rel="stylesheet" href="./assets/css/editor.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="toolbar" role="toolbar" aria-label="JSON editor toolbar">
+    <button id="btn-format" title="Pretty print (Ctrl/Cmd+Shift+F)">Format</button>
+    <button id="btn-minify" title="Minify">Minify</button>
+    <button id="btn-validate" title="Validate (Ctrl/Cmd+Enter)">Validate</button>
+    <button id="btn-copy" title="Copy to clipboard">Copy</button>
+    <button id="btn-download" title="Download as .json (Ctrl/Cmd+S)">Download</button>
+    <label class="btn" title="Open a local .json file">
+      <input id="file" type="file" accept="application/json,.json" hidden>
+      Open…
+    </label>
+    <div class="spacer"></div>
+    <div id="status" class="status" aria-live="polite">Ready</div>
+  </div>
+
+  <div class="panel">
+    <div class="editor" id="editor">
+      <pre class="gutter" id="gutter">1</pre>
+      <textarea class="ta" id="ta" spellcheck="false" aria-label="JSON editor" placeholder="{\n  \"hello\": \"world\"\n}"></textarea>
+    </div>
+    <div class="footer">
+      <div>Drag & drop a .json file here <span class="drop">(drop zone)</span></div>
+      <div>
+        Shortcuts: <span class="kbd">Ctrl/Cmd+Shift+F</span> format, <span class="kbd">Ctrl/Cmd+Enter</span> validate, <span class="kbd">Ctrl/Cmd+S</span> download
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const ta = document.getElementById('ta');
+  const gutter = document.getElementById('gutter');
+  const status = document.getElementById('status');
+  const fileInput = document.getElementById('file');
+
+  // --- Minimal public API so you can mount this into any container ---
+  window.createJsonEditor = function(container, opts={}){
+    const el = document.createElement('div');
+    el.innerHTML = document.querySelector('.panel').outerHTML;
+    container.appendChild(el.firstElementChild);
+    const panel = container.lastElementChild;
+    const ta2 = panel.querySelector('.ta');
+    const gutter2 = panel.querySelector('.gutter');
+    const status2 = document.createElement('div');
+    status2.className = 'status';
+    status2.textContent = 'Ready';
+    (opts.toolbarEl || container).prepend(status2);
+
+    if (opts.readOnly){ ta2.setAttribute('readonly',''); }
+    if (opts.height){ ta2.style.height = typeof opts.height === 'number' ? opts.height+"px" : String(opts.height); }
+    ta2.value = (opts.initialValue!=null) ? (typeof opts.initialValue === 'string' ? opts.initialValue : JSON.stringify(opts.initialValue, null, 2)) : '{\n  "hello": "world"\n}';
+    updateGutter(ta2, gutter2);
+
+    function setStatusOk(msg){ status2.className='status ok'; status2.textContent='✔ '+msg; }
+    function setStatusErr(msg){ status2.className='status err'; status2.textContent='✖ '+msg; }
+
+    ta2.addEventListener('input', ()=>{ updateGutter(ta2, gutter2); opts.onChange && opts.onChange(ta2.value); });
+    ta2.addEventListener('scroll', ()=>{ gutter2.scrollTop = ta2.scrollTop; });
+
+    return {
+      getValue: ()=> ta2.value,
+      setValue: (v)=>{ ta2.value = typeof v==='string'? v : JSON.stringify(v,null,2); updateGutter(ta2, gutter2); },
+      isValid: ()=> tryParseJson(ta2.value).ok,
+      validate: ()=> {
+        const r = tryParseJson(ta2.value);
+        if(r.ok){ setStatusOk('Valid JSON'); ta2.classList.remove('invalid'); }
+        else{ setStatusErr(r.message); ta2.classList.add('invalid'); }
+        return r;
+      }
+    }
+  }
+
+  // --- Built-in instance on this page ---
+  ta.value = '{\n  "hello": "world"\n}';
+  updateGutter(ta, gutter);
+
+  document.getElementById('btn-format').addEventListener('click', ()=> formatJson());
+  document.getElementById('btn-minify').addEventListener('click', ()=> minifyJson());
+  document.getElementById('btn-validate').addEventListener('click', ()=> validateJson());
+  document.getElementById('btn-copy').addEventListener('click', ()=> copyJson());
+  document.getElementById('btn-download').addEventListener('click', ()=> downloadJson());
+  fileInput.addEventListener('change', handleFile);
+
+  ta.addEventListener('input', ()=>{ updateGutter(ta, gutter); });
+  ta.addEventListener('scroll', ()=>{ gutter.scrollTop = ta.scrollTop; });
+
+  // drag & drop
+  ['dragenter','dragover'].forEach(ev=> document.addEventListener(ev, e=>{ e.preventDefault(); }));
+  document.addEventListener('drop', e=>{
+    e.preventDefault();
+    if(!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files[0]) return;
+    const f = e.dataTransfer.files[0];
+    if(!/\.json$/i.test(f.name)) return setStatusErr('Only .json files allowed');
+    readFile(f).then(text=>{ ta.value = text; updateGutter(ta, gutter); setStatusOk('Loaded '+f.name); validateJson(false); });
+  });
+
+  // keyboard shortcuts
+  document.addEventListener('keydown', (e)=>{
+    const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
+    const mod = isMac ? e.metaKey : e.ctrlKey;
+    if(mod && e.key.toLowerCase()==='s'){ e.preventDefault(); downloadJson(); }
+    if(mod && e.shiftKey && e.key.toLowerCase()==='f'){ e.preventDefault(); formatJson(); }
+    if(mod && e.key === 'Enter'){ e.preventDefault(); validateJson(); }
+  });
+
+  function updateGutter(textarea, gutterEl){
+    const lines = textarea.value.split('\n').length;
+    gutterEl.textContent = Array.from({length:lines}, (_,i)=> String(i+1)).join('\n');
+  }
+
+  function tryParseJson(s){
+    try{ JSON.parse(s); return { ok:true }; }
+    catch(err){
+      let msg = 'Invalid JSON';
+      if(err && err.message){ msg = err.message.replace(/in JSON at position (\d+)/, (m,p)=>{ const pos=Number(p); return 'at char '+pos; }); }
+      return { ok:false, message: msg };
+    }
+  }
+
+  function validateJson(showToast=true){
+    const r = tryParseJson(ta.value);
+    if(r.ok){ setStatusOk('Valid JSON'); ta.classList.remove('invalid'); }
+    else{ setStatusErr(r.message); ta.classList.add('invalid'); }
+    return r.ok;
+  }
+
+  function formatJson(){
+    const r = tryParseJson(ta.value); if(!r.ok){ setStatusErr('Cannot format: invalid JSON'); return; }
+    ta.value = JSON.stringify(JSON.parse(ta.value), null, 2);
+    updateGutter(ta, gutter); setStatusOk('Formatted');
+  }
+  function minifyJson(){
+    const r = tryParseJson(ta.value); if(!r.ok){ setStatusErr('Cannot minify: invalid JSON'); return; }
+    ta.value = JSON.stringify(JSON.parse(ta.value));
+    updateGutter(ta, gutter); setStatusOk('Minified');
+  }
+  async function copyJson(){
+    try{ await navigator.clipboard.writeText(ta.value); setStatusOk('Copied'); }
+    catch{ setStatusErr('Clipboard blocked'); }
+  }
+  function downloadJson(){
+    const blob = new Blob([ta.value], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'data.json'; document.body.appendChild(a); a.click(); a.remove();
+    setStatusOk('Downloaded data.json');
+    setTimeout(()=> URL.revokeObjectURL(url), 5000);
+  }
+  function handleFile(e){ const f = e.target.files[0]; if(!f) return; readFile(f).then(text=>{ ta.value=text; updateGutter(ta,gutter); setStatusOk('Loaded '+f.name); validateJson(false); }); }
+  function readFile(f){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsText(f); }); }
+  function setStatusOk(m){ status.className='status ok'; status.textContent='✔ '+m; }
+  function setStatusErr(m){ status.className='status err'; status.textContent='✖ '+m; }
+})();
+</script>
+</body>
+</html>
