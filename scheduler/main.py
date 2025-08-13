@@ -395,4 +395,4 @@ def load_modal_content():
 
 
 modal_body._js.innerHTML = load_modal_content()
-version_element._js.innerHTML = "Version: 10.08.2025"
+version_element._js.innerHTML = "Version: 13.08.2025"
