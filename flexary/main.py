@@ -792,6 +792,7 @@ data = csv_to_json("exercises.csv")
 data = sorted(data, key=lambda x: x["name"])
 
 category_count: dict[str, int] = {}
+
 for exercise_data in data:
     category = exercise_data["category"]
     category_count[category] = category_count.get(category, 0) + 1
@@ -802,6 +803,8 @@ pydom[exercise_count_id][0]._js.innerHTML = f"Total exercises: {len(data)}"
 pydom[exercises_per_category_badges_row_id][0]._js.innerHTML = build_category_badges(
     category_count
 )
+
+pydom["#spinner"][0]._js.classList.add("d-none")
 
 copyright_element = pydom[copyright_el_id][0]
 copyright_element._js.innerHTML = copyright()

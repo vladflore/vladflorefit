@@ -56,31 +56,31 @@
       />
     </dialog>
     <div id="container" class="p-3 d-none container-fluid responsive-bg">
-      <div class="row justify-content-center">
-        <div id="tools" class="col-12 d-flex align-items-center mb-3 d-none">
-          <label
-            id="schedule-date-label"
-            for="schedule-date"
-            class="form-label mb-0 me-2"
-          ></label>
-          <input
-            id="schedule-date"
-            type="date"
-            class="form-control ms-2"
-            style="max-width: 200px"
-          />
-          <div class="flex-grow-1"></div>
-          <button
-            class="btn btn-outline-red ms-2"
-            title="Download as PDF"
-            py-click="download_pdf"
-          >
-            <i class="bi bi-file-earmark-pdf fs-4"></i>
-          </button>
-        </div>
-        <div id="schedule" class="col-12"></div>
-        <div id="spinner" class="d-flex justify-content-center align-items-center w-100" style="height: 120px; background: transparent;">
-          <div class="spinner-border text-secondary" style="width: 3rem; height: 3rem;" role="status" aria-label="Loading"></div>
+        <div class="row justify-content-center">
+          <div id="tools" class="col-12 d-flex align-items-center mb-3 d-none">
+            <label
+              id="schedule-date-label"
+              for="schedule-date"
+              class="form-label mb-0 me-2"
+            ></label>
+            <input
+              id="schedule-date"
+              type="date"
+              class="form-control ms-2"
+              style="max-width: 200px"
+            />
+            <div class="flex-grow-1"></div>
+            <button
+              class="btn btn-outline-red ms-2"
+              title="Download as PDF"
+              py-click="download_pdf"
+            >
+              <i class="bi bi-file-earmark-pdf fs-4"></i>
+            </button>
+          </div>
+          <div id="schedule" class="col-12"></div>
+          <div id="spinner" class="d-flex justify-content-center align-items-center w-100" style="height: 120px; background: transparent;">
+            <div class="spinner-border text-secondary" style="width: 3rem; height: 3rem;" role="status" aria-label="Loading"></div>
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
