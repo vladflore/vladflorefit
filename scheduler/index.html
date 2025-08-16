@@ -2,7 +2,7 @@
 <html>
   <head>
     <!-- Google tag (gtag.js) -->
-    <!-- <script
+    <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-1Q5PTQ3F7Y"
     ></script>
@@ -14,7 +14,7 @@
       gtag("js", new Date());
 
       gtag("config", "G-1Q5PTQ3F7Y");
-    </script> -->
+    </script>
     
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -202,7 +202,10 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="settingsModalLabel">Upload your schedule information</h5>
+            <h5 class="modal-title" id="settingsModalLabel">
+              Upload your schedule information<br>
+              <span class="text-muted small">Sube la información de tu horario</span>
+            </h5>
             <button
               type="button"
               class="btn-close"
@@ -213,15 +216,32 @@
             <div class="modal-body">
               <div class="mb-3">
                 <label for="file-upload" class="form-label">
-                    Please select a .txt file containing your schedule information.
-                    If you don't have one, you can download the example file <button id="download-btn" class="btn btn-outline-red" type="button"><i class="bi bi-download"></i></button>,
-                    edit it as needed, and upload it here.
+                  Please select a .txt file containing your schedule information.
+                  If you don't have one, you can download the example file <button id="download-btn-1" class="btn btn-outline-red" type="button"><i class="bi bi-download"></i></button>,
+                  edit it as needed, and upload it here.
+                  <br><br>
+                  <span class="text-muted small">
+                    Por favor, selecciona un archivo .txt que contenga la información de tu horario.
+                    Si no tienes uno, puedes descargar el archivo de ejemplo <button id="download-btn-2" class="btn btn-outline-red" type="button"><i class="bi bi-download"></i></button>, editarlo según sea necesario y subirlo aquí.
+                  </span>
                 </label>
-                <input class="form-control" type="file" id="file-upload" accept=".txt">
+                <input class="form-control mt-2" type="file" id="file-upload" accept=".txt">
               </div>
             </div>
             <script>
-            document.getElementById("download-btn").addEventListener("click", function () {
+            document.getElementById("download-btn-1").addEventListener("click", function () {
+              const exampleContent = `Class Name Is Strength\nClass Instructor Is John Doe\nClass Starts On 16.08.2025\nClass Starts At 15:00\nClass Ends On 16.08.2025\nClass Ends At 16:00\nText Color Is #FFFF00\nBackground Color Is #000080\n+++\nClass Name Is Conditioning\nClass Instructor Is Jane Smith\nClass Starts On 16.08.2025\nClass Starts At 16:15\nClass Ends On 16.08.2025\nClass Ends At 17:00\nText Color Is #000000\nBackground Color Is #FFA500\n`;
+              const blob = new Blob([exampleContent], { type: "text/plain" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "example_schedule.txt";
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            });
+            document.getElementById("download-btn-2").addEventListener("click", function () {
               const exampleContent = `Class Name Is Strength\nClass Instructor Is John Doe\nClass Starts On 16.08.2025\nClass Starts At 15:00\nClass Ends On 16.08.2025\nClass Ends At 16:00\nText Color Is #FFFF00\nBackground Color Is #000080\n+++\nClass Name Is Conditioning\nClass Instructor Is Jane Smith\nClass Starts On 16.08.2025\nClass Starts At 16:15\nClass Ends On 16.08.2025\nClass Ends At 17:00\nText Color Is #000000\nBackground Color Is #FFA500\n`;
               const blob = new Blob([exampleContent], { type: "text/plain" });
               const url = URL.createObjectURL(blob);
