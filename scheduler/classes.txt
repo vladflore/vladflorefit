@@ -4,8 +4,8 @@ Class Starts On 16.08.2025
 Class Starts At 15:00
 Class Ends On 16.08.2025
 Class Ends At 16:00
-Text Color Is white
-Background Color Is black
+Text Color Is #FFFF00
+Background Color Is #000080
 +++
 Class Name Is Conditioning
 Class Instructor Is Jane Smith
@@ -13,8 +13,8 @@ Class Starts On 16.08.2025
 Class Starts At 16:15
 Class Ends On 16.08.2025
 Class Ends At 17:00
-Text Color Is white
-Background Color Is red
+Text Color Is #000000
+Background Color Is #FFA500
 +++
 Class Name Is Yoga
 Class Instructor Is Emily Brown
@@ -22,8 +22,8 @@ Class Starts On 16.08.2025
 Class Starts At 17:15
 Class Ends On 16.08.2025
 Class Ends At 18:00
-Text Color Is black
-Background Color Is green
+Text Color Is #FFFFFF
+Background Color Is #008080
 +++
 Class Name Is HIIT
 Class Instructor Is Michael Lee
@@ -31,8 +31,8 @@ Class Starts On 16.08.2025
 Class Starts At 18:15
 Class Ends On 16.08.2025
 Class Ends At 19:00
-Text Color Is white
-Background Color Is blue
+Text Color Is #00FF00
+Background Color Is #800080
 +++
 Class Name Is Pilates
 Class Instructor Is Sarah Kim
@@ -40,8 +40,8 @@ Class Starts On 16.08.2025
 Class Starts At 19:15
 Class Ends On 16.08.2025
 Class Ends At 20:00
-Text Color Is black
-Background Color Is yellow
+Text Color Is #800000
+Background Color Is #C0C0C0
 +++
 Class Name Is Strength
 Class Instructor Is John Doe
@@ -49,8 +49,8 @@ Class Starts On 17.08.2025
 Class Starts At 15:00
 Class Ends On 17.08.2025
 Class Ends At 16:00
-Text Color Is white
-Background Color Is black
+Text Color Is #00FFFF
+Background Color Is #808000
 +++
 Class Name Is Conditioning
 Class Instructor Is Jane Smith
@@ -58,8 +58,8 @@ Class Starts On 17.08.2025
 Class Starts At 16:15
 Class Ends On 17.08.2025
 Class Ends At 17:00
-Text Color Is white
-Background Color Is red
+Text Color Is #FF00FF
+Background Color Is #A52A2A
 +++
 Class Name Is Yoga
 Class Instructor Is Emily Brown
@@ -67,8 +67,8 @@ Class Starts On 17.08.2025
 Class Starts At 17:15
 Class Ends On 17.08.2025
 Class Ends At 18:00
-Text Color Is black
-Background Color Is green
+Text Color Is #000080
+Background Color Is #FFC0CB
 +++
 Class Name Is HIIT
 Class Instructor Is Michael Lee
@@ -76,8 +76,8 @@ Class Starts On 17.08.2025
 Class Starts At 18:15
 Class Ends On 17.08.2025
 Class Ends At 19:00
-Text Color Is white
-Background Color Is blue
+Text Color Is #FFA500
+Background Color Is #00FFFF
 +++
 Class Name Is Pilates
 Class Instructor Is Sarah Kim
@@ -85,5 +85,5 @@ Class Starts On 17.08.2025
 Class Starts At 19:15
 Class Ends On 17.08.2025
 Class Ends At 20:00
-Text Color Is black
-Background Color Is yellow
+Text Color Is #008000
+Background Color Is #F5F5DC
