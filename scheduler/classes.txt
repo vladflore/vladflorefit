@@ -1,0 +1,89 @@
+Class Name Is Strength
+Class Instructor Is John Doe
+Class Starts On 16.08.2025
+Class Starts At 15:00
+Class Ends On 16.08.2025
+Class Ends At 16:00
+Text Color Is white
+Background Color Is black
++++
+Class Name Is Conditioning
+Class Instructor Is Jane Smith
+Class Starts On 16.08.2025
+Class Starts At 16:15
+Class Ends On 16.08.2025
+Class Ends At 17:00
+Text Color Is white
+Background Color Is red
++++
+Class Name Is Yoga
+Class Instructor Is Emily Brown
+Class Starts On 16.08.2025
+Class Starts At 17:15
+Class Ends On 16.08.2025
+Class Ends At 18:00
+Text Color Is black
+Background Color Is green
++++
+Class Name Is HIIT
+Class Instructor Is Michael Lee
+Class Starts On 16.08.2025
+Class Starts At 18:15
+Class Ends On 16.08.2025
+Class Ends At 19:00
+Text Color Is white
+Background Color Is blue
++++
+Class Name Is Pilates
+Class Instructor Is Sarah Kim
+Class Starts On 16.08.2025
+Class Starts At 19:15
+Class Ends On 16.08.2025
+Class Ends At 20:00
+Text Color Is black
+Background Color Is yellow
++++
+Class Name Is Strength
+Class Instructor Is John Doe
+Class Starts On 17.08.2025
+Class Starts At 15:00
+Class Ends On 17.08.2025
+Class Ends At 16:00
+Text Color Is white
+Background Color Is black
++++
+Class Name Is Conditioning
+Class Instructor Is Jane Smith
+Class Starts On 17.08.2025
+Class Starts At 16:15
+Class Ends On 17.08.2025
+Class Ends At 17:00
+Text Color Is white
+Background Color Is red
++++
+Class Name Is Yoga
+Class Instructor Is Emily Brown
+Class Starts On 17.08.2025
+Class Starts At 17:15
+Class Ends On 17.08.2025
+Class Ends At 18:00
+Text Color Is black
+Background Color Is green
++++
+Class Name Is HIIT
+Class Instructor Is Michael Lee
+Class Starts On 17.08.2025
+Class Starts At 18:15
+Class Ends On 17.08.2025
+Class Ends At 19:00
+Text Color Is white
+Background Color Is blue
++++
+Class Name Is Pilates
+Class Instructor Is Sarah Kim
+Class Starts On 17.08.2025
+Class Starts At 19:15
+Class Ends On 17.08.2025
+Class Ends At 20:00
+Text Color Is black
+Background Color Is yellow

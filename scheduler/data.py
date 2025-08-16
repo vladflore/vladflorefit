@@ -67,11 +67,60 @@ def load_classes_from_file(lang: str) -> list[FitnessClass]:
         return read_data(data)
 
 
-def load_classes_from_url(lang: str) -> list[FitnessClass]:
+def load_classes_from_gh(lang: str) -> list[FitnessClass]:
     response = requests.get(
         f"{GH_PAGES_ROOT}/classes_{lang}.json?v={str(int(time.time()))}"
     )
     data = response.json()
+    return read_data(data)
+
+
+def load_classes_from_url(url: str) -> list[FitnessClass]:
+    response = requests.get(url)
+    text = response.text
+    class_blocks = [block.strip() for block in text.split("+++") if block.strip()]
+    fitness_classes = []
+
+    for block in class_blocks:
+        lines = [line.strip() for line in block.splitlines() if line.strip()]
+        class_dict = {}
+        render_config = {}
+        for line in lines:
+            if line.startswith("Class Name Is "):
+                class_dict["name"] = line.replace("Class Name Is ", "")
+            elif line.startswith("Class Instructor Is "):
+                class_dict["instructor"] = line.replace("Class Instructor Is ", "")
+            elif line.startswith("Class Starts On "):
+                class_dict["start_date"] = line.replace("Class Starts On ", "")
+            elif line.startswith("Class Starts At "):
+                class_dict["start_time"] = line.replace("Class Starts At ", "")
+            elif line.startswith("Class Ends On "):
+                class_dict["end_date"] = line.replace("Class Ends On ", "")
+            elif line.startswith("Class Ends At "):
+                class_dict["end_time"] = line.replace("Class Ends At ", "")
+            elif line.startswith("Text Color Is "):
+                render_config["text_color"] = line.replace("Text Color Is ", "")
+            elif line.startswith("Background Color Is "):
+                render_config["background_color"] = line.replace(
+                    "Background Color Is ", ""
+                )
+        start = datetime.strptime(
+            f"{class_dict['start_date']} {class_dict['start_time']}", "%d.%m.%Y %H:%M"
+        ).isoformat()
+        end = datetime.strptime(
+            f"{class_dict['end_date']} {class_dict['end_time']}", "%d.%m.%Y %H:%M"
+        ).isoformat()
+        fitness_classes.append(
+            {
+                "name": class_dict["name"],
+                "instructor": class_dict["instructor"],
+                "start": start,
+                "end": end,
+                "render_config": render_config,
+            }
+        )
+
+    data = {"fitness_classes": fitness_classes}
     return read_data(data)
 
 

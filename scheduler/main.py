@@ -4,6 +4,7 @@ from data import FitnessClass
 from pyodide.ffi import create_proxy
 from data import (
     load_classes_from_file,
+    load_classes_from_gh,
     load_classes_from_url,
     load_dummy_classes,
 )
@@ -19,7 +20,7 @@ from fpdf import FPDF
 from fpdf.enums import XPos, YPos
 from js import Uint8Array, File, URL, document
 from pyodide.ffi import create_proxy
-from pyscript import document, display
+from pyscript import document, display, window
 from pyweb import pydom
 import json
 
@@ -315,6 +316,11 @@ def download_pdf(event):
     hidden_link.click()
 
 
+current_link = window.location.href
+data_source_url = None
+if "data_source=" in current_link:
+    data_source_url = current_link.split("data_source=")[1].strip()
+
 classes: list[FitnessClass] = []
 config: Config = load_config()
 
@@ -322,12 +328,15 @@ LANGUAGE = config.language
 WHATSAPP_NUMBER = config.whatsapp_number
 BOOK_VIA_WHATSAPP = config.book_via_whatsapp
 
-if DATA_SOURCE_MODE == DataSourceMode.GH_PAGES:
-    classes = load_classes_from_url(lang=LANGUAGE)
-elif DATA_SOURCE_MODE == DataSourceMode.LOCAL:
-    classes = load_classes_from_file(lang=LANGUAGE)
+if data_source_url:
+    classes = load_classes_from_url(data_source_url)
 else:
-    classes = load_dummy_classes()
+    if DATA_SOURCE_MODE == DataSourceMode.GH_PAGES:
+        classes = load_classes_from_gh(lang=LANGUAGE)
+    elif DATA_SOURCE_MODE == DataSourceMode.LOCAL:
+        classes = load_classes_from_file(lang=LANGUAGE)
+    else:
+        classes = load_dummy_classes()
 
 
 if classes:
