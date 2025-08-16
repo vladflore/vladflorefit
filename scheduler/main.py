@@ -6,7 +6,9 @@ from data import (
     load_classes_from_file,
     load_classes_from_gh,
     load_classes_from_url,
+    convert_to_json,
     load_dummy_classes,
+    read_data,
 )
 from config import (
     TRANSLATIONS,
@@ -23,6 +25,9 @@ from pyodide.ffi import create_proxy
 from pyscript import document, display, window
 from pyweb import pydom
 import json
+
+from js import document, window, Uint8Array
+from pyodide.ffi.wrappers import add_event_listener
 
 
 def render_fitness_classes(classes: list[FitnessClass], highlighted_date: date) -> str:
@@ -395,7 +400,7 @@ pydom["#whatsapp-btn"][0]._js.href = f"https://wa.me/{WHATSAPP_NUMBER}"
 modal = pydom["#infoModalLabel"][0]
 modal._js.innerHTML = TRANSLATIONS[LANGUAGE]["info_modal_title"]
 
-modal_body = pydom["#modal-body"][0]
+info_modal_body = pydom["#info-modal-body"][0]
 version_element = pydom["#version"][0]
 
 
@@ -403,5 +408,43 @@ def load_modal_content():
     return TRANSLATIONS[LANGUAGE].get("info_modal_content", "No information available.")
 
 
-modal_body._js.innerHTML = load_modal_content()
+info_modal_body._js.innerHTML = load_modal_content()
 version_element._js.innerHTML = "Version: 13.08.2025"
+
+
+async def upload_file_and_show(e):
+    global classes, filtered_classes
+
+    file_list = e.target.files
+    first_item = file_list.item(0)
+
+    my_bytes: bytes = await get_bytes_from_file(first_item)
+    classes = read_data(convert_to_json(my_bytes.decode("utf-8")))
+    min_date = min(cls.start.date() for cls in classes)
+    max_date = max(cls.start.date() for cls in classes)
+
+    today = date.today()
+    current_week_start_date = today - timedelta(days=today.weekday())
+    current_week_end_date = current_week_start_date + timedelta(days=6)
+    filtered_classes = [
+        cls
+        for cls in classes
+        if current_week_start_date <= cls.start.date() <= current_week_end_date
+    ]
+    pydom["#schedule"][0]._js.innerHTML = render_fitness_classes(
+        filtered_classes, today
+    )
+    schedule_date_input = pydom["#schedule-date"][0]
+    schedule_date_input._js.value = datetime.now().strftime("%Y-%m-%d")
+    schedule_date_input._js.min = min_date.strftime("%Y-%m-%d")
+    schedule_date_input._js.max = max_date.strftime("%Y-%m-%d")
+
+
+async def get_bytes_from_file(file):
+    array_buf = await file.arrayBuffer()
+    return array_buf.to_bytes()
+
+
+add_event_listener(
+    document.getElementById("file-upload"), "change", upload_file_and_show
+)

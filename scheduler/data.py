@@ -39,45 +39,7 @@ class FitnessClass:
         )
 
 
-def read_data(data) -> list[FitnessClass]:
-    classes: list[FitnessClass] = []
-    for fitness_class in data["fitness_classes"]:
-        start = datetime.fromisoformat(fitness_class["start"])
-        end = datetime.fromisoformat(fitness_class["end"])
-        render_config = FitnessClassRenderConfig(
-            text_color=fitness_class["render_config"].get("text_color", "#000000"),
-            background_color=fitness_class["render_config"].get(
-                "background_color", "#FFFFFF"
-            ),
-        )
-        fitness_class = FitnessClass(
-            name=fitness_class["name"],
-            start=start,
-            end=end,
-            instructor=fitness_class["instructor"],
-            render_config=render_config,
-        )
-        classes.append(fitness_class)
-    return classes
-
-
-def load_classes_from_file(lang: str) -> list[FitnessClass]:
-    with open("classes_{lang}.json".format(lang=lang), "r") as file:
-        data = json.load(file)
-        return read_data(data)
-
-
-def load_classes_from_gh(lang: str) -> list[FitnessClass]:
-    response = requests.get(
-        f"{GH_PAGES_ROOT}/classes_{lang}.json?v={str(int(time.time()))}"
-    )
-    data = response.json()
-    return read_data(data)
-
-
-def load_classes_from_url(url: str) -> list[FitnessClass]:
-    response = requests.get(url)
-    text = response.text
+def convert_to_json(text: str) -> dict:
     class_blocks = [block.strip() for block in text.split("+++") if block.strip()]
     fitness_classes = []
 
@@ -119,9 +81,49 @@ def load_classes_from_url(url: str) -> list[FitnessClass]:
                 "render_config": render_config,
             }
         )
+    return {"fitness_classes": fitness_classes}
 
-    data = {"fitness_classes": fitness_classes}
+
+def read_data(data) -> list[FitnessClass]:
+    classes: list[FitnessClass] = []
+    for fitness_class in data["fitness_classes"]:
+        start = datetime.fromisoformat(fitness_class["start"])
+        end = datetime.fromisoformat(fitness_class["end"])
+        render_config = FitnessClassRenderConfig(
+            text_color=fitness_class["render_config"].get("text_color", "#000000"),
+            background_color=fitness_class["render_config"].get(
+                "background_color", "#FFFFFF"
+            ),
+        )
+        fitness_class = FitnessClass(
+            name=fitness_class["name"],
+            start=start,
+            end=end,
+            instructor=fitness_class["instructor"],
+            render_config=render_config,
+        )
+        classes.append(fitness_class)
+    return classes
+
+
+def load_classes_from_file(lang: str) -> list[FitnessClass]:
+    with open("classes_{lang}.json".format(lang=lang), "r") as file:
+        data = json.load(file)
+        return read_data(data)
+
+
+def load_classes_from_gh(lang: str) -> list[FitnessClass]:
+    response = requests.get(
+        f"{GH_PAGES_ROOT}/classes_{lang}.json?v={str(int(time.time()))}"
+    )
+    data = response.json()
     return read_data(data)
+
+
+def load_classes_from_url(url: str) -> list[FitnessClass]:
+    response = requests.get(url)
+    text = response.text
+    return read_data(convert_to_json(text))
 
 
 def load_dummy_classes() -> list[FitnessClass]:
