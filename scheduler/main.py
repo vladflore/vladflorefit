@@ -409,7 +409,7 @@ def load_modal_content():
 
 
 info_modal_body._js.innerHTML = load_modal_content()
-version_element._js.innerHTML = "Version: 16.08.2025"
+version_element._js.innerHTML = "Version: 18.08.2025"
 
 
 async def upload_file_and_show(e):
