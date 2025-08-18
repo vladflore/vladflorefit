@@ -62,7 +62,7 @@ TRANSLATIONS: dict[str, dict[str, str | dict[str, str]]] = {
         </ul>
         <h4 style="margin: 24px 0 12px 0; font-size: 18px; font-weight: 500;">Adicional:</h4>
         <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
-            <li style="margin-bottom: 0;">Sube tu horario usando el icono de engranaje que se encuentra debajo del icono de información y descárgalo en PDF.</li>
+            <li style="margin-bottom: 0;">Puede cargar su horario de clases mediante el icono de engranaje situado debajo del icono de información y descargarlo en formato PDF.</li>
         </ul>
     </div>
 </div>
@@ -105,7 +105,7 @@ TRANSLATIONS: dict[str, dict[str, str | dict[str, str]]] = {
         </ul>
         <h4 style="margin: 24px 0 12px 0; font-size: 18px; font-weight: 500;">Extra:</h4>
         <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
-            <li style="margin-bottom: 0;">Upload your schedule using the gear icon located below the info icon, and download it as a PDF.</li>
+            <li style="margin-bottom: 0;">You can upload your class schedule using the gear icon below the info icon and download it as a PDF.</li>
         </ul>
     </div>
 </div>
@@ -148,7 +148,7 @@ TRANSLATIONS: dict[str, dict[str, str | dict[str, str]]] = {
         </ul>
         <h4 style="margin: 24px 0 12px 0; font-size: 18px; font-weight: 500;">Addicional:</h4>
         <ul style="margin: 0; padding-left: 20px; line-height: 1.6;">
-            <li style="margin-bottom: 0;">Puja el teu horari amb la icona d’engranatge situada sota la icona d’informació i descarrega’l en PDF.</li>
+            <li style="margin-bottom: 0;">Pot carregar el seu horari de classes mitjançant la icona d'engranatge situada sota la icona d'informació i descarregar-lo en format PDF.</li>
         </ul>
     </div>
 </div>
