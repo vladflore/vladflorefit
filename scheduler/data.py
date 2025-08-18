@@ -7,6 +7,16 @@ from config import GH_PAGES_ROOT
 import time
 
 
+CLASS_NAME_PREFIX = "Class Name Is:"
+INSTRUCTOR_PREFIX = "Class Instructor Is:"
+START_DATE_PREFIX = "Class Starts On:"
+START_TIME_PREFIX = "Class Starts At:"
+END_DATE_PREFIX = "Class Ends On:"
+END_TIME_PREFIX = "Class Ends At:"
+TEXT_COLOR_PREFIX = "Text Color Is:"
+BACKGROUND_COLOR_PREFIX = "Background Color Is:"
+
+
 @dataclass
 class FitnessClassRenderConfig:
     text_color: str = "black"
@@ -40,32 +50,42 @@ class FitnessClass:
 
 
 def convert_to_json(text: str) -> dict:
+    text = "\n".join(
+        [line for line in text.splitlines() if not line.strip().startswith("#")]
+    )
+
     class_blocks = [block.strip() for block in text.split("+++") if block.strip()]
     fitness_classes = []
 
     for block in class_blocks:
-        lines = [line.strip() for line in block.splitlines() if line.strip()]
+        lines = [
+            line.strip()
+            for line in block.splitlines()
+            if line.strip() and not line.strip().startswith("#")
+        ]
         class_dict = {}
         render_config = {}
         for line in lines:
-            if line.startswith("Class Name Is "):
-                class_dict["name"] = line.replace("Class Name Is ", "")
-            elif line.startswith("Class Instructor Is "):
-                class_dict["instructor"] = line.replace("Class Instructor Is ", "")
-            elif line.startswith("Class Starts On "):
-                class_dict["start_date"] = line.replace("Class Starts On ", "")
-            elif line.startswith("Class Starts At "):
-                class_dict["start_time"] = line.replace("Class Starts At ", "")
-            elif line.startswith("Class Ends On "):
-                class_dict["end_date"] = line.replace("Class Ends On ", "")
-            elif line.startswith("Class Ends At "):
-                class_dict["end_time"] = line.replace("Class Ends At ", "")
-            elif line.startswith("Text Color Is "):
-                render_config["text_color"] = line.replace("Text Color Is ", "")
-            elif line.startswith("Background Color Is "):
+            if line.startswith(CLASS_NAME_PREFIX):
+                class_dict["name"] = line.replace(CLASS_NAME_PREFIX, "").strip()
+            elif line.startswith(INSTRUCTOR_PREFIX):
+                class_dict["instructor"] = line.replace(INSTRUCTOR_PREFIX, "").strip()
+            elif line.startswith(START_DATE_PREFIX):
+                class_dict["start_date"] = line.replace(START_DATE_PREFIX, "").strip()
+            elif line.startswith(START_TIME_PREFIX):
+                class_dict["start_time"] = line.replace(START_TIME_PREFIX, "").strip()
+            elif line.startswith(END_DATE_PREFIX):
+                class_dict["end_date"] = line.replace(END_DATE_PREFIX, "").strip()
+            elif line.startswith(END_TIME_PREFIX):
+                class_dict["end_time"] = line.replace(END_TIME_PREFIX, "").strip()
+            elif line.startswith(TEXT_COLOR_PREFIX):
+                render_config["text_color"] = line.replace(
+                    TEXT_COLOR_PREFIX, ""
+                ).strip()
+            elif line.startswith(BACKGROUND_COLOR_PREFIX):
                 render_config["background_color"] = line.replace(
-                    "Background Color Is ", ""
-                )
+                    BACKGROUND_COLOR_PREFIX, ""
+                ).strip()
         start = datetime.strptime(
             f"{class_dict['start_date']} {class_dict['start_time']}", "%d.%m.%Y %H:%M"
         ).isoformat()

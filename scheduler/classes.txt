@@ -1,629 +1,629 @@
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 18.08.2025
-Class Starts At 15:00
-Class Ends On 18.08.2025
-Class Ends At 16:00
-Text Color Is #FFFF00
-Background Color Is #000080
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 18.08.2025
-Class Starts At 16:15
-Class Ends On 18.08.2025
-Class Ends At 17:00
-Text Color Is #000000
-Background Color Is #FFA500
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 18.08.2025
-Class Starts At 17:15
-Class Ends On 18.08.2025
-Class Ends At 18:00
-Text Color Is #FFFFFF
-Background Color Is #008080
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 18.08.2025
-Class Starts At 18:15
-Class Ends On 18.08.2025
-Class Ends At 19:00
-Text Color Is #00FF00
-Background Color Is #800080
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 18.08.2025
-Class Starts At 19:15
-Class Ends On 18.08.2025
-Class Ends At 20:00
-Text Color Is #800000
-Background Color Is #C0C0C0
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 19.08.2025
-Class Starts At 15:00
-Class Ends On 19.08.2025
-Class Ends At 16:00
-Text Color Is #00FFFF
-Background Color Is #808000
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 19.08.2025
-Class Starts At 16:15
-Class Ends On 19.08.2025
-Class Ends At 17:00
-Text Color Is #FF00FF
-Background Color Is #A52A2A
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 19.08.2025
-Class Starts At 17:15
-Class Ends On 19.08.2025
-Class Ends At 18:00
-Text Color Is #000080
-Background Color Is #FFC0CB
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 19.08.2025
-Class Starts At 18:15
-Class Ends On 19.08.2025
-Class Ends At 19:00
-Text Color Is #FFA500
-Background Color Is #00FFFF
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 19.08.2025
-Class Starts At 19:15
-Class Ends On 19.08.2025
-Class Ends At 20:00
-Text Color Is #008000
-Background Color Is #F5F5DC
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 20.08.2025
-Class Starts At 15:00
-Class Ends On 20.08.2025
-Class Ends At 16:00
-Text Color Is #FFFF00
-Background Color Is #000080
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 20.08.2025
-Class Starts At 16:15
-Class Ends On 20.08.2025
-Class Ends At 17:00
-Text Color Is #000000
-Background Color Is #FFA500
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 20.08.2025
-Class Starts At 17:15
-Class Ends On 20.08.2025
-Class Ends At 18:00
-Text Color Is #FFFFFF
-Background Color Is #008080
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 20.08.2025
-Class Starts At 18:15
-Class Ends On 20.08.2025
-Class Ends At 19:00
-Text Color Is #00FF00
-Background Color Is #800080
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 20.08.2025
-Class Starts At 19:15
-Class Ends On 20.08.2025
-Class Ends At 20:00
-Text Color Is #800000
-Background Color Is #C0C0C0
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 21.08.2025
-Class Starts At 15:00
-Class Ends On 21.08.2025
-Class Ends At 16:00
-Text Color Is #00FFFF
-Background Color Is #808000
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 21.08.2025
-Class Starts At 16:15
-Class Ends On 21.08.2025
-Class Ends At 17:00
-Text Color Is #FF00FF
-Background Color Is #A52A2A
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 21.08.2025
-Class Starts At 17:15
-Class Ends On 21.08.2025
-Class Ends At 18:00
-Text Color Is #000080
-Background Color Is #FFC0CB
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 21.08.2025
-Class Starts At 18:15
-Class Ends On 21.08.2025
-Class Ends At 19:00
-Text Color Is #FFA500
-Background Color Is #00FFFF
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 21.08.2025
-Class Starts At 19:15
-Class Ends On 21.08.2025
-Class Ends At 20:00
-Text Color Is #008000
-Background Color Is #F5F5DC
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 22.08.2025
-Class Starts At 15:00
-Class Ends On 22.08.2025
-Class Ends At 16:00
-Text Color Is #FFFF00
-Background Color Is #000080
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 22.08.2025
-Class Starts At 16:15
-Class Ends On 22.08.2025
-Class Ends At 17:00
-Text Color Is #000000
-Background Color Is #FFA500
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 22.08.2025
-Class Starts At 17:15
-Class Ends On 22.08.2025
-Class Ends At 18:00
-Text Color Is #FFFFFF
-Background Color Is #008080
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 22.08.2025
-Class Starts At 18:15
-Class Ends On 22.08.2025
-Class Ends At 19:00
-Text Color Is #00FF00
-Background Color Is #800080
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 22.08.2025
-Class Starts At 19:15
-Class Ends On 22.08.2025
-Class Ends At 20:00
-Text Color Is #800000
-Background Color Is #C0C0C0
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 23.08.2025
-Class Starts At 15:00
-Class Ends On 23.08.2025
-Class Ends At 16:00
-Text Color Is #00FFFF
-Background Color Is #808000
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 23.08.2025
-Class Starts At 16:15
-Class Ends On 23.08.2025
-Class Ends At 17:00
-Text Color Is #FF00FF
-Background Color Is #A52A2A
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 23.08.2025
-Class Starts At 17:15
-Class Ends On 23.08.2025
-Class Ends At 18:00
-Text Color Is #000080
-Background Color Is #FFC0CB
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 23.08.2025
-Class Starts At 18:15
-Class Ends On 23.08.2025
-Class Ends At 19:00
-Text Color Is #FFA500
-Background Color Is #00FFFF
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 23.08.2025
-Class Starts At 19:15
-Class Ends On 23.08.2025
-Class Ends At 20:00
-Text Color Is #008000
-Background Color Is #F5F5DC
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 24.08.2025
-Class Starts At 15:00
-Class Ends On 24.08.2025
-Class Ends At 16:00
-Text Color Is #FFFF00
-Background Color Is #000080
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 24.08.2025
-Class Starts At 16:15
-Class Ends On 24.08.2025
-Class Ends At 17:00
-Text Color Is #000000
-Background Color Is #FFA500
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 24.08.2025
-Class Starts At 17:15
-Class Ends On 24.08.2025
-Class Ends At 18:00
-Text Color Is #FFFFFF
-Background Color Is #008080
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 24.08.2025
-Class Starts At 18:15
-Class Ends On 24.08.2025
-Class Ends At 19:00
-Text Color Is #00FF00
-Background Color Is #800080
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 24.08.2025
-Class Starts At 19:15
-Class Ends On 24.08.2025
-Class Ends At 20:00
-Text Color Is #800000
-Background Color Is #C0C0C0
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 25.08.2025
-Class Starts At 15:00
-Class Ends On 25.08.2025
-Class Ends At 16:00
-Text Color Is #00FFFF
-Background Color Is #808000
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 25.08.2025
-Class Starts At 16:15
-Class Ends On 25.08.2025
-Class Ends At 17:00
-Text Color Is #FF00FF
-Background Color Is #A52A2A
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 25.08.2025
-Class Starts At 17:15
-Class Ends On 25.08.2025
-Class Ends At 18:00
-Text Color Is #000080
-Background Color Is #FFC0CB
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 25.08.2025
-Class Starts At 18:15
-Class Ends On 25.08.2025
-Class Ends At 19:00
-Text Color Is #FFA500
-Background Color Is #00FFFF
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 25.08.2025
-Class Starts At 19:15
-Class Ends On 25.08.2025
-Class Ends At 20:00
-Text Color Is #008000
-Background Color Is #F5F5DC
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 26.08.2025
-Class Starts At 15:00
-Class Ends On 26.08.2025
-Class Ends At 16:00
-Text Color Is #FFFF00
-Background Color Is #000080
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 26.08.2025
-Class Starts At 16:15
-Class Ends On 26.08.2025
-Class Ends At 17:00
-Text Color Is #000000
-Background Color Is #FFA500
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 26.08.2025
-Class Starts At 17:15
-Class Ends On 26.08.2025
-Class Ends At 18:00
-Text Color Is #FFFFFF
-Background Color Is #008080
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 26.08.2025
-Class Starts At 18:15
-Class Ends On 26.08.2025
-Class Ends At 19:00
-Text Color Is #00FF00
-Background Color Is #800080
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 26.08.2025
-Class Starts At 19:15
-Class Ends On 26.08.2025
-Class Ends At 20:00
-Text Color Is #800000
-Background Color Is #C0C0C0
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 27.08.2025
-Class Starts At 15:00
-Class Ends On 27.08.2025
-Class Ends At 16:00
-Text Color Is #00FFFF
-Background Color Is #808000
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 27.08.2025
-Class Starts At 16:15
-Class Ends On 27.08.2025
-Class Ends At 17:00
-Text Color Is #FF00FF
-Background Color Is #A52A2A
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 27.08.2025
-Class Starts At 17:15
-Class Ends On 27.08.2025
-Class Ends At 18:00
-Text Color Is #000080
-Background Color Is #FFC0CB
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 27.08.2025
-Class Starts At 18:15
-Class Ends On 27.08.2025
-Class Ends At 19:00
-Text Color Is #FFA500
-Background Color Is #00FFFF
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 27.08.2025
-Class Starts At 19:15
-Class Ends On 27.08.2025
-Class Ends At 20:00
-Text Color Is #008000
-Background Color Is #F5F5DC
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 28.08.2025
-Class Starts At 15:00
-Class Ends On 28.08.2025
-Class Ends At 16:00
-Text Color Is #FFFF00
-Background Color Is #000080
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 28.08.2025
-Class Starts At 16:15
-Class Ends On 28.08.2025
-Class Ends At 17:00
-Text Color Is #000000
-Background Color Is #FFA500
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 28.08.2025
-Class Starts At 17:15
-Class Ends On 28.08.2025
-Class Ends At 18:00
-Text Color Is #FFFFFF
-Background Color Is #008080
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 28.08.2025
-Class Starts At 18:15
-Class Ends On 28.08.2025
-Class Ends At 19:00
-Text Color Is #00FF00
-Background Color Is #800080
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 28.08.2025
-Class Starts At 19:15
-Class Ends On 28.08.2025
-Class Ends At 20:00
-Text Color Is #800000
-Background Color Is #C0C0C0
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 29.08.2025
-Class Starts At 15:00
-Class Ends On 29.08.2025
-Class Ends At 16:00
-Text Color Is #00FFFF
-Background Color Is #808000
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 29.08.2025
-Class Starts At 16:15
-Class Ends On 29.08.2025
-Class Ends At 17:00
-Text Color Is #FF00FF
-Background Color Is #A52A2A
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 29.08.2025
-Class Starts At 17:15
-Class Ends On 29.08.2025
-Class Ends At 18:00
-Text Color Is #000080
-Background Color Is #FFC0CB
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 29.08.2025
-Class Starts At 18:15
-Class Ends On 29.08.2025
-Class Ends At 19:00
-Text Color Is #FFA500
-Background Color Is #00FFFF
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 29.08.2025
-Class Starts At 19:15
-Class Ends On 29.08.2025
-Class Ends At 20:00
-Text Color Is #008000
-Background Color Is #F5F5DC
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 30.08.2025
-Class Starts At 15:00
-Class Ends On 30.08.2025
-Class Ends At 16:00
-Text Color Is #FFFF00
-Background Color Is #000080
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 30.08.2025
-Class Starts At 16:15
-Class Ends On 30.08.2025
-Class Ends At 17:00
-Text Color Is #000000
-Background Color Is #FFA500
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 30.08.2025
-Class Starts At 17:15
-Class Ends On 30.08.2025
-Class Ends At 18:00
-Text Color Is #FFFFFF
-Background Color Is #008080
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 30.08.2025
-Class Starts At 18:15
-Class Ends On 30.08.2025
-Class Ends At 19:00
-Text Color Is #00FF00
-Background Color Is #800080
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 30.08.2025
-Class Starts At 19:15
-Class Ends On 30.08.2025
-Class Ends At 20:00
-Text Color Is #800000
-Background Color Is #C0C0C0
-+++
-Class Name Is Strength
-Class Instructor Is John Doe
-Class Starts On 31.08.2025
-Class Starts At 15:00
-Class Ends On 31.08.2025
-Class Ends At 16:00
-Text Color Is #00FFFF
-Background Color Is #808000
-+++
-Class Name Is Conditioning
-Class Instructor Is Jane Smith
-Class Starts On 31.08.2025
-Class Starts At 16:15
-Class Ends On 31.08.2025
-Class Ends At 17:00
-Text Color Is #FF00FF
-Background Color Is #A52A2A
-+++
-Class Name Is Yoga
-Class Instructor Is Emily Brown
-Class Starts On 31.08.2025
-Class Starts At 17:15
-Class Ends On 31.08.2025
-Class Ends At 18:00
-Text Color Is #000080
-Background Color Is #FFC0CB
-+++
-Class Name Is HIIT
-Class Instructor Is Michael Lee
-Class Starts On 31.08.2025
-Class Starts At 18:15
-Class Ends On 31.08.2025
-Class Ends At 19:00
-Text Color Is #FFA500
-Background Color Is #00FFFF
-+++
-Class Name Is Pilates
-Class Instructor Is Sarah Kim
-Class Starts On 31.08.2025
-Class Starts At 19:15
-Class Ends On 31.08.2025
-Class Ends At 20:00
-Text Color Is #008000
-Background Color Is #F5F5DC
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 18.08.2025
+Class Starts At: 15:00
+Class Ends On: 18.08.2025
+Class Ends At: 16:00
+Text Color Is: #FFFF00
+Background Color Is: #000080
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 18.08.2025
+Class Starts At: 16:15
+Class Ends On: 18.08.2025
+Class Ends At: 17:00
+Text Color Is: #000000
+Background Color Is: #FFA500
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 18.08.2025
+Class Starts At: 17:15
+Class Ends On: 18.08.2025
+Class Ends At: 18:00
+Text Color Is: #FFFFFF
+Background Color Is: #008080
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 18.08.2025
+Class Starts At: 18:15
+Class Ends On: 18.08.2025
+Class Ends At: 19:00
+Text Color Is: #00FF00
+Background Color Is: #800080
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 18.08.2025
+Class Starts At: 19:15
+Class Ends On: 18.08.2025
+Class Ends At: 20:00
+Text Color Is: #800000
+Background Color Is: #C0C0C0
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 19.08.2025
+Class Starts At: 15:00
+Class Ends On: 19.08.2025
+Class Ends At: 16:00
+Text Color Is: #00FFFF
+Background Color Is: #808000
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 19.08.2025
+Class Starts At: 16:15
+Class Ends On: 19.08.2025
+Class Ends At: 17:00
+Text Color Is: #FF00FF
+Background Color Is: #A52A2A
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 19.08.2025
+Class Starts At: 17:15
+Class Ends On: 19.08.2025
+Class Ends At: 18:00
+Text Color Is: #000080
+Background Color Is: #FFC0CB
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 19.08.2025
+Class Starts At: 18:15
+Class Ends On: 19.08.2025
+Class Ends At: 19:00
+Text Color Is: #FFA500
+Background Color Is: #00FFFF
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 19.08.2025
+Class Starts At: 19:15
+Class Ends On: 19.08.2025
+Class Ends At: 20:00
+Text Color Is: #008000
+Background Color Is: #F5F5DC
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 20.08.2025
+Class Starts At: 15:00
+Class Ends On: 20.08.2025
+Class Ends At: 16:00
+Text Color Is: #FFFF00
+Background Color Is: #000080
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 20.08.2025
+Class Starts At: 16:15
+Class Ends On: 20.08.2025
+Class Ends At: 17:00
+Text Color Is: #000000
+Background Color Is: #FFA500
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 20.08.2025
+Class Starts At: 17:15
+Class Ends On: 20.08.2025
+Class Ends At: 18:00
+Text Color Is: #FFFFFF
+Background Color Is: #008080
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 20.08.2025
+Class Starts At: 18:15
+Class Ends On: 20.08.2025
+Class Ends At: 19:00
+Text Color Is: #00FF00
+Background Color Is: #800080
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 20.08.2025
+Class Starts At: 19:15
+Class Ends On: 20.08.2025
+Class Ends At: 20:00
+Text Color Is: #800000
+Background Color Is: #C0C0C0
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 21.08.2025
+Class Starts At: 15:00
+Class Ends On: 21.08.2025
+Class Ends At: 16:00
+Text Color Is: #00FFFF
+Background Color Is: #808000
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 21.08.2025
+Class Starts At: 16:15
+Class Ends On: 21.08.2025
+Class Ends At: 17:00
+Text Color Is: #FF00FF
+Background Color Is: #A52A2A
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 21.08.2025
+Class Starts At: 17:15
+Class Ends On: 21.08.2025
+Class Ends At: 18:00
+Text Color Is: #000080
+Background Color Is: #FFC0CB
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 21.08.2025
+Class Starts At: 18:15
+Class Ends On: 21.08.2025
+Class Ends At: 19:00
+Text Color Is: #FFA500
+Background Color Is: #00FFFF
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 21.08.2025
+Class Starts At: 19:15
+Class Ends On: 21.08.2025
+Class Ends At: 20:00
+Text Color Is: #008000
+Background Color Is: #F5F5DC
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 22.08.2025
+Class Starts At: 15:00
+Class Ends On: 22.08.2025
+Class Ends At: 16:00
+Text Color Is: #FFFF00
+Background Color Is: #000080
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 22.08.2025
+Class Starts At: 16:15
+Class Ends On: 22.08.2025
+Class Ends At: 17:00
+Text Color Is: #000000
+Background Color Is: #FFA500
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 22.08.2025
+Class Starts At: 17:15
+Class Ends On: 22.08.2025
+Class Ends At: 18:00
+Text Color Is: #FFFFFF
+Background Color Is: #008080
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 22.08.2025
+Class Starts At: 18:15
+Class Ends On: 22.08.2025
+Class Ends At: 19:00
+Text Color Is: #00FF00
+Background Color Is: #800080
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 22.08.2025
+Class Starts At: 19:15
+Class Ends On: 22.08.2025
+Class Ends At: 20:00
+Text Color Is: #800000
+Background Color Is: #C0C0C0
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 23.08.2025
+Class Starts At: 15:00
+Class Ends On: 23.08.2025
+Class Ends At: 16:00
+Text Color Is: #00FFFF
+Background Color Is: #808000
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 23.08.2025
+Class Starts At: 16:15
+Class Ends On: 23.08.2025
+Class Ends At: 17:00
+Text Color Is: #FF00FF
+Background Color Is: #A52A2A
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 23.08.2025
+Class Starts At: 17:15
+Class Ends On: 23.08.2025
+Class Ends At: 18:00
+Text Color Is: #000080
+Background Color Is: #FFC0CB
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 23.08.2025
+Class Starts At: 18:15
+Class Ends On: 23.08.2025
+Class Ends At: 19:00
+Text Color Is: #FFA500
+Background Color Is: #00FFFF
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 23.08.2025
+Class Starts At: 19:15
+Class Ends On: 23.08.2025
+Class Ends At: 20:00
+Text Color Is: #008000
+Background Color Is: #F5F5DC
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 24.08.2025
+Class Starts At: 15:00
+Class Ends On: 24.08.2025
+Class Ends At: 16:00
+Text Color Is: #FFFF00
+Background Color Is: #000080
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 24.08.2025
+Class Starts At: 16:15
+Class Ends On: 24.08.2025
+Class Ends At: 17:00
+Text Color Is: #000000
+Background Color Is: #FFA500
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 24.08.2025
+Class Starts At: 17:15
+Class Ends On: 24.08.2025
+Class Ends At: 18:00
+Text Color Is: #FFFFFF
+Background Color Is: #008080
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 24.08.2025
+Class Starts At: 18:15
+Class Ends On: 24.08.2025
+Class Ends At: 19:00
+Text Color Is: #00FF00
+Background Color Is: #800080
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 24.08.2025
+Class Starts At: 19:15
+Class Ends On: 24.08.2025
+Class Ends At: 20:00
+Text Color Is: #800000
+Background Color Is: #C0C0C0
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 25.08.2025
+Class Starts At: 15:00
+Class Ends On: 25.08.2025
+Class Ends At: 16:00
+Text Color Is: #00FFFF
+Background Color Is: #808000
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 25.08.2025
+Class Starts At: 16:15
+Class Ends On: 25.08.2025
+Class Ends At: 17:00
+Text Color Is: #FF00FF
+Background Color Is: #A52A2A
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 25.08.2025
+Class Starts At: 17:15
+Class Ends On: 25.08.2025
+Class Ends At: 18:00
+Text Color Is: #000080
+Background Color Is: #FFC0CB
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 25.08.2025
+Class Starts At: 18:15
+Class Ends On: 25.08.2025
+Class Ends At: 19:00
+Text Color Is: #FFA500
+Background Color Is: #00FFFF
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 25.08.2025
+Class Starts At: 19:15
+Class Ends On: 25.08.2025
+Class Ends At: 20:00
+Text Color Is: #008000
+Background Color Is: #F5F5DC
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 26.08.2025
+Class Starts At: 15:00
+Class Ends On: 26.08.2025
+Class Ends At: 16:00
+Text Color Is: #FFFF00
+Background Color Is: #000080
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 26.08.2025
+Class Starts At: 16:15
+Class Ends On: 26.08.2025
+Class Ends At: 17:00
+Text Color Is: #000000
+Background Color Is: #FFA500
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 26.08.2025
+Class Starts At: 17:15
+Class Ends On: 26.08.2025
+Class Ends At: 18:00
+Text Color Is: #FFFFFF
+Background Color Is: #008080
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 26.08.2025
+Class Starts At: 18:15
+Class Ends On: 26.08.2025
+Class Ends At: 19:00
+Text Color Is: #00FF00
+Background Color Is: #800080
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 26.08.2025
+Class Starts At: 19:15
+Class Ends On: 26.08.2025
+Class Ends At: 20:00
+Text Color Is: #800000
+Background Color Is: #C0C0C0
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 27.08.2025
+Class Starts At: 15:00
+Class Ends On: 27.08.2025
+Class Ends At: 16:00
+Text Color Is: #00FFFF
+Background Color Is: #808000
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 27.08.2025
+Class Starts At: 16:15
+Class Ends On: 27.08.2025
+Class Ends At: 17:00
+Text Color Is: #FF00FF
+Background Color Is: #A52A2A
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 27.08.2025
+Class Starts At: 17:15
+Class Ends On: 27.08.2025
+Class Ends At: 18:00
+Text Color Is: #000080
+Background Color Is: #FFC0CB
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 27.08.2025
+Class Starts At: 18:15
+Class Ends On: 27.08.2025
+Class Ends At: 19:00
+Text Color Is: #FFA500
+Background Color Is: #00FFFF
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 27.08.2025
+Class Starts At: 19:15
+Class Ends On: 27.08.2025
+Class Ends At: 20:00
+Text Color Is: #008000
+Background Color Is: #F5F5DC
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 28.08.2025
+Class Starts At: 15:00
+Class Ends On: 28.08.2025
+Class Ends At: 16:00
+Text Color Is: #FFFF00
+Background Color Is: #000080
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 28.08.2025
+Class Starts At: 16:15
+Class Ends On: 28.08.2025
+Class Ends At: 17:00
+Text Color Is: #000000
+Background Color Is: #FFA500
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 28.08.2025
+Class Starts At: 17:15
+Class Ends On: 28.08.2025
+Class Ends At: 18:00
+Text Color Is: #FFFFFF
+Background Color Is: #008080
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 28.08.2025
+Class Starts At: 18:15
+Class Ends On: 28.08.2025
+Class Ends At: 19:00
+Text Color Is: #00FF00
+Background Color Is: #800080
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 28.08.2025
+Class Starts At: 19:15
+Class Ends On: 28.08.2025
+Class Ends At: 20:00
+Text Color Is: #800000
+Background Color Is: #C0C0C0
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 29.08.2025
+Class Starts At: 15:00
+Class Ends On: 29.08.2025
+Class Ends At: 16:00
+Text Color Is: #00FFFF
+Background Color Is: #808000
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 29.08.2025
+Class Starts At: 16:15
+Class Ends On: 29.08.2025
+Class Ends At: 17:00
+Text Color Is: #FF00FF
+Background Color Is: #A52A2A
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 29.08.2025
+Class Starts At: 17:15
+Class Ends On: 29.08.2025
+Class Ends At: 18:00
+Text Color Is: #000080
+Background Color Is: #FFC0CB
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 29.08.2025
+Class Starts At: 18:15
+Class Ends On: 29.08.2025
+Class Ends At: 19:00
+Text Color Is: #FFA500
+Background Color Is: #00FFFF
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 29.08.2025
+Class Starts At: 19:15
+Class Ends On: 29.08.2025
+Class Ends At: 20:00
+Text Color Is: #008000
+Background Color Is: #F5F5DC
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 30.08.2025
+Class Starts At: 15:00
+Class Ends On: 30.08.2025
+Class Ends At: 16:00
+Text Color Is: #FFFF00
+Background Color Is: #000080
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 30.08.2025
+Class Starts At: 16:15
+Class Ends On: 30.08.2025
+Class Ends At: 17:00
+Text Color Is: #000000
+Background Color Is: #FFA500
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 30.08.2025
+Class Starts At: 17:15
+Class Ends On: 30.08.2025
+Class Ends At: 18:00
+Text Color Is: #FFFFFF
+Background Color Is: #008080
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 30.08.2025
+Class Starts At: 18:15
+Class Ends On: 30.08.2025
+Class Ends At: 19:00
+Text Color Is: #00FF00
+Background Color Is: #800080
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 30.08.2025
+Class Starts At: 19:15
+Class Ends On: 30.08.2025
+Class Ends At: 20:00
+Text Color Is: #800000
+Background Color Is: #C0C0C0
++++
+Class Name Is: Strength
+Class Instructor Is: John Doe
+Class Starts On: 31.08.2025
+Class Starts At: 15:00
+Class Ends On: 31.08.2025
+Class Ends At: 16:00
+Text Color Is: #00FFFF
+Background Color Is: #808000
++++
+Class Name Is: Conditioning
+Class Instructor Is: Jane Smith
+Class Starts On: 31.08.2025
+Class Starts At: 16:15
+Class Ends On: 31.08.2025
+Class Ends At: 17:00
+Text Color Is: #FF00FF
+Background Color Is: #A52A2A
++++
+Class Name Is: Yoga
+Class Instructor Is: Emily Brown
+Class Starts On: 31.08.2025
+Class Starts At: 17:15
+Class Ends On: 31.08.2025
+Class Ends At: 18:00
+Text Color Is: #000080
+Background Color Is: #FFC0CB
++++
+Class Name Is: HIIT
+Class Instructor Is: Michael Lee
+Class Starts On: 31.08.2025
+Class Starts At: 18:15
+Class Ends On: 31.08.2025
+Class Ends At: 19:00
+Text Color Is: #FFA500
+Background Color Is: #00FFFF
++++
+Class Name Is: Pilates
+Class Instructor Is: Sarah Kim
+Class Starts On: 31.08.2025
+Class Starts At: 19:15
+Class Ends On: 31.08.2025
+Class Ends At: 20:00
+Text Color Is: #008000
+Background Color Is: #F5F5DC
