@@ -15,19 +15,41 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Oxygen, Ubuntu, Cantarell, sans-serif;
         background: #1a1a1a;
+        min-height: 100vh;
+        padding: 20px;
+        overflow-x: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 100vh;
-        padding: 20px;
       }
 
       .cards-container {
         display: flex;
         gap: 20px;
         flex-wrap: nowrap;
-        justify-content: center;
+        overflow-x: auto;
         align-items: flex-start;
+        max-width: 1580px;
+        width: 100%;
+        padding-bottom: 10px;
+      }
+
+      .cards-container::-webkit-scrollbar {
+        height: 8px;
+      }
+
+      .cards-container::-webkit-scrollbar-track {
+        background: rgba(180, 142, 90, 0.1);
+        border-radius: 4px;
+      }
+
+      .cards-container::-webkit-scrollbar-thumb {
+        background: rgba(180, 142, 90, 0.4);
+        border-radius: 4px;
+      }
+
+      .cards-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(180, 142, 90, 0.6);
       }
 
       .export-btn {
@@ -65,12 +87,14 @@
       .workout-card {
         position: relative;
         width: 100%;
+        min-width: 340px;
         max-width: 500px;
         background: #0a0a0a;
         border-radius: 12px;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         overflow: hidden;
         border: 1px solid rgba(180, 142, 90, 0.2);
+        flex-shrink: 0;
       }
 
       .card-header {
@@ -231,7 +255,7 @@
         </div>
 
         <div class="card-body">
-          <div class="mobility-section">
+          <!-- <div class="mobility-section">
             <div class="section-label">Mobility</div>
             <div class="exercise">
               <div class="exercise-name"></div>
@@ -241,7 +265,7 @@
               <div class="exercise-name"></div>
               <div class="exercise-details"></div>
             </div>
-          </div>
+          </div> -->
 
           <div class="exercise">
             <div class="exercise-name">Bodyweight Pull-ups</div>
@@ -289,7 +313,7 @@
               <div class="exercise-details">3 sets x 12 reps @ Bodyweight</div>
             </div>
             <div class="exercise">
-              <div class="exercise-name">Knee Raises</div>
+              <div class="exercise-name">Hanging Knee Raises</div>
               <div class="exercise-details">3 sets x 10 reps @ Bodyweight</div>
             </div>
           </div>
@@ -304,9 +328,9 @@
       <div class="workout-card" id="workoutCard2">
         <div class="card-header">
           <div class="header-content">
-            <div class="date">DD.MM.YYYY</div>
+            <div class="date">04.01.2026</div>
             <div class="workout-title-row">
-              <div class="workout-name">Your Next Workout</div>
+              <div class="workout-name">Lower Body Workout & Running</div>
               <button
                 class="export-btn"
                 onclick="exportCard(event)"
@@ -333,52 +357,84 @@
           <div class="mobility-section">
             <div class="section-label">Mobility</div>
             <div class="exercise">
-              <div class="exercise-name">Mobility Exercise 1</div>
-              <div class="exercise-details">Duration or reps</div>
+              <div class="exercise-name">Cat Cow</div>
             </div>
             <div class="exercise">
-              <div class="exercise-name">Mobility Exercise 2</div>
-              <div class="exercise-details">Duration or reps</div>
+              <div class="exercise-name">Spiderman Stretch</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">World Greatest Stretch</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Downward Dog</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">90/90 Hip Stretch</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Squat-to-Forward Fold</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">
+                Shoulder-Controlled Articular Rotation
+              </div>
             </div>
           </div>
 
           <div class="exercise">
-            <div class="exercise-name">Exercise Name</div>
-            <div class="exercise-details">Sets x Reps @ Weight</div>
+            <div class="exercise-name">Bodyweight Pull-ups</div>
+            <div class="exercise-details">5 sets: 6, 5, 4, 3, 2 reps</div>
           </div>
 
           <div class="superset">
             <div class="superset-label">Superset 1</div>
             <div class="exercise">
-              <div class="exercise-name">Exercise A</div>
-              <div class="exercise-details">Sets x Reps @ Weight</div>
+              <div class="exercise-name">Bulgarian Split Squat</div>
+              <div class="exercise-details">3 x 8 per leg @ 2x10kg</div>
             </div>
             <div class="exercise">
-              <div class="exercise-name">Exercise B</div>
-              <div class="exercise-details">Sets x Reps @ Weight</div>
+              <div class="exercise-name">Single-Leg Romanian Deadlift</div>
+              <div class="exercise-details">3 x 8 per leg @ 2x10kg</div>
             </div>
           </div>
 
           <div class="superset">
             <div class="superset-label">Superset 2</div>
             <div class="exercise">
-              <div class="exercise-name">Exercise C</div>
-              <div class="exercise-details">Sets x Reps @ Weight</div>
+              <div class="exercise-name">Front-Foot Elevated Reverse Lunge</div>
+              <div class="exercise-details">3 x 8 per leg @ 2x10kg</div>
             </div>
             <div class="exercise">
-              <div class="exercise-name">Exercise D</div>
-              <div class="exercise-details">Sets x Reps @ Weight</div>
+              <div class="exercise-name">Cossack Squat</div>
+              <div class="exercise-details">3 x 8 per side @ 8/0/0kg</div>
             </div>
           </div>
 
           <div class="exercise">
-            <div class="exercise-name">Cardio Activity</div>
-            <div class="exercise-details">Distance @ Pace or Duration</div>
+            <div class="exercise-name">Single-Leg Standing Calf Raise</div>
+            <div class="exercise-details">3 x 10 per leg @ 28kg</div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 3</div>
+            <div class="exercise">
+              <div class="exercise-name">Suitcase Carry</div>
+              <div class="exercise-details">2 x 30m @ 28kg</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Single-Leg Plank</div>
+              <div class="exercise-details">2 x 30s per leg</div>
+            </div>
+          </div>
+
+          <div class="exercise">
+            <div class="exercise-name">Running</div>
+            <div class="exercise-details">1.12 km @ 6:08 /km</div>
           </div>
         </div>
       </div>
 
-      <div class="workout-card" id="workoutCard3">
+      <!-- <div class="workout-card" id="workoutCard3">
         <div class="card-header">
           <div class="header-content">
             <div class="date">DD.MM.YYYY</div>
@@ -453,7 +509,7 @@
             <div class="exercise-details">Distance @ Pace or Duration</div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <script>
