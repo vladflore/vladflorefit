@@ -90,16 +90,17 @@
       }
       .tiles-container {
         width: 100%;
-        max-width: 600px;
+        max-width: 720px;
         display: flex;
         flex-direction: row;
         gap: 1.5rem;
         justify-content: center;
-        align-items: stretch;
+        align-items: center;
       }
       .tile {
-        flex: 1;
-        min-height: 180px;
+        width: 200px;
+        height: 200px;
+        flex-shrink: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -126,30 +127,33 @@
         color: inherit;
       }
       .tile-icon {
-        font-size: clamp(1.8rem, 4vw, 2.5rem);
-        margin-bottom: 0.7rem;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        line-height: 1;
       }
       .tile-title {
-        font-size: clamp(1.1rem, 3vw, 1.25rem);
+        font-size: 1rem;
         font-weight: 600;
         text-align: center;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
+        line-height: 1.2;
       }
       .tile-description {
-        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        font-size: 0.8rem;
         color: rgba(255, 255, 255, 0.75);
         font-weight: 400;
         letter-spacing: 0.01em;
         text-align: center;
-        line-height: 1.3;
-        margin: 0.5rem 0;
+        line-height: 1.25;
+        margin: 0.3rem 0;
       }
       .tile-note {
-        font-size: clamp(0.7rem, 2vw, 0.8rem);
+        font-size: 0.7rem;
         color: rgba(255, 255, 255, 0.6);
         text-align: center;
         margin-top: auto;
-        padding-top: 0.5rem;
+        padding-top: 0.3rem;
+        line-height: 1.2;
       }
 
       @media (max-width: 768px) and (min-width: 481px) {
@@ -158,10 +162,27 @@
         }
         .tiles-container {
           gap: 1.25rem;
+          flex-wrap: wrap;
         }
         .tile {
-          min-height: 160px;
-          padding: 0.875rem;
+          width: 180px;
+          height: 180px;
+          padding: 0.75rem;
+        }
+        .tile-icon {
+          font-size: 1.8rem;
+          margin-bottom: 0.4rem;
+        }
+        .tile-title {
+          font-size: 0.95rem;
+          margin-bottom: 0.3rem;
+        }
+        .tile-description {
+          font-size: 0.75rem;
+          margin: 0.25rem 0;
+        }
+        .tile-note {
+          font-size: 0.65rem;
         }
         .brand-title {
           margin-bottom: 1.75rem;
@@ -179,16 +200,32 @@
           letter-spacing: 1px;
         }
         .tiles-container {
-          flex-direction: column;
+          flex-direction: column !important;
           gap: 1rem;
           max-width: 100%;
+          align-items: center;
         }
         .tile {
-          min-height: 140px;
-          padding: 1rem 0.75rem;
-          width: 100%;
-          max-width: 320px;
+          width: 280px;
+          height: 280px;
+          padding: 1.25rem;
+          max-width: 90vw;
           margin: 0 auto;
+        }
+        .tile-icon {
+          font-size: 2.5rem;
+          margin-bottom: 0.6rem;
+        }
+        .tile-title {
+          font-size: 1.15rem;
+          margin-bottom: 0.5rem;
+        }
+        .tile-description {
+          font-size: 0.95rem;
+          margin: 0.4rem 0;
+        }
+        .tile-note {
+          font-size: 0.8rem;
         }
         .tile:hover {
           transform: translateY(-3px) scale(1.02);
@@ -207,8 +244,24 @@
           padding-top: 8vh;
         }
         .tile {
-          min-height: 130px;
-          padding: 0.875rem 0.625rem;
+          width: 260px;
+          height: 260px;
+          padding: 1rem;
+        }
+        .tile-icon {
+          font-size: 2.2rem;
+          margin-bottom: 0.5rem;
+        }
+        .tile-title {
+          font-size: 1.05rem;
+          margin-bottom: 0.4rem;
+        }
+        .tile-description {
+          font-size: 0.85rem;
+          margin: 0.35rem 0;
+        }
+        .tile-note {
+          font-size: 0.75rem;
         }
         .tiles-container {
           gap: 0.875rem;
@@ -229,7 +282,24 @@
           gap: 1rem;
         }
         .tile {
-          min-height: 120px;
+          width: 160px;
+          height: 160px;
+          padding: 0.625rem;
+        }
+        .tile-icon {
+          font-size: 1.5rem;
+          margin-bottom: 0.3rem;
+        }
+        .tile-title {
+          font-size: 0.85rem;
+          margin-bottom: 0.25rem;
+        }
+        .tile-description {
+          font-size: 0.65rem;
+          margin: 0.2rem 0;
+        }
+        .tile-note {
+          font-size: 0.6rem;
         }
       }
 
@@ -276,6 +346,20 @@
           </div>
           <div class="tile-description">
             <em>Your simple solution for effortless class scheduling.</em>
+          </div>
+        </a>
+
+        <a
+          href="workouts.html"
+          target="_blank"
+          class="tile text-white border border-2 rounded-4"
+        >
+          <div class="tile-icon">
+            <span>💪🏃</span>
+          </div>
+          <div class="tile-title">My Workouts</div>
+          <div class="tile-description">
+            <em></em>
           </div>
         </a>
       </div>
