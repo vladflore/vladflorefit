@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Workouts</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: #1a1a1a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .cards-container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: flex-start;
+      }
+
+      .export-btn {
+        padding: 0;
+        background: transparent;
+        color: #b48e5a;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        margin-top: 4px;
+        flex-shrink: 0;
+      }
+
+      .export-btn svg {
+        width: 16px;
+        height: 16px;
+        stroke: #b48e5a;
+        transition: all 0.3s ease;
+      }
+
+      .export-btn:hover svg {
+        stroke: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      .export-btn:active svg {
+        transform: scale(0.95);
+      }
+
+      .workout-card {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        background: #0a0a0a;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        border: 1px solid rgba(180, 142, 90, 0.2);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        position: relative;
+        z-index: 1;
+        background: linear-gradient(
+          135deg,
+          rgba(180, 142, 90, 0.15),
+          rgba(180, 142, 90, 0.05)
+        );
+        color: white;
+        padding: 24px;
+        border-bottom: 1px solid rgba(180, 142, 90, 0.2);
+      }
+
+      .header-logo {
+        height: 50px;
+        width: auto;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+
+      .header-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .workout-title-row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .date {
+        font-size: 11px;
+        color: #b48e5a;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+      }
+
+      .workout-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .card-body {
+        position: relative;
+        z-index: 1;
+        padding: 24px;
+      }
+
+      .exercise {
+        padding: 16px;
+        margin-bottom: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+      }
+
+      .exercise:last-child {
+        margin-bottom: 0;
+      }
+
+      .mobility-section {
+        margin-bottom: 12px;
+        padding: 12px;
+        background: rgba(180, 142, 90, 0.08);
+        border-radius: 8px;
+        border: 1px solid rgba(180, 142, 90, 0.2);
+      }
+
+      .section-label {
+        font-size: 10px;
+        color: #b48e5a;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+      }
+
+      .superset {
+        margin-bottom: 12px;
+        border: 1px solid rgba(180, 142, 90, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        background: rgba(180, 142, 90, 0.05);
+      }
+
+      .superset:last-child {
+        margin-bottom: 0;
+      }
+
+      .superset-label {
+        font-size: 10px;
+        color: #b48e5a;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+      }
+
+      .superset .exercise {
+        margin-bottom: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        position: relative;
+      }
+
+      .superset .exercise:last-child {
+        margin-bottom: 0;
+      }
+
+      .exercise-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: #ffffff;
+        margin-bottom: 6px;
+      }
+
+      .exercise-details {
+        font-size: 12px;
+        color: #999;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <div class="cards-container">
+      <div class="workout-card" id="workoutCard">
+        <div class="card-header">
+          <div class="header-content">
+            <div class="date">02.01.2026</div>
+            <div class="workout-title-row">
+              <div class="workout-name">Upper Body Workout & Running</div>
+              <button
+                class="export-btn"
+                onclick="exportCard(event)"
+                title="Export as image"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <img src="logo.jpeg" alt="Logo" class="header-logo" />
+        </div>
+
+        <div class="card-body">
+          <div class="mobility-section">
+            <div class="section-label">Mobility</div>
+            <div class="exercise">
+              <div class="exercise-name"></div>
+              <div class="exercise-details"></div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name"></div>
+              <div class="exercise-details"></div>
+            </div>
+          </div>
+
+          <div class="exercise">
+            <div class="exercise-name">Bodyweight Pull-ups</div>
+            <div class="exercise-details">5 sets: 5, 5, 4, 3, 2 reps</div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 1</div>
+            <div class="exercise">
+              <div class="exercise-name">Dumbbells Floor Press</div>
+              <div class="exercise-details">3 sets x 12 reps @ 2x15kg</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Dumbbells Row</div>
+              <div class="exercise-details">3 sets x 12 reps @ 2x15kg</div>
+            </div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 2</div>
+            <div class="exercise">
+              <div class="exercise-name">Barbell Overhead Press</div>
+              <div class="exercise-details">3 sets x 12 reps @ 25/25/25kg</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Renegade Rows</div>
+              <div class="exercise-details">3 sets x 8 reps @ 2x15kg</div>
+            </div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 3</div>
+            <div class="exercise">
+              <div class="exercise-name">Reverse Fly w/ Dumbbells</div>
+              <div class="exercise-details">3 sets x 15 reps @ 2x6kg</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Dumbbells Bicep Curls</div>
+              <div class="exercise-details">3 sets x 12 reps @ 2x10kg</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">
+                Tricep Dips (power rack w/ dip attachments)
+              </div>
+              <div class="exercise-details">3 sets x 12 reps @ Bodyweight</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Knee Raises</div>
+              <div class="exercise-details">3 sets x 10 reps @ Bodyweight</div>
+            </div>
+          </div>
+
+          <div class="exercise">
+            <div class="exercise-name">Running</div>
+            <div class="exercise-details">3.04 km @ 7:57 /km</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workout-card" id="workoutCard2">
+        <div class="card-header">
+          <div class="header-content">
+            <div class="date">DD.MM.YYYY</div>
+            <div class="workout-title-row">
+              <div class="workout-name">Your Next Workout</div>
+              <button
+                class="export-btn"
+                onclick="exportCard(event)"
+                title="Export as image"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <img src="logo.jpeg" alt="Logo" class="header-logo" />
+        </div>
+
+        <div class="card-body">
+          <div class="mobility-section">
+            <div class="section-label">Mobility</div>
+            <div class="exercise">
+              <div class="exercise-name">Mobility Exercise 1</div>
+              <div class="exercise-details">Duration or reps</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Mobility Exercise 2</div>
+              <div class="exercise-details">Duration or reps</div>
+            </div>
+          </div>
+
+          <div class="exercise">
+            <div class="exercise-name">Exercise Name</div>
+            <div class="exercise-details">Sets x Reps @ Weight</div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 1</div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise A</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise B</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 2</div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise C</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise D</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+          </div>
+
+          <div class="exercise">
+            <div class="exercise-name">Cardio Activity</div>
+            <div class="exercise-details">Distance @ Pace or Duration</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="workout-card" id="workoutCard3">
+        <div class="card-header">
+          <div class="header-content">
+            <div class="date">DD.MM.YYYY</div>
+            <div class="workout-title-row">
+              <div class="workout-name">Yet Another Workout</div>
+              <button
+                class="export-btn"
+                onclick="exportCard(event)"
+                title="Export as image"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <img src="logo.jpeg" alt="Logo" class="header-logo" />
+        </div>
+
+        <div class="card-body">
+          <div class="mobility-section">
+            <div class="section-label">Mobility</div>
+            <div class="exercise">
+              <div class="exercise-name">Mobility Exercise 1</div>
+              <div class="exercise-details">Duration or reps</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Mobility Exercise 2</div>
+              <div class="exercise-details">Duration or reps</div>
+            </div>
+          </div>
+
+          <div class="exercise">
+            <div class="exercise-name">Exercise Name</div>
+            <div class="exercise-details">Sets x Reps @ Weight</div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 1</div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise A</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise B</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+          </div>
+
+          <div class="superset">
+            <div class="superset-label">Superset 2</div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise C</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+            <div class="exercise">
+              <div class="exercise-name">Exercise D</div>
+              <div class="exercise-details">Sets x Reps @ Weight</div>
+            </div>
+          </div>
+
+          <div class="exercise">
+            <div class="exercise-name">Cardio Activity</div>
+            <div class="exercise-details">Distance @ Pace or Duration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function exportCard(event) {
+        const button = event.currentTarget;
+        const card = button.closest(".workout-card");
+
+        button.style.display = "none";
+
+        try {
+          const canvas = await html2canvas(card, {
+            scale: 2,
+            backgroundColor: "#0a0a0a",
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
+          });
+
+          canvas.toBlob((blob) => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            const workoutName = card
+              .querySelector(".workout-name")
+              .textContent.trim();
+            const workoutDate = card.querySelector(".date").textContent.trim();
+
+            const sanitizedName = workoutName
+              .replace(/\s+/g, "-")
+              .replace(/[^a-zA-Z0-9-]/g, "")
+              .toLowerCase();
+
+            const formattedDate = workoutDate.replace(/\./g, "-");
+
+            link.download = `${sanitizedName}-${formattedDate}.png`;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+          });
+        } catch (error) {
+          console.error("Export failed:", error);
+          alert("Failed to export image. Please try again.");
+        } finally {
+          button.style.display = "block";
+        }
+      }
+    </script>
+  </body>
+</html>
