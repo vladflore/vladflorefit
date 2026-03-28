@@ -445,21 +445,16 @@ def render_workouts(workouts: list[Workout]):
         for ei, exercise in enumerate(w.exercises):
             w_li = li if ei == 0 else li.clone()
             w_li._js.removeAttribute("id")
-            details = []
+            sets_label = f"{exercise.sets} set{'s' if str(exercise.sets) != '1' else ''}"
+            detail_parts = [sets_label]
             if exercise.reps:
-                details.append(f"of {exercise.reps}")
+                detail_parts.append(exercise.reps)
             if exercise.time:
-                details.append(f"for {exercise.time}")
-            details_str = (
-                f" ({exercise.sets} {' '.join(details)})"
-                if details
-                else f" ({exercise.sets})"
-            )
+                detail_parts.append(exercise.time)
+            details_str = " · ".join(detail_parts)
             w_li.find("#workout-item-name")[0]._js.innerHTML = (
-                f"{exercise.name} "
-                f'<span style="font-size:0.8em; color:#888;">'
-                f"{details_str}"
-                f"</span>"
+                f'<div class="exercise-item-name">{exercise.name}</div>'
+                f'<div class="exercise-item-details">{details_str}</div>'
             )
             w_item_remove_icon = w_li.find("#workout-item-remove")[0]
             w_item_remove_icon._js.onclick = remove_exercise_from_workout
@@ -470,8 +465,17 @@ def render_workouts(workouts: list[Workout]):
             w_item_remove_icon._js.setAttribute("data-workout-id", str(w.id))
             w_ul.append(w_li)
 
-        if not w.exercises:
+        count_badge = w_div._js.querySelector(".workout-exercise-count")
+        count = len(w.exercises)
+        count_badge.textContent = f"{count} ex" if count > 0 else ""
+
+        hint = w_div._js.querySelector(".add-exes-hint")
+        if w.exercises:
+            w_ul._js.classList.remove("d-none")
+            hint.classList.add("d-none")
+        else:
             w_ul._js.classList.add("d-none")
+            hint.classList.remove("d-none")
 
         ws_container.append(w_div)
 
@@ -640,7 +644,17 @@ def remove_exercise_from_workout(event):
                     break
             break
     localStorage.setItem(ls_workouts_key, workouts)
-    event.target.parentElement.remove()
+    li_el = event.target.parentElement
+    workout_card = event.target.closest(".workout")
+    li_el.remove()
+    remaining = next((len(w.exercises) for w in workouts if str(w.id) == workout_id), 0)
+    count_badge = workout_card.querySelector(".workout-exercise-count")
+    count_badge.textContent = f"{remaining} ex" if remaining > 0 else ""
+    if remaining == 0:
+        workout_card.querySelector(".add-exes-hint").classList.remove("d-none")
+        ul = workout_card.querySelector("ul")
+        if ul:
+            ul.classList.add("d-none")
     if not workouts:
         active_workout = None
         hide_sidebar()
