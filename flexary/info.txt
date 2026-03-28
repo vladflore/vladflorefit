@@ -17,10 +17,7 @@
       🔍 <strong>Search and Filtering Functionality</strong> — Quickly find exercises by name and / or by using filters.
     </li>
     <li style="margin-bottom: 1rem;">
-      📆 <strong>Export to Calendar</strong> — Coming soon: add your workouts to your calendar with a simple ICS export.
+      📆 <strong>Export to Calendar</strong> — Add your workouts to your calendar with a simple ICS export.
     </li>
   </ul>
-  <p style="text-align: center; color: #666; margin-top: 2rem;">
-    More features on the way. Stay consistent and keep training smart!
-  </p>
 </section>
