@@ -838,8 +838,10 @@ def update(search_str: str) -> None:
     empty_state = pydom["#empty-state"][0]
     if display_data:
         empty_state._js.classList.add("d-none")
-        for exercise_data in display_data:
+        for i, exercise_data in enumerate(display_data):
             exercise_html = create_card_exercise(exercise_template, exercise_data)
+            exercise_html._js.classList.add("card-animate")
+            exercise_html._js.style.animationDelay = f"{min(i * 30, 300)}ms"
             exercises_row.append(exercise_html)
     else:
         empty_state._js.classList.remove("d-none")
@@ -881,7 +883,7 @@ category_count: dict[str, int] = {}
 body_parts_set: set[str] = set()
 body_parts_list: list[str] = []
 
-for exercise_data in data:
+for i, exercise_data in enumerate(data):
     for category in exercise_data["category"].split(","):
         category = category.strip()
         category_count[category] = category_count.get(category, 0) + 1
@@ -891,6 +893,8 @@ for exercise_data in data:
             body_parts_set.add(bp)
             body_parts_list.append(bp)
     exercise_html = create_card_exercise(exercise_template, exercise_data)
+    exercise_html._js.classList.add("card-animate")
+    exercise_html._js.style.animationDelay = f"{min(i * 30, 300)}ms"
     exercises_row.append(exercise_html)
 
 body_parts_list.sort()
