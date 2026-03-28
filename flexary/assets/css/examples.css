@@ -181,6 +181,14 @@ body:not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
   left: 320px !important;
 }
 
+main {
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body:not(:has(#workout-sidebar.d-none)) main {
+  margin-left: 300px;
+}
+
 #workout-sidebar.d-none ~ #toggle-workout-sidebar {
   left: 20px !important;
 }

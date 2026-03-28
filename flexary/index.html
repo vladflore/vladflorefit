@@ -63,13 +63,8 @@
         <a href="index.html">
           <img src="./assets/logo.jpeg" class="logo-header" alt="Logo" />
         </a>
-        <i
-          class="bi bi-info-circle"
-          style="color: #ba945e; cursor: pointer; font-size: 1.5rem"
-          py-click="show_info"
-          title="About"
-        ></i>
-        <form class="d-flex ms-auto" role="search">
+        <div class="d-flex align-items-center gap-2 ms-auto">
+          <form class="d-flex" role="search">
           <input
             class="form-control form-control-sm me-2"
             type="search"
@@ -86,14 +81,21 @@
           >
             Search
           </button>
-        </form>
+          </form>
+          <i
+            class="bi bi-info-circle"
+            style="color: #ba945e; cursor: pointer; font-size: 1.5rem"
+            py-click="show_info"
+            title="About"
+          ></i>
+        </div>
       </div>
     </nav>
 
     <section class="pyscript">
       <main>
         <section>
-          <div id="container" class="container py-5 d-none">
+          <div id="container" class="container py-3 d-none">
             <h2 class="mb-1 text-center">Fitness Exercises Library</h2>
             <p class="text-center mb-3 golden-text" id="exercise-count"></p>
             <div class="row mb-4 justify-content-center">
