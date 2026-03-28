@@ -2,8 +2,7 @@ import datetime
 import io
 
 from js import Uint8Array, File, URL, document, localStorage
-from models import Exercise, Workout  # noqa: F401 — required in eval() scope
-from uuid import UUID  # noqa: F401 — required in eval() scope
+from models import workouts_from_json
 
 import state
 
@@ -29,7 +28,7 @@ def _build_ics() -> str:
     raw = localStorage.getItem(state.ls_workouts_key)
     if not raw:
         return ""
-    workouts = eval(raw)
+    workouts = workouts_from_json(raw)
 
     lines = [
         "BEGIN:VCALENDAR",

@@ -1,3 +1,6 @@
+import json
+
+from js import localStorage
 from pyodide.ffi import create_proxy
 from pyscript import document, when
 from pyweb import pydom
@@ -5,6 +8,16 @@ from pyweb import pydom
 import state
 from models import category_to_badge
 from exercises import create_card_exercise
+
+
+def _save_filters() -> None:
+    localStorage.setItem(
+        state.ls_filters_key,
+        json.dumps({
+            "categories": list(state.active_category_filters),
+            "body_parts": list(state.active_body_part_filters),
+        }),
+    )
 
 
 def build_category_badges() -> str:
@@ -50,6 +63,7 @@ def filter_by_category(event) -> None:
         state.active_category_filters.discard(category)
     else:
         state.active_category_filters.add(category)
+    _save_filters()
     update(pydom["#search-input"][0]._js.value)
 
 
@@ -59,6 +73,7 @@ def filter_by_body_part(event) -> None:
         state.active_body_part_filters.discard(bp)
     else:
         state.active_body_part_filters.add(bp)
+    _save_filters()
     update(pydom["#search-input"][0]._js.value)
 
 
@@ -110,6 +125,7 @@ def filter_library(event) -> None:
 def clear_filters(event) -> None:
     state.active_category_filters.clear()
     state.active_body_part_filters.clear()
+    _save_filters()
     update(state.q("#search-input").value)
 
 

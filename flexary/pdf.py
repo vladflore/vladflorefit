@@ -7,10 +7,7 @@ from fpdf import FPDF
 from js import Uint8Array, File, URL, document, localStorage
 
 import state
-from models import category_to_rgb
-from models import Exercise, Workout  # noqa: F401 — required in eval() scope
-import datetime  # noqa: F401 — required in eval() scope
-from uuid import UUID  # noqa: F401 — required in eval() scope
+from models import category_to_rgb, workouts_from_json
 
 
 def create_pdf(black_and_white: bool = False):
@@ -36,11 +33,11 @@ def create_pdf(black_and_white: bool = False):
             self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
             self.ln(2)
             self.set_text_color(120, 120, 120)
-            self.cell(0, 10, "vladflore.fit", align="L")
+            self.cell(0, 10, "vladflore.fit", align="C")
             self.set_text_color(0, 0, 0)
             self.set_y(self.get_y() - 10)
             page_label = f"Page {getattr(self, 'workout_page_num', 1)} of {getattr(self, 'workout_total_pages', 1)}"
-            self.cell(0, 10, page_label, align="C")
+            self.cell(0, 10, page_label, align="R")
 
     pdf = PDF()
     pdf.set_top_margin(5)
@@ -58,7 +55,7 @@ def create_pdf(black_and_white: bool = False):
     raw = localStorage.getItem(state.ls_workouts_key)
     if not raw:
         return pdf
-    workouts = eval(raw)
+    workouts = workouts_from_json(raw)
 
     for workout in workouts:
         exercises = workout.exercises
@@ -89,7 +86,7 @@ def create_pdf(black_and_white: bool = False):
             pdf.set_font("opensans", style="I", size=10)
             exercise_count = len(exercises)
             ex_label = "exercise" if exercise_count == 1 else "exercises"
-            prefix = "Do on: "
+            prefix = "Scheduled for: "
             prefix_w = pdf.get_string_width(prefix)
             pdf.set_x(x_start)
             pdf.cell(prefix_w, 8, prefix, new_x="END", new_y="LAST")
@@ -300,7 +297,7 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_x(x_start)
                 pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
                 pdf.set_xy(x_start + box_padding, pdf.get_y() + box_padding)
-                pdf.cell(0, 0, "Done on:", border=0, align="L")
+                pdf.cell(0, 0, "Scheduled for:", border=0, align="L")
                 executed_y = pdf.get_y() - box_padding
 
                 notes_x = x_start + table_width / 2 + 2

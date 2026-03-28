@@ -4,7 +4,6 @@ from pyweb import pydom
 
 from common import copyright, current_version, csv_to_json
 import state
-from exercises import create_card_exercise
 from filters import (
     attach_body_part_filter_listeners,
     attach_category_filter_listeners,
@@ -12,6 +11,7 @@ from filters import (
     build_category_badges,
     clear_filters,
     filter_library,
+    update as update_filters,
     update_exercise_stats,
 )
 from pdf import download_file, make_pdf_download_handler
@@ -29,7 +29,7 @@ def show_info(event) -> None:
 state.data = sorted(csv_to_json("exercises.csv"), key=lambda x: x["name"])
 
 body_parts_seen: set[str] = set()
-for i, exercise_data in enumerate(state.data):
+for exercise_data in state.data:
     for category in exercise_data["category"].split(","):
         category = category.strip()
         state.category_count[category] = state.category_count.get(category, 0) + 1
@@ -38,19 +38,10 @@ for i, exercise_data in enumerate(state.data):
         if bp and bp not in body_parts_seen:
             body_parts_seen.add(bp)
             state.body_parts_list.append(bp)
-    card = create_card_exercise(state.exercise_template, exercise_data)
-    card._js.classList.add("card-animate")
-    card._js.style.animationDelay = f"{min(i * 30, 300)}ms"
-    state.exercises_row.append(card)
-
 state.body_parts_list.sort()
 
-# ── Render filter badges ───────────────────────────────────────────────────────
-pydom[state.exercises_per_category_badges_row_id][0]._js.innerHTML = build_category_badges()
-attach_category_filter_listeners()
-pydom[state.exercises_per_body_part_badges_row_id][0]._js.innerHTML = build_body_part_badges()
-attach_body_part_filter_listeners()
-update_exercise_stats(len(state.data), len(state.data))
+# ── Render cards + badges (applies any persisted filters) ──────────────────────
+update_filters("")
 
 pydom["#skeleton-row"][0]._js.classList.add("d-none")
 pydom["#filter-row"][0]._js.classList.remove("d-none")
