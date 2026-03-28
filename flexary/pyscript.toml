@@ -8,3 +8,4 @@ packages = ["fpdf2==2.8.3", "pillow==10.0.0"]
 "./common.py" = "common.py"
 "./info.txt" = "info.txt"
 "./assets/logo-for-pdf.png" = "logo-for-pdf.png"
+"./assets/logo-nobg.png" = "logo-nobg.png"

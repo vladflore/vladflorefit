@@ -77,9 +77,21 @@ exercise_template = pydom.Element(
 def create_pdf():
     class PDF(FPDF):
         def header(self):
+            logo_size = 18
+            self.image("logo-nobg.png", x=self.w - self.r_margin - logo_size, y=6, w=logo_size, h=logo_size)
             self.set_font("times", "B", 16)
             self.cell(0, 10, "Your Workouts", new_x="LMARGIN", new_y="NEXT", align="C")
-            self.ln(5)
+            self.set_draw_color(186, 148, 94)
+            self.set_line_width(0.5)
+            self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
+            self.set_draw_color(0, 0, 0)
+            self.set_line_width(0.2)
+            self.ln(3)
+            self.set_font("times", "I", 9)
+            self.set_text_color(120, 120, 120)
+            self.cell(0, 5, f"Generated on {datetime.datetime.now().strftime('%d.%m.%Y')}", new_x="LMARGIN", new_y="NEXT", align="C")
+            self.set_text_color(0, 0, 0)
+            self.ln(3)
 
         def footer(self):
             self.set_y(-20)
@@ -89,24 +101,6 @@ def create_pdf():
             self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
             self.ln(2)
             self.cell(0, 10, f"Page {self.page_no()}", align="C")
-
-        def add_watermark(self, image_path):
-            x, y = self.get_x(), self.get_y()
-            page_w = self.w
-            page_h = self.h
-
-            with Image.open(image_path) as img:
-                img_w, img_h = img.size
-
-            scale = min(page_w / img_w, page_h / img_h)
-            new_w = img_w * scale
-            new_h = img_h * scale
-
-            x_img = (page_w - new_w) / 2
-            y_img = (page_h - new_h) / 2
-
-            self.image(image_path, x=x_img, y=y_img, w=new_w, h=new_h)
-            self.set_xy(x, y)
 
     pdf = PDF()
     pdf.set_font("times", style="", size=13)
@@ -129,7 +123,6 @@ def create_pdf():
             for i in range(0, len(exercises), chunk_size):
                 chunk = exercises[i : i + chunk_size]
                 pdf.add_page()
-                pdf.add_watermark("logo-for-pdf.png")
 
                 table_width = (
                     exercise_name_column_width
@@ -140,61 +133,39 @@ def create_pdf():
                 page_width = pdf.w - 2 * pdf.l_margin
                 x_start = (page_width - table_width) / 2 + pdf.l_margin
 
-                pdf.set_x(x_start)
+                pdf.ln(4)
                 formatted_date = workout.execution_date.strftime("%d.%m.%Y")
 
                 pdf.set_font("times", style="I", size=12)
-
-                pdf.cell(
-                    table_width,
-                    10,
-                    f"Workout {idx} of {total_workouts} for {formatted_date}",
-                    new_x="LMARGIN",
-                    new_y="NEXT",
-                    align="L",
-                )
+                prefix = f"Workout {idx}  ·  Do on: "
+                prefix_w = pdf.get_string_width(prefix)
+                pdf.set_x(x_start)
+                pdf.cell(prefix_w, 8, prefix, new_x="END", new_y="LAST")
+                pdf.set_font("times", style="BI", size=12)
+                pdf.cell(pdf.get_string_width(formatted_date), 8, formatted_date, new_x="LMARGIN", new_y="NEXT")
+                pdf.ln(4)
 
                 pdf.set_font("times", style="", size=13)
 
                 pdf.set_x(x_start)
                 row_height = 12
 
-                pdf.set_fill_color(220, 220, 220)
-                pdf.cell(
-                    exercise_name_column_width,
-                    row_height,
-                    "Exercise",
-                    border=1,
-                    fill=True,
-                    align="C",
-                )
-                pdf.cell(
-                    sets_column_width,
-                    row_height,
-                    "Sets",
-                    border=1,
-                    fill=True,
-                    align="C",
-                )
-                pdf.cell(
-                    reps_time_column_width,
-                    row_height,
-                    "Reps / Time",
-                    border=1,
-                    fill=True,
-                    align="C",
-                )
-                pdf.cell(
-                    weight_column_width,
-                    row_height,
-                    "Weight",
-                    border=1,
-                    fill=True,
-                    align="C",
-                )
+                pdf.set_fill_color(186, 148, 94)
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_font("times", style="B", size=13)
+                pdf.set_draw_color(186, 148, 94)
+                pdf.set_x(x_start)
+                pdf.cell(exercise_name_column_width, row_height, "Exercise", border=1, fill=True, align="C")
+                pdf.cell(sets_column_width, row_height, "Sets", border=1, fill=True, align="C")
+                pdf.cell(reps_time_column_width, row_height, "Reps / Time", border=1, fill=True, align="C")
+                pdf.cell(weight_column_width, row_height, "Weight", border=1, fill=True, align="C")
                 pdf.ln()
-                for exercise in chunk:
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_font("times", style="", size=13)
+                pdf.set_draw_color(186, 148, 94)
+                for row_num, exercise in enumerate(chunk):
                     pdf.set_x(x_start)
+                    row_fill = row_num % 2 == 1
                     detailed_page_link = next(
                         (
                             f"https://vladflore.fit/detail.html?exercise_id={exercise.id}"
@@ -203,27 +174,47 @@ def create_pdf():
                         ),
                         "",
                     )
-                    pdf.set_text_color(0, 0, 255)
-                    pdf.set_font(style="U")
-                    pdf.cell(
-                        exercise_name_column_width,
-                        row_height,
-                        exercise.name,
-                        border=1,
-                        align="L",
-                        link=detailed_page_link,
-                    )
+                    try:
+                        sets = int(exercise.sets)
+                    except Exception:
+                        sets = 1
+
+                    sub_row_h = 10
+                    total_h = max(row_height, sets * sub_row_h)
+                    row_y = pdf.get_y()
+                    rect_style = "FD" if row_fill else "D"
+                    if row_fill:
+                        pdf.set_fill_color(245, 245, 245)
+
+                    # Exercise name cell spanning full height
+                    pdf.rect(x_start, row_y, exercise_name_column_width, total_h, style=rect_style)
                     pdf.set_text_color(0, 0, 0)
                     pdf.set_font(style="")
-                    pdf.cell(
-                        sets_column_width,
-                        row_height,
-                        str(exercise.sets),
-                        border=1,
-                        align="C",
-                    )
+                    # Draw small gold right-pointing triangle as clickable indicator
+                    tri_size = 2.2
+                    icon_x = x_start + 3
+                    icon_y_center = row_y + total_h / 2
+                    pdf.set_fill_color(186, 148, 94)
+                    pdf.polygon([
+                        (icon_x, icon_y_center - tri_size),
+                        (icon_x, icon_y_center + tri_size),
+                        (icon_x + tri_size * 1.6, icon_y_center),
+                    ], style="F")
+                    if row_fill:
+                        pdf.set_fill_color(245, 245, 245)
+                    text_x = icon_x + tri_size * 1.6 + 2
+                    pdf.set_xy(text_x, row_y + (total_h - row_height) / 2)
+                    pdf.cell(exercise_name_column_width - (text_x - x_start), row_height, exercise.name, border=0, align="L", link=detailed_page_link)
 
-                    # Reps / Time
+                    # Sets cell
+                    sets_x = x_start + exercise_name_column_width
+                    pdf.rect(sets_x, row_y, sets_column_width, total_h, style=rect_style)
+                    pdf.set_xy(sets_x, row_y + (total_h - row_height) / 2)
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.set_font(style="")
+                    pdf.cell(sets_column_width, row_height, str(exercise.sets), border=0, align="C")
+
+                    # Reps / Time cell
                     reps_time_cell_content = ""
                     if exercise.reps:
                         reps_time_cell_content = exercise.reps
@@ -231,39 +222,49 @@ def create_pdf():
                         if reps_time_cell_content:
                             reps_time_cell_content += " / "
                         reps_time_cell_content += exercise.time
-                    pdf.cell(
-                        reps_time_column_width,
-                        row_height,
-                        reps_time_cell_content,
-                        border=1,
-                        align="C",
-                    )
+                    reps_x = sets_x + sets_column_width
+                    pdf.rect(reps_x, row_y, reps_time_column_width, total_h, style=rect_style)
+                    pdf.set_xy(reps_x, row_y + (total_h - row_height) / 2)
+                    pdf.cell(reps_time_column_width, row_height, reps_time_cell_content, border=0, align="C")
 
-                    try:
-                        sets = int(exercise.sets)
-                    except Exception:
-                        sets = 1
-                    placeholders = "|".join([" ___ "] * sets)
-                    pdf.cell(
-                        weight_column_width,
-                        row_height,
-                        placeholders,
-                        border=1,
-                        align="C",
-                    )
-                    pdf.ln(row_height)
-            pdf.ln(10)
-            pdf.set_font("times", style="I", size=12)
-            pdf.set_x(x_start)
-            pdf.cell(
-                table_width,
-                10,
-                "Executed on:",
-                align="L",
-            )
+                    # Weight column: one labelled blank per set (skip if time-based only)
+                    weight_x = reps_x + reps_time_column_width
+                    pdf.rect(weight_x, row_y, weight_column_width, total_h, style=rect_style)
+                    is_time_based = exercise.time and not exercise.reps
+                    if not is_time_based:
+                        pdf.set_font("times", "I", 9)
+                        pdf.set_text_color(120, 120, 120)
+                        for s in range(sets):
+                            pdf.set_xy(weight_x + 2, row_y + s * sub_row_h + (sub_row_h - 9) / 2)
+                            pdf.cell(weight_column_width - 4, 9, f"set {s + 1}:  _________", border=0, align="L")
+
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.set_font("times", style="", size=13)
+                    pdf.set_y(row_y + total_h)
             pdf.ln(8)
+            field_h = 18
+            notes_h = 28
+            box_padding = 4
+
+            pdf.set_font("times", style="I", size=10)
+            pdf.set_text_color(100, 100, 100)
+            pdf.set_draw_color(186, 148, 94)
+
+            # Executed on field
             pdf.set_x(x_start)
-            pdf.cell(table_width, 10, "Notes:", align="L")
+            pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h)
+            pdf.set_xy(x_start + box_padding, pdf.get_y() + box_padding)
+            pdf.cell(0, 0, "Executed on:", border=0, align="L")
+            executed_y = pdf.get_y() - box_padding
+
+            # Notes field
+            notes_x = x_start + table_width / 2 + 2
+            pdf.rect(notes_x, executed_y, table_width / 2 - 2, field_h)
+            pdf.set_xy(notes_x + box_padding, executed_y + box_padding)
+            pdf.cell(0, 0, "Notes:", border=0, align="L")
+
+            pdf.set_text_color(0, 0, 0)
+            pdf.set_y(executed_y + field_h + 4)
 
     return pdf
 
