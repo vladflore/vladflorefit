@@ -110,7 +110,6 @@ def render_workouts(workouts: list) -> None:
             w_item_edit_icon._js.setAttribute("data-exercise-id", str(exercise.id))
             w_item_edit_icon._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
             w_item_edit_icon._js.setAttribute("data-workout-id", str(w.id))
-            w_item_edit_icon._js.removeAttribute("id")
 
             w_item_remove_icon = w_li.find("#workout-item-remove")[0]
             w_item_remove_icon._js.onclick = remove_exercise_from_workout
@@ -457,21 +456,7 @@ def remove_exercise_from_workout(event) -> None:
             break
 
     localStorage.setItem(state.ls_workouts_key, state.workouts)
-
-    li_el = event.target.parentElement
-    workout_card = event.target.closest(".workout")
-    li_el.remove()
-
-    remaining = next((len(w.exercises) for w in state.workouts if str(w.id) == workout_id), 0)
-    workout_card.querySelector(".workout-exercise-count").textContent = (
-        f"{remaining} ex" if remaining > 0 else ""
-    )
-    if remaining == 0:
-        workout_card.querySelector(".add-exes-hint").classList.remove("d-none")
-        ul = workout_card.querySelector("ul")
-        if ul:
-            ul.classList.add("d-none")
-
+    render_workouts(state.workouts)
     if not state.workouts:
         state.active_workout = None
         hide_sidebar()
