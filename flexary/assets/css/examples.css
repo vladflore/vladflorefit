@@ -378,6 +378,19 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
 }
 
 /* Detail page */
+.back-link {
+  color: #ba945e;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.back-link:hover {
+  opacity: 0.75;
+  color: #ba945e;
+}
+
 .detail-card {
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
@@ -386,6 +399,13 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   overflow: hidden;
   word-break: break-word;
   overflow-wrap: break-word;
+}
+
+.detail-exercise-img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 0.4rem;
 }
 
 .detail-card-title {

@@ -16,6 +16,9 @@ data = csv_to_json("exercises.csv", exercise_id=exercise_id)
 
 pydom["#exercise-name"][0]._js.textContent = data["name"]
 
+pydom["#exercise-img"][0]._js.src = f"./assets/exercises/{data['thumbnail_url']}"
+pydom["#exercise-img"][0]._js.alt = data["name"]
+
 categories = data["category"].split(",")
 category_badge_element = pydom["#category-badge"][0]
 clean_cat_badge = category_badge_element.clone()
