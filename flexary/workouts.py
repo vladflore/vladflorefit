@@ -107,6 +107,24 @@ def render_workouts(workouts: list) -> None:
                 f'<div class="exercise-item-details">{details_str}</div>'
                 f'{notes_html}'
             )
+            w_item_move_up = w_li.find("#workout-item-move-up")[0]
+            w_item_move_up._js.onclick = move_exercise_up
+            w_item_move_up._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
+            w_item_move_up._js.setAttribute("data-workout-id", str(w.id))
+            if ei == 0:
+                w_item_move_up._js.classList.add("disabled")
+            else:
+                w_item_move_up._js.classList.remove("disabled")
+
+            w_item_move_down = w_li.find("#workout-item-move-down")[0]
+            w_item_move_down._js.onclick = move_exercise_down
+            w_item_move_down._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
+            w_item_move_down._js.setAttribute("data-workout-id", str(w.id))
+            if ei == len(w.exercises) - 1:
+                w_item_move_down._js.classList.add("disabled")
+            else:
+                w_item_move_down._js.classList.remove("disabled")
+
             w_item_edit_icon = w_li.find("#workout-item-edit")[0]
             w_item_edit_icon._js.onclick = edit_exercise_in_workout
             w_item_edit_icon._js.setAttribute("data-exercise-id", str(exercise.id))
@@ -144,25 +162,38 @@ def add_exercise_to_workout(event) -> None:
 
 
 def configure_exercise(exercise_id: str, exercise_name: str) -> None:
-    ex_card = pydom["#ex-" + exercise_id][0]
-
     overlay = document.createElement("div")
     overlay.classList.add("exercise-overlay")
     overlay.setAttribute("onclick", "event.stopPropagation()")
-    overlay.style.position = "absolute"
+    overlay.style.position = "fixed"
     overlay.style.top = "0"
     overlay.style.left = "0"
     overlay.style.width = "100%"
     overlay.style.height = "100%"
-    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.85)"
+    overlay.style.backgroundColor = "rgba(0,0,0,0.7)"
     overlay.style.display = "flex"
-    overlay.style.flexDirection = "column"
-    overlay.style.alignItems = "stretch"
+    overlay.style.alignItems = "center"
     overlay.style.justifyContent = "center"
-    overlay.style.color = "white"
-    overlay.style.zIndex = "10"
-    overlay.style.padding = "12px 16px"
-    overlay.style.gap = "8px"
+    overlay.style.zIndex = "1000"
+
+    modal = document.createElement("div")
+    modal.style.backgroundColor = "#1a1a1a"
+    modal.style.border = "1px solid #444"
+    modal.style.borderRadius = "8px"
+    modal.style.padding = "20px"
+    modal.style.width = "320px"
+    modal.style.display = "flex"
+    modal.style.flexDirection = "column"
+    modal.style.gap = "12px"
+    modal.style.color = "white"
+
+    title = document.createElement("div")
+    title.textContent = exercise_name
+    title.style.fontWeight = "bold"
+    title.style.fontSize = "0.95rem"
+    title.style.color = "#ba945e"
+    title.style.marginBottom = "4px"
+    modal.appendChild(title)
 
     inputs_container = document.createElement("div")
     inputs_container.style.display = "flex"
@@ -246,13 +277,11 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
 
     buttons_container.appendChild(confirm_btn)
     buttons_container.appendChild(close_btn)
-    overlay.appendChild(inputs_container)
-    overlay.appendChild(warning_el)
-    overlay.appendChild(buttons_container)
-
-    exercise_card_el = ex_card._js.querySelector(".exercise-card")
-    exercise_card_el.style.position = "relative"
-    exercise_card_el.appendChild(overlay)
+    modal.appendChild(inputs_container)
+    modal.appendChild(warning_el)
+    modal.appendChild(buttons_container)
+    overlay.appendChild(modal)
+    document.body.appendChild(overlay)
 
     def on_confirm_click(evt):
         sets_val = input_sets.value
@@ -299,6 +328,34 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         overlay.remove()
 
     confirm_btn.onclick = on_confirm_click
+
+
+def move_exercise_up(event) -> None:
+    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
+    workout_id = event.target.getAttribute("data-workout-id")
+    for w in state.workouts:
+        if str(w.id) == workout_id:
+            for j, ex in enumerate(w.exercises):
+                if ex.internal_id == workout_ex_id and j > 0:
+                    w.exercises[j], w.exercises[j - 1] = w.exercises[j - 1], w.exercises[j]
+                    break
+            break
+    localStorage.setItem(state.ls_workouts_key, state.workouts)
+    render_workouts(state.workouts)
+
+
+def move_exercise_down(event) -> None:
+    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
+    workout_id = event.target.getAttribute("data-workout-id")
+    for w in state.workouts:
+        if str(w.id) == workout_id:
+            for j, ex in enumerate(w.exercises):
+                if ex.internal_id == workout_ex_id and j < len(w.exercises) - 1:
+                    w.exercises[j], w.exercises[j + 1] = w.exercises[j + 1], w.exercises[j]
+                    break
+            break
+    localStorage.setItem(state.ls_workouts_key, state.workouts)
+    render_workouts(state.workouts)
 
 
 def edit_exercise_in_workout(event) -> None:

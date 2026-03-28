@@ -290,6 +290,23 @@ nav {
   border-left: 3px solid #ba945e !important;
 }
 
+.workout-item-move {
+  color: #888;
+  cursor: pointer;
+}
+
+.workout-item-move:hover {
+  color: #ba945e;
+  transform: scale(1.2);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.workout-item-move.disabled {
+  color: #444;
+  cursor: default;
+  pointer-events: none;
+}
+
 .workout-item-edit {
   color: #ba945e;
   cursor: pointer;
