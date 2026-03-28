@@ -69,6 +69,7 @@ def create_pdf(black_and_white: bool = False):
         workout_total_pages = math.ceil(len(exercises) / chunk_size)
         for i in range(0, len(exercises), chunk_size):
             chunk = exercises[i: i + chunk_size]
+            is_last_chunk = (i + chunk_size >= len(exercises))
             pdf.workout_page_num = i // chunk_size + 1
             pdf.workout_total_pages = workout_total_pages
             pdf.add_page()
@@ -104,19 +105,22 @@ def create_pdf(black_and_white: bool = False):
             pdf.set_x(x_start)
             row_height = 8
 
-            pdf.set_fill_color(*header_fill)
-            pdf.set_text_color(0, 0, 0)
-            pdf.set_font("opensans", style="B", size=10)
-            pdf.set_draw_color(*gold)
-            pdf.set_x(x_start)
-            pdf.cell(exercise_name_column_width, row_height, "Exercise", border=1, fill=True, align="C")
-            pdf.cell(sets_column_width, row_height, "Sets", border=1, fill=True, align="C")
-            pdf.cell(reps_time_column_width, row_height, "Reps / Time", border=1, fill=True, align="C")
-            pdf.cell(weight_column_width, row_height, "Weight", border=1, fill=True, align="C")
-            pdf.ln()
-            pdf.set_text_color(0, 0, 0)
-            pdf.set_font("opensans", style="", size=10)
-            pdf.set_draw_color(*gold)
+            def render_table_header():
+                pdf.set_fill_color(*header_fill)
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_font("opensans", style="B", size=10)
+                pdf.set_draw_color(*gold)
+                pdf.set_x(x_start)
+                pdf.cell(exercise_name_column_width, row_height, "Exercise", border=1, fill=True, align="C")
+                pdf.cell(sets_column_width, row_height, "Sets", border=1, fill=True, align="C")
+                pdf.cell(reps_time_column_width, row_height, "Reps / Time", border=1, fill=True, align="C")
+                pdf.cell(weight_column_width, row_height, "Weight", border=1, fill=True, align="C")
+                pdf.ln()
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_font("opensans", style="", size=10)
+                pdf.set_draw_color(*gold)
+
+            render_table_header()
 
             for row_num, exercise in enumerate(chunk):
                 pdf.set_x(x_start)
@@ -161,6 +165,15 @@ def create_pdf(black_and_white: bool = False):
                     notes_h = 0
                 min_cell_h = badge_area_h + row_height + notes_h + 1
                 total_h = max(min_cell_h, sets * sub_row_h)
+
+                if pdf.get_y() + total_h > pdf.h - 25:
+                    workout_total_pages += 1
+                    pdf.workout_total_pages = workout_total_pages
+                    next_page_num = pdf.workout_page_num + 1
+                    pdf.add_page()
+                    pdf.workout_page_num = next_page_num
+                    render_table_header()
+
                 row_y = pdf.get_y()
                 rect_style = "FD" if row_fill else "D"
                 if row_fill:
@@ -262,27 +275,36 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_font("opensans", style="", size=10)
                 pdf.set_y(row_y + total_h)
 
-        pdf.ln(8)
-        field_h = 18
-        box_padding = 4
+            if is_last_chunk:
+                field_h = 18
+                box_padding = 4
+                needed_h = 8 + field_h + 4
 
-        pdf.set_font("opensans", style="I", size=10)
-        pdf.set_text_color(100, 100, 100)
-        pdf.set_draw_color(*gold)
+                if pdf.get_y() + needed_h > pdf.h - pdf.b_margin:
+                    workout_total_pages += 1
+                    pdf.workout_total_pages = workout_total_pages
+                    next_page_num = pdf.workout_page_num + 1
+                    pdf.add_page()
+                    pdf.workout_page_num = next_page_num
 
-        pdf.set_x(x_start)
-        pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
-        pdf.set_xy(x_start + box_padding, pdf.get_y() + box_padding)
-        pdf.cell(0, 0, "Done on:", border=0, align="L")
-        executed_y = pdf.get_y() - box_padding
+                pdf.ln(8)
+                pdf.set_font("opensans", style="I", size=10)
+                pdf.set_text_color(100, 100, 100)
+                pdf.set_draw_color(*gold)
 
-        notes_x = x_start + table_width / 2 + 2
-        pdf.rect(notes_x, executed_y, table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
-        pdf.set_xy(notes_x + box_padding, executed_y + box_padding)
-        pdf.cell(0, 0, "Notes:", border=0, align="L")
+                pdf.set_x(x_start)
+                pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
+                pdf.set_xy(x_start + box_padding, pdf.get_y() + box_padding)
+                pdf.cell(0, 0, "Done on:", border=0, align="L")
+                executed_y = pdf.get_y() - box_padding
 
-        pdf.set_text_color(0, 0, 0)
-        pdf.set_y(executed_y + field_h + 4)
+                notes_x = x_start + table_width / 2 + 2
+                pdf.rect(notes_x, executed_y, table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
+                pdf.set_xy(notes_x + box_padding, executed_y + box_padding)
+                pdf.cell(0, 0, "Notes:", border=0, align="L")
+
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_y(executed_y + field_h + 4)
 
     return pdf
 
