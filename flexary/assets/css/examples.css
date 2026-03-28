@@ -182,7 +182,8 @@ nav {
 .card-action-icon {
   color: #ba945e;
   padding: 0.35rem;
-  aspect-ratio: 1 / 1;
+  min-width: 44px;
+  min-height: 44px;
   transition: transform 0.2s ease, opacity 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -204,8 +205,8 @@ nav {
 }
 
 .exercise-card .badge {
-  font-size: 0.65rem;
-  padding: 0.2em 0.45em;
+  font-size: 0.75rem;
+  padding: 0.3em 0.5em;
 }
 
 .badge-group {
@@ -294,6 +295,23 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   left: 20px !important;
 }
 
+@media (max-width: 767px) {
+  .workout-sidebar {
+    width: 100%;
+    border-radius: 0;
+    border-right: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
+    margin-left: 0;
+  }
+
+  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
+    left: 20px !important;
+  }
+}
+
 .add-exes-hint {
   display: block;
   text-align: center;
@@ -333,11 +351,12 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   border: 1px solid #ba945e;
   border-radius: 1rem;
   color: #ba945e;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1;
-  padding: 0.25rem 0.6rem;
+  min-height: 44px;
+  padding: 0.4rem 0.85rem;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -361,7 +380,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
 }
 
 .filter-label {
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #ba945e;
   white-space: nowrap;
