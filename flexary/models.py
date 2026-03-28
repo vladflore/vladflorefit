@@ -24,6 +24,7 @@ class Exercise:
     sets: int
     reps: str
     time: str = ""
+    distance: str = ""
     notes: str = ""
 
 

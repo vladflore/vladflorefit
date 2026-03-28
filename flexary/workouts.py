@@ -95,6 +95,8 @@ def render_workouts(workouts: list) -> None:
                 detail_parts.append(exercise.reps)
             if exercise.time:
                 detail_parts.append(exercise.time)
+            if exercise.distance:
+                detail_parts.append(exercise.distance)
             details_str = " · ".join(detail_parts)
             notes_html = (
                 f'<div class="exercise-item-notes">{exercise.notes}</div>'
@@ -202,6 +204,10 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     input_time_per_set.type = "text"
     input_time_per_set.placeholder = "e.g. 00:01:30"
 
+    input_distance = document.createElement("input")
+    input_distance.type = "text"
+    input_distance.placeholder = "e.g. 400m, 5km"
+
     input_notes = document.createElement("textarea")
     input_notes.placeholder = "Optional notes…"
     input_notes.rows = "2"
@@ -211,6 +217,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     inputs_container.appendChild(make_group("Sets", input_sets))
     inputs_container.appendChild(make_group("Reps per set (comma separated, optional)", input_reps_per_set))
     inputs_container.appendChild(make_group("Time per set — hh:mm:ss (optional)", input_time_per_set))
+    inputs_container.appendChild(make_group("Distance (optional)", input_distance))
     inputs_container.appendChild(make_group("Notes (optional)", input_notes))
 
     warning_el = document.createElement("div")
@@ -251,6 +258,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         sets_val = input_sets.value
         reps_val = input_reps_per_set.value
         time_val = input_time_per_set.value
+        distance_val = input_distance.value.strip()
         notes_val = input_notes.value.strip()
 
         warning_el.style.display = "none"
@@ -273,7 +281,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
             if any(int(part) < 0 for part in time_parts):
                 return
 
-        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, notes_val)
+        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, distance_val, notes_val)
 
         if state.active_workout is None:
             state.active_workout = uuid4()
@@ -380,6 +388,11 @@ def edit_exercise_in_workout(event) -> None:
     input_time.placeholder = "e.g. 00:01:30"
     input_time.value = target_ex.time or ""
 
+    input_distance = document.createElement("input")
+    input_distance.type = "text"
+    input_distance.placeholder = "e.g. 400m, 5km"
+    input_distance.value = target_ex.distance or ""
+
     input_notes = document.createElement("textarea")
     input_notes.placeholder = "Optional notes…"
     input_notes.rows = "2"
@@ -390,6 +403,7 @@ def edit_exercise_in_workout(event) -> None:
     modal.appendChild(make_group("Sets", input_sets))
     modal.appendChild(make_group("Reps per set (comma separated, optional)", input_reps))
     modal.appendChild(make_group("Time per set — hh:mm:ss (optional)", input_time))
+    modal.appendChild(make_group("Distance (optional)", input_distance))
 
     notes_group = make_group("Notes (optional)", input_notes)
     input_notes.style.height = "auto"
@@ -430,6 +444,7 @@ def edit_exercise_in_workout(event) -> None:
         sets_val = input_sets.value
         reps_val = input_reps.value
         time_val = input_time.value
+        distance_val = input_distance.value.strip()
         notes_val = input_notes.value.strip()
 
         warning_el.style.display = "none"
@@ -455,6 +470,7 @@ def edit_exercise_in_workout(event) -> None:
         target_ex.sets = sets
         target_ex.reps = reps_val
         target_ex.time = time_val
+        target_ex.distance = distance_val
         target_ex.notes = notes_val
 
         localStorage.setItem(state.ls_workouts_key, state.workouts)

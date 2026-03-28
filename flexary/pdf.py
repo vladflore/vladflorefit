@@ -51,9 +51,9 @@ def create_pdf(black_and_white: bool = False):
     pdf.set_font("opensans", style="", size=10)
 
     exercise_name_column_width = 90
-    sets_column_width = 20
-    reps_time_column_width = 30
-    weight_column_width = 40
+    sets_column_width = 15
+    reps_time_column_width = 40
+    weight_column_width = 35
 
     raw = localStorage.getItem(state.ls_workouts_key)
     if not raw:
@@ -113,7 +113,7 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_x(x_start)
                 pdf.cell(exercise_name_column_width, row_height, "Exercise", border=1, fill=True, align="C")
                 pdf.cell(sets_column_width, row_height, "Sets", border=1, fill=True, align="C")
-                pdf.cell(reps_time_column_width, row_height, "Reps / Time", border=1, fill=True, align="C")
+                pdf.cell(reps_time_column_width, row_height, "Reps/Time/Dist", border=1, fill=True, align="C")
                 pdf.cell(weight_column_width, row_height, "Weight", border=1, fill=True, align="C")
                 pdf.ln()
                 pdf.set_text_color(0, 0, 0)
@@ -255,6 +255,10 @@ def create_pdf(black_and_white: bool = False):
                     if reps_time_cell_content:
                         reps_time_cell_content += " / "
                     reps_time_cell_content += exercise.time
+                if exercise.distance:
+                    if reps_time_cell_content:
+                        reps_time_cell_content += " / "
+                    reps_time_cell_content += exercise.distance
                 reps_x = sets_x + sets_column_width
                 pdf.rect(reps_x, row_y, reps_time_column_width, total_h, style=rect_style)
                 pdf.set_xy(reps_x, row_y + (total_h - row_height) / 2)
@@ -267,9 +271,10 @@ def create_pdf(black_and_white: bool = False):
                 if not is_time_based and not is_mobility:
                     pdf.set_font("opensans", "I", 9)
                     pdf.set_text_color(120, 120, 120)
+                    v_offset = (total_h - sets * sub_row_h) / 2
                     for s in range(sets):
-                        pdf.set_xy(weight_x + 2, row_y + s * sub_row_h + (sub_row_h - 9) / 2)
-                        pdf.cell(weight_column_width - 4, 9, f"set {s + 1}:  _________", border=0, align="L")
+                        pdf.set_xy(weight_x, row_y + v_offset + s * sub_row_h + (sub_row_h - 9) / 2)
+                        pdf.cell(weight_column_width, 9, f"set {s + 1}:  _________", border=0, align="C")
 
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font("opensans", style="", size=10)
