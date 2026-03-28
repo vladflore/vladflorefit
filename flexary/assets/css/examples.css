@@ -207,3 +207,8 @@ body:not(:has(#workout-sidebar.d-none)) main {
   color: #ba945e;
   letter-spacing: 0.5px;
 }
+
+.category-filter-active {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

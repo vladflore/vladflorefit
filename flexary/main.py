@@ -59,8 +59,9 @@ copyright_el_id = "#copyright"
 version_el_id = "#version"
 footer_el_id = "#footer"
 workout_sidebar_el_id = "#workout-sidebar"
-exercise_count_id = "#exercise-count"
 exercises_per_category_badges_row_id = "#exercises-per-category-badges-row"
+
+active_category_filter: str | None = None
 
 download_pdf_btn_id = "download-workouts"
 
@@ -751,13 +752,29 @@ def build_category_badges(category_count: dict[str, int]) -> str:
     html = ""
     for category, count in category_count.items():
         badge_class = category_to_badge.get(category.lower())
+        active_class = " category-filter-active" if category == active_category_filter else ""
         html += f"""
                 <div class="d-flex align-items-center">
-                  <span class="badge {badge_class} me-2">{category}</span>
+                  <span class="badge {badge_class}{active_class} me-2" data-category="{category}" style="cursor: pointer">{category}</span>
                   <span class="golden-text">{count}</span>
                 </div>
         """
     return html
+
+
+def attach_category_filter_listeners():
+    container = document.getElementById("exercises-per-category-badges-row")
+    badges = container.querySelectorAll("[data-category]")
+    for i in range(badges.length):
+        badges.item(i).addEventListener("click", create_proxy(filter_by_category))
+
+
+def filter_by_category(event):
+    global active_category_filter
+    category = event.target.getAttribute("data-category")
+    active_category_filter = None if active_category_filter == category else category
+    search_str = pydom["#search-input"][0]._js.value
+    update(search_str)
 
 
 def update(search_str: str) -> None:
@@ -766,22 +783,32 @@ def update(search_str: str) -> None:
     # >>> empty_string in target_string
     # True
     search_str = search_str.strip().lower()
-    filtered_data = [
+    search_filtered = [
         exercise for exercise in data if search_str in exercise["name"].lower()
     ]
-    exercises_row._js.innerHTML = ""
+
     filtered_category_count: dict[str, int] = {}
-    for exercise_data in filtered_data:
+    for exercise_data in search_filtered:
         for category in exercise_data["category"].split(","):
             category = category.strip()
             filtered_category_count[category] = filtered_category_count.get(category, 0) + 1
+
+    display_data = search_filtered
+    if active_category_filter:
+        display_data = [
+            exercise for exercise in search_filtered
+            if active_category_filter in [c.strip() for c in exercise["category"].split(",")]
+        ]
+
+    exercises_row._js.innerHTML = ""
+    for exercise_data in display_data:
         exercise_html = create_card_exercise(exercise_template, exercise_data)
         exercises_row.append(exercise_html)
 
-    pydom[exercise_count_id][0]._js.innerHTML = f"Total exercises: {len(filtered_data)}"
     pydom[exercises_per_category_badges_row_id][
         0
     ]._js.innerHTML = build_category_badges(filtered_category_count)
+    attach_category_filter_listeners()
 
 
 def filter_library(event) -> None:
@@ -807,10 +834,10 @@ for exercise_data in data:
     exercise_html = create_card_exercise(exercise_template, exercise_data)
     exercises_row.append(exercise_html)
 
-pydom[exercise_count_id][0]._js.innerHTML = f"Total exercises: {len(data)}"
 pydom[exercises_per_category_badges_row_id][0]._js.innerHTML = build_category_badges(
     category_count
 )
+attach_category_filter_listeners()
 
 pydom["#spinner"][0]._js.classList.add("d-none")
 
