@@ -68,8 +68,8 @@ workout_sidebar_el_id = "#workout-sidebar"
 exercises_per_category_badges_row_id = "#exercises-per-category-badges-row"
 exercises_per_body_part_badges_row_id = "#exercises-per-body-part-badges-row"
 
-active_category_filter: str | None = None
-active_body_part_filter: str | None = None
+active_category_filters: set[str] = set()
+active_body_part_filters: set[str] = set()
 
 download_pdf_btn_id = "download-workouts"
 pdf_color_modal_id = "pdf-color-modal"
@@ -749,17 +749,13 @@ def build_category_badges(category_count: dict[str, int]) -> str:
     html = ""
     for category, count in category_count.items():
         badge_class = category_to_badge.get(category.lower())
-        active_class = " category-filter-active" if category == active_category_filter else ""
+        active_class = " category-filter-active" if category in active_category_filters else ""
         html += f'<span class="badge {badge_class}{active_class} me-1" data-category="{category}" style="cursor: pointer">{category}</span>'
     return html
 
 
 def update_exercise_stats(display_count: int, total: int) -> None:
-    parts = []
-    if active_category_filter:
-        parts.append(active_category_filter)
-    if active_body_part_filter:
-        parts.append(active_body_part_filter)
+    parts = sorted(active_category_filters) + sorted(active_body_part_filters)
     if parts:
         stats = f"{display_count} · {' & '.join(parts)}"
     else:
@@ -775,9 +771,11 @@ def attach_category_filter_listeners():
 
 
 def filter_by_category(event):
-    global active_category_filter
     category = event.target.getAttribute("data-category")
-    active_category_filter = None if active_category_filter == category else category
+    if category in active_category_filters:
+        active_category_filters.discard(category)
+    else:
+        active_category_filters.add(category)
     search_str = pydom["#search-input"][0]._js.value
     update(search_str)
 
@@ -785,7 +783,7 @@ def filter_by_category(event):
 def build_body_part_badges() -> str:
     html = ""
     for bp in body_parts_list:
-        active_class = " body-part-filter-active" if bp == active_body_part_filter else ""
+        active_class = " body-part-filter-active" if bp in active_body_part_filters else ""
         html += f'<span class="badge bg-secondary{active_class} me-1" data-body-part="{bp}" style="cursor: pointer">{bp}</span>'
     return html
 
@@ -798,9 +796,11 @@ def attach_body_part_filter_listeners():
 
 
 def filter_by_body_part(event):
-    global active_body_part_filter
     bp = event.target.getAttribute("data-body-part")
-    active_body_part_filter = None if active_body_part_filter == bp else bp
+    if bp in active_body_part_filters:
+        active_body_part_filters.discard(bp)
+    else:
+        active_body_part_filters.add(bp)
     search_str = pydom["#search-input"][0]._js.value
     update(search_str)
 
@@ -812,15 +812,15 @@ def update(search_str: str) -> None:
     ]
 
     display_data = search_filtered
-    if active_category_filter:
+    if active_category_filters:
         display_data = [
             exercise for exercise in display_data
-            if active_category_filter in [c.strip() for c in exercise["category"].split(",")]
+            if active_category_filters & {c.strip() for c in exercise["category"].split(",")}
         ]
-    if active_body_part_filter:
+    if active_body_part_filters:
         display_data = [
             exercise for exercise in display_data
-            if active_body_part_filter in [bp.strip() for bp in exercise["body_parts"].split(",")]
+            if active_body_part_filters & {bp.strip() for bp in exercise["body_parts"].split(",")}
         ]
 
     exercises_row._js.innerHTML = ""
@@ -852,9 +852,8 @@ def filter_library(event) -> None:
 
 
 def clear_filters(event) -> None:
-    global active_category_filter, active_body_part_filter
-    active_category_filter = None
-    active_body_part_filter = None
+    active_category_filters.clear()
+    active_body_part_filters.clear()
     search_str = q("#search-input").value
     update(search_str)
 
