@@ -57,10 +57,37 @@ def create_pdf(black_and_white: bool = False):
         return pdf
     workouts = workouts_from_json(raw)
 
+    ss_palette = [
+        (80, 80, 80),
+        (130, 130, 130),
+        (50, 50, 50),
+        (160, 160, 160),
+        (100, 100, 100),
+        (40, 40, 40),
+        (145, 145, 145),
+        (115, 115, 115),
+    ] if black_and_white else [
+        (186, 148, 94),  # gold
+        (70, 130, 180),  # steel blue
+        (80, 170, 100),  # green
+        (160, 90, 200),  # purple
+        (210, 110, 40),  # orange
+        (30, 170, 170),  # teal
+        (200, 75, 75),   # red
+        (190, 80, 145),  # pink
+    ]
+
     for workout in workouts:
         exercises = workout.exercises
         if not exercises:
             continue
+
+        ss_color_map: dict = {}  # superset_id -> color, stable across chunks
+
+        def _ss_color(sid):
+            if sid not in ss_color_map:
+                ss_color_map[sid] = ss_palette[len(ss_color_map) % len(ss_palette)]
+            return ss_color_map[sid]
 
         chunk_size = 15
         workout_total_pages = math.ceil(len(exercises) / chunk_size)
@@ -119,6 +146,34 @@ def create_pdf(black_and_white: bool = False):
 
             render_table_header()
 
+            line_x = x_start - 4   # x-centre of the thick side-line
+            line_w = 2.5           # line thickness in mm
+            # ss_open: superset_id -> {'y_top': float, 'y_bottom': float}
+            ss_open = {}
+
+            def _close_ss_line(sid):
+                st = ss_open.pop(sid, None)
+                if st is None:
+                    return
+                y_top = st["y_top"]
+                y_bot = st["y_bottom"]
+                mid_y = (y_top + y_bot) / 2
+                rounds = workout.superset_rounds.get(sid, 1)
+                label = str(rounds)
+                color = _ss_color(sid)
+                pdf.set_draw_color(*color)
+                pdf.set_line_width(line_w)
+                pdf.line(line_x, y_top, line_x, y_bot)
+                pdf.set_line_width(0.2)
+                pdf.set_font("opensans", "B", 7)
+                pdf.set_text_color(255, 255, 255)
+                lw, lh = line_w + 1, 5
+                pdf.set_xy(line_x - lw / 2, mid_y - lh / 2)
+                pdf.cell(lw, lh, label, border=0, align="C")
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_draw_color(*gold)
+                pdf.set_line_width(0.2)
+
             for row_num, exercise in enumerate(chunk):
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
@@ -164,6 +219,8 @@ def create_pdf(black_and_white: bool = False):
                 total_h = max(min_cell_h, sets * sub_row_h)
 
                 if pdf.get_y() + total_h > pdf.h - 25:
+                    for _sid in list(ss_open.keys()):
+                        _close_ss_line(_sid)
                     workout_total_pages += 1
                     pdf.workout_total_pages = workout_total_pages
                     next_page_num = pdf.workout_page_num + 1
@@ -275,7 +332,21 @@ def create_pdf(black_and_white: bool = False):
 
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font("opensans", style="", size=10)
-                pdf.set_y(row_y + total_h)
+                y_bottom = row_y + total_h
+                pdf.set_y(y_bottom)
+
+                # ── Superset side-line (state only; drawn when group closes) ──
+                if exercise.superset_id:
+                    sid = exercise.superset_id
+                    if sid not in ss_open:
+                        ss_open[sid] = {"y_top": row_y, "y_bottom": y_bottom}
+                    else:
+                        ss_open[sid]["y_bottom"] = y_bottom
+                    next_ex = chunk[row_num + 1] if row_num + 1 < len(chunk) else None
+                    if next_ex is None or next_ex.superset_id != sid:
+                        _close_ss_line(sid)
+                # ──────────────────────────────────────────────────────────────
+                pdf.set_y(y_bottom)
 
             if is_last_chunk:
                 field_h = 18
@@ -297,7 +368,7 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_x(x_start)
                 pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
                 pdf.set_xy(x_start + box_padding, pdf.get_y() + box_padding)
-                pdf.cell(0, 0, "Scheduled for:", border=0, align="L")
+                pdf.cell(0, 0, "Executed on:", border=0, align="L")
                 executed_y = pdf.get_y() - box_padding
 
                 notes_x = x_start + table_width / 2 + 2

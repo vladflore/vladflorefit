@@ -297,6 +297,8 @@ nav {
   background-color: #2d2d2d;
   border-color: #3a3a3a;
   color: #e0e0e0;
+  margin-bottom: 4px;
+  border-radius: 4px !important;
 }
 
 .btn-outline-gold {
@@ -361,6 +363,66 @@ nav {
 .workout-item-remove:hover {
   transform: scale(1.2);
   transition: color 0.2s, transform 0.2s;
+}
+
+.workout-item-link {
+  color: #555;
+  cursor: pointer;
+}
+
+.workout-item-link:hover {
+  color: #ba945e;
+  transform: scale(1.2);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.workout-item-link.active {
+  color: #ba945e;
+}
+
+.superset-group {
+  border: 1px solid #ba945e;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.superset-group .list-group-item {
+  margin-bottom: 0;
+  border-radius: 0 !important;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.superset-group .list-group-item:last-child {
+  border-bottom: none;
+}
+
+.superset-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  background-color: rgba(186, 148, 94, 0.12);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ba945e;
+}
+
+.superset-rounds-input {
+  width: 36px;
+  font-size: 0.65rem;
+  text-align: center;
+  background: rgba(186, 148, 94, 0.15);
+  border: 1px solid #ba945e;
+  border-radius: 3px;
+  color: #ba945e;
+  padding: 0 2px;
+  height: 18px;
 }
 
 #toggle-workout-sidebar {

@@ -1,6 +1,6 @@
 import datetime
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from uuid import UUID
 
 
@@ -41,6 +41,7 @@ class Exercise:
     time: str = ""
     distance: str = ""
     notes: str = ""
+    superset_id: str = ""
 
     def detail_str(self) -> str:
         sets = int(self.sets) if str(self.sets).isdigit() else 1
@@ -67,6 +68,7 @@ class Workout:
     id: UUID
     execution_date: datetime.date
     exercises: list
+    superset_rounds: dict = field(default_factory=dict)  # superset_id -> rounds
 
 
 # ── Serialisation ──────────────────────────────────────────────────────────────
@@ -82,6 +84,7 @@ def workouts_to_json(workouts: list) -> str:
             "time": ex.time,
             "distance": ex.distance,
             "notes": ex.notes,
+            "superset_id": ex.superset_id,
         }
 
     def _w(w):
@@ -89,6 +92,7 @@ def workouts_to_json(workouts: list) -> str:
             "id": str(w.id),
             "execution_date": w.execution_date.isoformat(),
             "exercises": [_ex(ex) for ex in w.exercises],
+            "superset_rounds": w.superset_rounds,
         }
 
     return json.dumps([_w(w) for w in workouts])
@@ -108,11 +112,13 @@ def workouts_from_json(raw: str) -> list:
                 time=ex_data.get("time", ""),
                 distance=ex_data.get("distance", ""),
                 notes=ex_data.get("notes", ""),
+                superset_id=ex_data.get("superset_id", ""),
             ) for ex_data in w_data["exercises"]]
             result.append(Workout(
                 id=UUID(w_data["id"]),
                 execution_date=datetime.date.fromisoformat(w_data["execution_date"]),
                 exercises=exercises,
+                superset_rounds=w_data.get("superset_rounds", {}),
             ))
         return result
     except Exception:

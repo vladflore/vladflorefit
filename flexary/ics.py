@@ -48,11 +48,39 @@ def _build_ics() -> str:
         uid = f"flexary-{workout.id}@vladflore.fit"
 
         exercise_lines = []
-        for ex in workout.exercises:
-            entry = f"• {ex.name} — {ex.detail_str()}"
-            if ex.notes:
-                entry += f" ({ex.notes})"
-            exercise_lines.append(entry)
+        exs = workout.exercises
+        i = 0
+        prev_was_superset = False
+
+        while i < len(exs):
+            ex = exs[i]
+            if exercise_lines:
+                if prev_was_superset or ex.superset_id:
+                    exercise_lines += ["", ""]   # larger gap around supersets
+                else:
+                    exercise_lines += [""]        # single blank line between standalone exercises
+            if ex.superset_id:
+                sid = ex.superset_id
+                group = []
+                while i < len(exs) and exs[i].superset_id == sid:
+                    group.append(exs[i])
+                    i += 1
+                rounds = workout.superset_rounds.get(sid, 1)
+                rounds_label = f"{rounds} round{'s' if rounds != 1 else ''}"
+                exercise_lines.append(f"Superset ({rounds_label}):")
+                for g_ex in group:
+                    entry = f"  • {g_ex.name} — {g_ex.detail_str()}"
+                    if g_ex.notes:
+                        entry += f" ({g_ex.notes})"
+                    exercise_lines.append(entry)
+                prev_was_superset = True
+            else:
+                entry = f"• {ex.name} — {ex.detail_str()}"
+                if ex.notes:
+                    entry += f" ({ex.notes})"
+                exercise_lines.append(entry)
+                prev_was_superset = False
+                i += 1
 
         count = len(workout.exercises)
         summary = f"Workout — {count} exercise{'s' if count != 1 else ''}"

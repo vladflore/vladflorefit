@@ -159,6 +159,7 @@ def render_workouts(workouts: list) -> None:
 
         w_ul = w_div.find("#workout-items")[0]
         li = w_ul.find("#workout-item")[0]
+        current_superset_wrapper = None
         for ei, exercise in enumerate(w.exercises):
             w_li = li if ei == 0 else li.clone()
             w_li._js.removeAttribute("id")
@@ -181,11 +182,27 @@ def render_workouts(workouts: list) -> None:
                 notes_el.textContent = exercise.notes
                 item_name_span.appendChild(notes_el)
 
+            w_item_link_icon = w_li.find("#workout-item-link")[0]
+            w_item_link_icon._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
+            w_item_link_icon._js.setAttribute("data-workout-id", str(w.id))
+            if ei == 0:
+                w_item_link_icon._js.classList.add("invisible")
+            else:
+                w_item_link_icon._js.classList.remove("invisible")
+                w_item_link_icon._js.onclick = toggle_superset
+                prev_ex = w.exercises[ei - 1]
+                if exercise.superset_id and exercise.superset_id == prev_ex.superset_id:
+                    w_item_link_icon._js.classList.add("active")
+                    w_item_link_icon._js.title = "Unlink from superset"
+                else:
+                    w_item_link_icon._js.classList.remove("active")
+                    w_item_link_icon._js.title = "Link with exercise above (superset)"
+
             w_item_move_up = w_li.find("#workout-item-move-up")[0]
             w_item_move_up._js.onclick = move_exercise_up
             w_item_move_up._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
             w_item_move_up._js.setAttribute("data-workout-id", str(w.id))
-            if ei == 0:
+            if not _can_move(w.exercises, ei, -1):
                 w_item_move_up._js.classList.add("disabled")
             else:
                 w_item_move_up._js.classList.remove("disabled")
@@ -194,7 +211,7 @@ def render_workouts(workouts: list) -> None:
             w_item_move_down._js.onclick = move_exercise_down
             w_item_move_down._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
             w_item_move_down._js.setAttribute("data-workout-id", str(w.id))
-            if ei == len(w.exercises) - 1:
+            if not _can_move(w.exercises, ei, +1):
                 w_item_move_down._js.classList.add("disabled")
             else:
                 w_item_move_down._js.classList.remove("disabled")
@@ -210,7 +227,51 @@ def render_workouts(workouts: list) -> None:
             w_item_remove_icon._js.setAttribute("data-exercise-id", str(exercise.id))
             w_item_remove_icon._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
             w_item_remove_icon._js.setAttribute("data-workout-id", str(w.id))
-            w_ul.append(w_li)
+
+            if exercise.superset_id:
+                is_group_start = ei == 0 or w.exercises[ei - 1].superset_id != exercise.superset_id
+                if is_group_start:
+                    sid = exercise.superset_id
+                    current_superset_wrapper = document.createElement("div")
+                    current_superset_wrapper.className = "superset-group"
+
+                    header = document.createElement("div")
+                    header.className = "superset-group-header"
+
+                    ss_label = document.createElement("span")
+                    ss_label.textContent = "Superset"
+                    header.appendChild(ss_label)
+
+                    rounds = w.superset_rounds.get(sid, 1)
+                    rounds_input = document.createElement("input")
+                    rounds_input.type = "number"
+                    rounds_input.min = "1"
+                    rounds_input.value = str(rounds)
+                    rounds_input.className = "superset-rounds-input"
+                    rounds_input.title = "Superset rounds"
+
+                    rounds_label = document.createElement("span")
+                    rounds_label.textContent = "× rounds"
+
+                    header.appendChild(rounds_input)
+                    header.appendChild(rounds_label)
+                    current_superset_wrapper.appendChild(header)
+                    w_ul._js.appendChild(current_superset_wrapper)
+
+                    def _make_rounds_handler(workout, superset_id):
+                        def _on_change(evt):
+                            val = evt.target.value
+                            if val and int(val) > 0:
+                                workout.superset_rounds[superset_id] = int(val)
+                                state.save_workouts()
+                        return _on_change
+
+                    rounds_input.addEventListener("change", create_proxy(_make_rounds_handler(w, sid)))
+
+                current_superset_wrapper.appendChild(w_li._js)
+            else:
+                current_superset_wrapper = None
+                w_ul.append(w_li)
 
         count_badge = w_div._js.querySelector(".workout-exercise-count")
         count = len(w.exercises)
@@ -371,13 +432,64 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     confirm_btn.onclick = on_confirm_click
 
 
+# ── Superset linking ──────────────────────────────────────────────────────────
+
+def toggle_superset(event) -> None:
+    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
+    workout_id = event.target.getAttribute("data-workout-id")
+    w, ex, j = _find_exercise(workout_id, workout_ex_id)
+    if w is None or j == 0:
+        return
+    prev_ex = w.exercises[j - 1]
+    if ex.superset_id and ex.superset_id == prev_ex.superset_id:
+        ex.superset_id = ""
+        _cleanup_supersets(w)
+    else:
+        sid = prev_ex.superset_id if prev_ex.superset_id else str(uuid4())
+        if sid not in w.superset_rounds:
+            w.superset_rounds[sid] = 1
+        prev_ex.superset_id = sid
+        ex.superset_id = sid
+    state.save_workouts()
+    render_workouts(state.workouts)
+
+
 # ── Move exercises ─────────────────────────────────────────────────────────────
+
+def _cleanup_supersets(w) -> None:
+    """Clear superset_id from exercises no longer adjacent to a partner, then
+    remove orphaned superset_rounds entries. Iterates until stable."""
+    changed = True
+    while changed:
+        changed = False
+        n = len(w.exercises)
+        for i, ex in enumerate(w.exercises):
+            if not ex.superset_id:
+                continue
+            sid = ex.superset_id
+            above = i > 0 and w.exercises[i - 1].superset_id == sid
+            below = i < n - 1 and w.exercises[i + 1].superset_id == sid
+            if not above and not below:
+                ex.superset_id = ""
+                changed = True
+    active = {ex.superset_id for ex in w.exercises if ex.superset_id}
+    for sid in list(w.superset_rounds.keys()):
+        if sid not in active:
+            del w.superset_rounds[sid]
+
+
+def _can_move(exercises, j, delta) -> bool:
+    """True only when the swap stays within the same superset context."""
+    neighbour = j + delta
+    return 0 <= neighbour < len(exercises) and \
+        exercises[j].superset_id == exercises[neighbour].superset_id
+
 
 def move_exercise_up(event) -> None:
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
     workout_id = event.target.getAttribute("data-workout-id")
     w, _, j = _find_exercise(workout_id, workout_ex_id)
-    if w and j > 0:
+    if w and _can_move(w.exercises, j, -1):
         w.exercises[j], w.exercises[j - 1] = w.exercises[j - 1], w.exercises[j]
         state.save_workouts()
         render_workouts(state.workouts)
@@ -387,7 +499,7 @@ def move_exercise_down(event) -> None:
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
     workout_id = event.target.getAttribute("data-workout-id")
     w, _, j = _find_exercise(workout_id, workout_ex_id)
-    if w and j < len(w.exercises) - 1:
+    if w and _can_move(w.exercises, j, +1):
         w.exercises[j], w.exercises[j + 1] = w.exercises[j + 1], w.exercises[j]
         state.save_workouts()
         render_workouts(state.workouts)
@@ -536,6 +648,7 @@ def remove_exercise_from_workout(event) -> None:
     w, _, j = _find_exercise(workout_id, workout_ex_id)
     if w and j >= 0:
         del w.exercises[j]
+        _cleanup_supersets(w)
     state.save_workouts()
     render_workouts(state.workouts)
     if not state.workouts:
