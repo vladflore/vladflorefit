@@ -70,9 +70,9 @@ def create_pdf(black_and_white: bool = False):
         for i in range(0, len(exercises), chunk_size):
             chunk = exercises[i: i + chunk_size]
             is_last_chunk = (i + chunk_size >= len(exercises))
+            pdf.add_page()
             pdf.workout_page_num = i // chunk_size + 1
             pdf.workout_total_pages = workout_total_pages
-            pdf.add_page()
 
             table_width = (
                 exercise_name_column_width
