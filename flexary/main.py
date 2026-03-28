@@ -839,6 +839,7 @@ attach_category_filter_listeners()
 update_exercise_stats(len(data), len(data))
 
 pydom["#spinner"][0]._js.classList.add("d-none")
+pydom["#filter-row"][0]._js.classList.remove("d-none")
 
 copyright_element = pydom[copyright_el_id][0]
 copyright_element._js.innerHTML = copyright()
