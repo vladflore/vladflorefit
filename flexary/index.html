@@ -89,26 +89,28 @@
         <section>
           <div id="container" class="container py-3 d-none">
             <h2 class="mb-1 text-center">Fitness Exercises Library</h2>
-            <div id="filter-row" class="row mb-3 mt-3 justify-content-center d-none">
-              <div class="col-auto">
-                <div class="filter-panel">
-                  <div class="filter-panel-row">
-                    <span class="filter-label">
-                      <i class="bi bi-tag me-1"></i>Category
-                    </span>
-                    <div id="exercises-per-category-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
-                  </div>
-                  <div class="filter-panel-divider"></div>
-                  <div class="filter-panel-row">
-                    <span class="filter-label">
-                      <i class="bi bi-person me-1"></i>Body part
-                    </span>
-                    <div id="exercises-per-body-part-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
+            <div id="sticky-filters">
+              <div id="filter-row" class="row mb-2 mt-3 justify-content-center d-none">
+                <div class="col-auto">
+                  <div class="filter-panel">
+                    <div class="filter-panel-row">
+                      <span class="filter-label">
+                        <i class="bi bi-tag me-1"></i>Category
+                      </span>
+                      <div id="exercises-per-category-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
+                    </div>
+                    <div class="filter-panel-divider"></div>
+                    <div class="filter-panel-row">
+                      <span class="filter-label">
+                        <i class="bi bi-person me-1"></i>Body part
+                      </span>
+                      <div id="exercises-per-body-part-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <p id="exercise-stats" class="text-center text-muted mb-2" style="font-size: 0.85rem; min-height: 1.2em"></p>
             </div>
-            <p id="exercise-stats" class="text-center text-muted mb-3" style="font-size: 0.85rem; min-height: 1.2em"></p>
             <div id="exercises-row" class="row g-4"></div>
             <div
               id="spinner"
