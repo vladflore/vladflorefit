@@ -209,6 +209,14 @@ body:not(:has(#workout-sidebar.d-none)) main {
 }
 
 .category-filter-active {
-  outline: 2px solid #fff;
+  outline: 2px solid #ba945e;
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(186, 148, 94, 0.35);
+  transform: scale(1.1);
+}
+
+[data-category]:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+  transition: opacity 0.15s, transform 0.15s;
 }
