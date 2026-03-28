@@ -364,6 +364,13 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   margin-top: 2px;
 }
 
+.exercise-item-notes {
+  font-size: 0.75rem;
+  color: #aaa;
+  font-style: italic;
+  margin-top: 2px;
+}
+
 .workout-sidebar-footer {
   display: flex;
   gap: 0.5rem;

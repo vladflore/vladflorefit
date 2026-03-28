@@ -96,9 +96,14 @@ def render_workouts(workouts: list) -> None:
             if exercise.time:
                 detail_parts.append(exercise.time)
             details_str = " · ".join(detail_parts)
+            notes_html = (
+                f'<div class="exercise-item-notes">{exercise.notes}</div>'
+                if exercise.notes else ""
+            )
             w_li.find("#workout-item-name")[0]._js.innerHTML = (
                 f'<div class="exercise-item-name">{exercise.name}</div>'
                 f'<div class="exercise-item-details">{details_str}</div>'
+                f'{notes_html}'
             )
             w_item_remove_icon = w_li.find("#workout-item-remove")[0]
             w_item_remove_icon._js.onclick = remove_exercise_from_workout
@@ -191,9 +196,16 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     input_time_per_set.type = "text"
     input_time_per_set.placeholder = "e.g. 00:01:30"
 
+    input_notes = document.createElement("textarea")
+    input_notes.placeholder = "Optional notes…"
+    input_notes.rows = "2"
+    input_notes.style.resize = "none"
+    input_notes.style.height = "auto"
+
     inputs_container.appendChild(make_group("Sets", input_sets))
     inputs_container.appendChild(make_group("Reps per set (comma separated, optional)", input_reps_per_set))
     inputs_container.appendChild(make_group("Time per set — hh:mm:ss (optional)", input_time_per_set))
+    inputs_container.appendChild(make_group("Notes (optional)", input_notes))
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
@@ -226,6 +238,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         sets_val = input_sets.value
         reps_val = input_reps_per_set.value
         time_val = input_time_per_set.value
+        notes_val = input_notes.value.strip()
 
         if not sets_val:
             return
@@ -243,7 +256,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
             if any(int(part) < 0 for part in time_parts):
                 return
 
-        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val)
+        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, notes_val)
 
         if state.active_workout is None:
             state.active_workout = uuid4()

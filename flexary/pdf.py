@@ -141,7 +141,25 @@ def create_pdf(black_and_white: bool = False):
                 badge_h = 4
                 badge_pad_v = 1.5
                 badge_area_h = badge_h + badge_pad_v * 2
-                min_cell_h = badge_area_h + row_height + 1
+                notes_line_h = 4
+                if exercise.notes:
+                    # Pre-calculate available text width (mirrors values computed later)
+                    _tri_size = 2.2
+                    _text_w = exercise_name_column_width - 12 - 2 - 3 - _tri_size * 1.6 - 2 - 2
+                    pdf.set_font("opensans", style="I", size=7)
+                    _lines, _line_w = 1, 0
+                    for _word in exercise.notes.split():
+                        _word_w = pdf.get_string_width(_word + " ")
+                        if _line_w + _word_w > _text_w:
+                            _lines += 1
+                            _line_w = _word_w
+                        else:
+                            _line_w += _word_w
+                    notes_h = _lines * notes_line_h + 1
+                    pdf.set_font("opensans", style="", size=10)
+                else:
+                    notes_h = 0
+                min_cell_h = badge_area_h + row_height + notes_h + 1
                 total_h = max(min_cell_h, sets * sub_row_h)
                 row_y = pdf.get_y()
                 rect_style = "FD" if row_fill else "D"
@@ -199,6 +217,14 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_font("opensans", style="B", size=10)
                 pdf.cell(text_w, row_height, exercise.name, border=0, align="L", link=detailed_page_link)
                 pdf.set_font("opensans", style="", size=10)
+
+                if exercise.notes:
+                    pdf.set_font("opensans", style="I", size=7)
+                    pdf.set_text_color(100, 100, 100)
+                    pdf.set_xy(text_x, name_y + row_height)
+                    pdf.multi_cell(text_w, notes_line_h, exercise.notes, border=0, align="L")
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.set_font("opensans", style="", size=10)
 
                 pdf.image(qr_buf, x=qr_x, y=qr_y, w=qr_size, h=qr_size, link=detailed_page_link)
 
