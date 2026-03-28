@@ -1,5 +1,6 @@
 import datetime
 import io
+import qrcode
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 from PIL import Image
@@ -244,11 +245,25 @@ def create_pdf():
                     ], style="F")
                     if row_fill:
                         pdf.set_fill_color(245, 245, 245)
+                    qr_size = 12
+                    qr = qrcode.QRCode(version=1, box_size=3, border=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
+                    qr.add_data(detailed_page_link)
+                    qr.make(fit=True)
+                    qr_img = qr.make_image(fill_color="black", back_color="white")
+                    qr_buf = io.BytesIO()
+                    qr_img.save(qr_buf, format="PNG")
+                    qr_buf.seek(0)
+                    qr_x = x_start + exercise_name_column_width - qr_size - 2
+                    qr_y = row_y + (total_h - qr_size) / 2
+
                     text_x = icon_x + tri_size * 1.6 + 2
+                    text_w = qr_x - text_x - 2
                     pdf.set_xy(text_x, name_y)
                     pdf.set_font("opensans", style="B", size=10)
-                    pdf.cell(exercise_name_column_width - (text_x - x_start), row_height, exercise.name, border=0, align="L", link=detailed_page_link)
+                    pdf.cell(text_w, row_height, exercise.name, border=0, align="L", link=detailed_page_link)
                     pdf.set_font("opensans", style="", size=10)
+
+                    pdf.image(qr_buf, x=qr_x, y=qr_y, w=qr_size, h=qr_size, link=detailed_page_link)
 
                     # Sets cell
                     sets_x = x_start + exercise_name_column_width
