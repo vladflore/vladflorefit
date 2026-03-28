@@ -361,6 +361,22 @@
       </span>
       <button id="gdpr-accept" class="btn btn-outline-gold flex-shrink-0">OK</button>
     </div>
+    <dialog id="pdf-color-modal">
+      <div class="info-modal-header">
+        <span class="info-modal-title">Download PDF</span>
+        <button class="info-modal-close" id="pdf-color-modal-close" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="info-modal-body pdf-color-modal-body">
+        <p>Choose your preferred format:</p>
+      </div>
+      <div class="pdf-color-modal-footer">
+        <button class="btn btn-outline-gold" id="pdf-color-btn">Color</button>
+        <button class="btn btn-outline-secondary" id="pdf-bw-btn">Black &amp; White</button>
+      </div>
+    </dialog>
+
     <dialog id="info-modal">
       <div class="info-modal-header">
         <span class="info-modal-title">About Flexary</span>
@@ -376,6 +392,9 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        const pdfColorModal = document.getElementById("pdf-color-modal");
+        document.getElementById("pdf-color-modal-close").addEventListener("click", () => pdfColorModal.close());
+        pdfColorModal.addEventListener("click", (e) => { if (e.target === pdfColorModal) pdfColorModal.close(); });
         const infoModal = document.getElementById("info-modal");
         document.getElementById("info-modal-close").addEventListener("click", () => infoModal.close());
         document.getElementById("info-modal-close-btn").addEventListener("click", () => infoModal.close());

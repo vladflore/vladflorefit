@@ -72,6 +72,7 @@ active_category_filter: str | None = None
 active_body_part_filter: str | None = None
 
 download_pdf_btn_id = "download-workouts"
+pdf_color_modal_id = "pdf-color-modal"
 
 exercises_row = pydom[exercises_row_id][0]
 exercise_template = pydom.Element(
@@ -79,7 +80,15 @@ exercise_template = pydom.Element(
 )
 
 
-def create_pdf():
+def create_pdf(black_and_white=False):
+    gold = (80, 80, 80) if black_and_white else (186, 148, 94)
+    header_fill = (220, 220, 220) if black_and_white else (240, 228, 208)
+    cat_colors = {
+        "strength": (60, 60, 60),
+        "conditioning": (120, 120, 120),
+        "mobility": (170, 170, 170),
+    } if black_and_white else category_to_rgb
+
     class PDF(FPDF):
         def header(self):
             logo_size = 14
@@ -163,10 +172,10 @@ def create_pdf():
                 pdf.set_x(x_start)
                 row_height = 8
 
-                pdf.set_fill_color(240, 228, 208)
+                pdf.set_fill_color(*header_fill)
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font("opensans", style="B", size=10)
-                pdf.set_draw_color(186, 148, 94)
+                pdf.set_draw_color(*gold)
                 pdf.set_x(x_start)
                 pdf.cell(exercise_name_column_width, row_height, "Exercise", border=1, fill=True, align="C")
                 pdf.cell(sets_column_width, row_height, "Sets", border=1, fill=True, align="C")
@@ -175,7 +184,7 @@ def create_pdf():
                 pdf.ln()
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font("opensans", style="", size=10)
-                pdf.set_draw_color(186, 148, 94)
+                pdf.set_draw_color(*gold)
                 for row_num, exercise in enumerate(chunk):
                     pdf.set_x(x_start)
                     row_fill = row_num % 2 == 1
@@ -212,7 +221,7 @@ def create_pdf():
                     badge_x = x_start + 3
                     badge_y = row_y + badge_pad_v
                     for cat in categories:
-                        bg = category_to_rgb.get(cat.lower(), (186, 148, 94))
+                        bg = cat_colors.get(cat.lower(), gold)
                         badge_text_w = pdf.get_string_width(cat) + 4
                         pdf.set_fill_color(*bg)
                         pdf.rect(badge_x, badge_y, badge_text_w, badge_h, style="F", round_corners=True, corner_radius=1.5)
@@ -231,7 +240,7 @@ def create_pdf():
                     tri_size = 2.2
                     icon_x = x_start + 3
                     icon_y_center = name_y + row_height / 2
-                    pdf.set_fill_color(186, 148, 94)
+                    pdf.set_fill_color(*gold)
                     pdf.polygon([
                         (icon_x, icon_y_center - tri_size),
                         (icon_x, icon_y_center + tri_size),
@@ -298,7 +307,7 @@ def create_pdf():
 
             pdf.set_font("opensans", style="I", size=10)
             pdf.set_text_color(100, 100, 100)
-            pdf.set_draw_color(186, 148, 94)
+            pdf.set_draw_color(*gold)
 
             pdf.set_x(x_start)
             pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
@@ -317,12 +326,8 @@ def create_pdf():
     return pdf
 
 
-def download_file(*args):
-    valid_workouts = len([w for w in workouts if w.exercises])
-    if not valid_workouts:
-        return
-
-    pdf = create_pdf()
+def _perform_download(black_and_white=False):
+    pdf = create_pdf(black_and_white=black_and_white)
     encoded_data = pdf.output()
     my_stream = io.BytesIO(encoded_data)
 
@@ -339,6 +344,13 @@ def download_file(*args):
     )
     hidden_link.setAttribute("href", url)
     hidden_link.click()
+
+
+def download_file(*args):
+    valid_workouts = len([w for w in workouts if w.exercises])
+    if not valid_workouts:
+        return
+    document.getElementById(pdf_color_modal_id).showModal()
 
 
 w_template = pydom.Element(
@@ -882,6 +894,17 @@ version_element._js.innerHTML = current_version()
 pydom[footer_el_id][0]._js.classList.remove("d-none")
 
 add_event_listener(document.getElementById(download_pdf_btn_id), "click", download_file)
+
+
+def _make_pdf_download_handler(bw):
+    def handler(*args):
+        document.getElementById(pdf_color_modal_id).close()
+        _perform_download(black_and_white=bw)
+    return handler
+
+
+add_event_listener(document.getElementById("pdf-color-btn"), "click", _make_pdf_download_handler(False))
+add_event_listener(document.getElementById("pdf-bw-btn"), "click", _make_pdf_download_handler(True))
 
 
 def show_sidebar():
