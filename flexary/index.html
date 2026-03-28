@@ -359,6 +359,15 @@
           localStorage.setItem("gdprAccepted", "true");
           gdprBanner.classList.add("d-none");
         });
+
+        const scrollTopBtn = document.getElementById("scroll-top-btn");
+        window.addEventListener("scroll", function () {
+          if (window.scrollY > 300) {
+            scrollTopBtn.classList.remove("d-none");
+          } else {
+            scrollTopBtn.classList.add("d-none");
+          }
+        });
       });
     </script>
 
@@ -366,6 +375,24 @@
       class="position-fixed d-flex flex-column align-items-center gap-2"
       style="bottom: 24px; right: 24px; z-index: 2000"
     >
+      <button
+        id="scroll-top-btn"
+        class="btn d-none"
+        style="
+          background-color: #ba945e;
+          color: #fff;
+          border-radius: 50%;
+          width: 56px;
+          height: 56px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+        title="Scroll to top"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+      >
+        <i class="bi bi-arrow-up" style="font-size: 1.5rem; color: #fff"></i>
+      </button>
       <button
         class="btn"
         style="
