@@ -276,7 +276,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   z-index: 900;
   background-color: #fff;
   padding-top: 0.5rem;
-  padding-bottom: 0.75rem;
+  padding-bottom: 1.25rem;
 }
 
 .filter-panel {
@@ -287,13 +287,9 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   display: flex;
   flex-direction: column;
   gap: 0;
-  position: relative;
 }
 
 .clear-filters-btn {
-  position: absolute;
-  top: 0.45rem;
-  right: 0.5rem;
   background: none;
   border: 1px solid #ba945e;
   border-radius: 1rem;
