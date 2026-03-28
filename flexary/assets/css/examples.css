@@ -102,6 +102,13 @@ nav {
   z-index: 901;
 }
 
+.exercise-card:has(.exercise-overlay):hover {
+  transform: none;
+  box-shadow: none;
+  z-index: auto;
+  cursor: default;
+}
+
 .card-img-area {
   background-color: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
@@ -119,8 +126,13 @@ nav {
   transition: color 0.2s ease;
 }
 
-.card-title-link:hover {
+.card-title-link:hover,
+.exercise-card:hover .card-title-link {
   color: #ba945e;
+}
+
+.exercise-card:has(.exercise-overlay):hover .card-title-link {
+  color: #212529;
 }
 
 .card-actions {
@@ -130,11 +142,17 @@ nav {
 
 .card-action-icon {
   color: #ba945e;
-  transition: opacity 0.2s ease;
+  padding: 0.35rem;
+  aspect-ratio: 1 / 1;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-action-icon:hover {
-  opacity: 0.7;
+  transform: scale(1.2);
+  opacity: 0.8;
 }
 
 .exercise-card .card-body {
@@ -274,7 +292,7 @@ body:not(:has(#workout-sidebar.d-none)) main {
 .filter-panel-row {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.25rem;
   padding: 0.4rem 0;
 }
 

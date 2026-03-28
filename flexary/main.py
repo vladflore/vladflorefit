@@ -378,10 +378,13 @@ def show_info(event):
 
 
 def open_exercise(event):
-    exercise_id = event.target.parentElement.parentElement.parentElement.getAttribute(
-        "data-exercise-id"
-    )
-    window.open(f"detail.html?exercise_id={exercise_id}", "_blank")
+    card = event.target.closest("[data-exercise-id]")
+    if card:
+        window.open(f"detail.html?exercise_id={card.getAttribute('data-exercise-id')}", "_blank")
+
+
+def stop_propagation(event):
+    event.stopPropagation()
 
 
 def workout_edit(event):
@@ -486,6 +489,7 @@ def render_workouts(workouts: list[Workout]):
 
 
 def add_exercise_to_workout(event):
+    event.stopPropagation()
     exercise_id = event.target.parentElement.parentElement.parentElement.parentElement.getAttribute(
         "data-exercise-id"
     )
@@ -499,6 +503,8 @@ def configure_exercise(exercise_id, exercise_name):
     ex_card = pydom["#ex-" + exercise_id][0]
 
     overlay = document.createElement("div")
+    overlay.classList.add("exercise-overlay")
+    overlay.setAttribute("onclick", "event.stopPropagation()")
     overlay.style.position = "absolute"
     overlay.style.top = "0"
     overlay.style.left = "0"
@@ -588,8 +594,9 @@ def configure_exercise(exercise_id, exercise_name):
     overlay.appendChild(inputs_container)
     overlay.appendChild(buttons_container)
 
-    ex_card._js.style.position = "relative"
-    ex_card._js.appendChild(overlay)
+    exercise_card_el = ex_card._js.querySelector(".exercise-card")
+    exercise_card_el.style.position = "relative"
+    exercise_card_el.appendChild(overlay)
 
     def on_confirm_click(evt):
         global active_workout
@@ -706,7 +713,10 @@ def create_card_exercise(template, data):
     (exercise_html.find("#card-img")[0])._js.alt = data["name"]
 
     (exercise_html.find("#card-title")[0])._js.textContent = data["name"]
-    (exercise_html.find("#card-title")[0])._js.onclick = open_exercise
+
+    card_el = exercise_html.find(".exercise-card")[0]
+    card_el._js.style.cursor = "pointer"
+    card_el._js.onclick = open_exercise
 
     categories = data["category"].split(",")
     body_parts_badge_element = exercise_html.find("#body-parts-badge")[0]
@@ -733,9 +743,11 @@ def create_card_exercise(template, data):
         badges_container_element._js.append(new_badge_element._js)
 
     yt_video_link = f"https://www.youtube.com/embed/{data['yt_video_id']}"
-    (exercise_html.find("#video-link")[0])._js.href = yt_video_link
+    video_link_el = exercise_html.find("#video-link")[0]
+    video_link_el._js.href = yt_video_link
 
-    (exercise_html.find("#add-ex-to-workout")[0])._js.onclick = add_exercise_to_workout
+    add_btn_el = exercise_html.find("#add-ex-to-workout")[0]
+    add_btn_el._js.onclick = add_exercise_to_workout
 
     return exercise_html
 
