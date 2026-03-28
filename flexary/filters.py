@@ -76,12 +76,12 @@ def update(search_str: str) -> None:
     if state.active_category_filters:
         display_data = [
             ex for ex in display_data
-            if state.active_category_filters & {c.strip() for c in ex["category"].split(",")}
+            if state.active_category_filters <= {c.strip() for c in ex["category"].split(",")}
         ]
     if state.active_body_part_filters:
         display_data = [
             ex for ex in display_data
-            if state.active_body_part_filters & {bp.strip() for bp in ex["body_parts"].split(",")}
+            if state.active_body_part_filters <= {bp.strip() for bp in ex["body_parts"].split(",")}
         ]
 
     state.exercises_row._js.innerHTML = ""
