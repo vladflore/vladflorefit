@@ -19,30 +19,6 @@ body {
   opacity: 0.5;
 }
 
-@keyframes skeleton-shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-
-.skeleton-card {
-  pointer-events: none;
-}
-
-.skeleton-img {
-  height: 160px;
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 800px 100%;
-  animation: skeleton-shimmer 1.4s infinite linear;
-  border-radius: 0.375rem 0.375rem 0 0;
-}
-
-.skeleton-line {
-  height: 12px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
-  background-size: 800px 100%;
-  animation: skeleton-shimmer 1.4s infinite linear;
-}
 
 .pyscript {
   margin: 0.5rem;
