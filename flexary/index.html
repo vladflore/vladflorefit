@@ -54,23 +54,23 @@
     </dialog>
 
     <nav
-      class="navbar sticky-top py-1"
+      class="navbar sticky-top py-1 flex-wrap"
       style="background-color: #000000; min-height: 60px"
     >
       <div
-        class="container-fluid d-flex align-items-center justify-content-between"
+        class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2"
       >
         <a href="index.html">
           <img src="./assets/logo.jpeg" class="logo-header" alt="Logo" />
         </a>
-        <form class="d-flex ms-auto" role="search">
+        <form class="d-flex flex-grow-1 justify-content-end" role="search" style="min-width: 0">
           <input
             class="form-control form-control-sm me-2"
             type="search"
             placeholder="Search exercise by name"
             aria-label="Search"
             id="search-input"
-            style="min-width: 200px"
+            style="max-width: 320px; min-width: 0; flex: 1 1 120px"
           />
           <button
             py-click="filter_library"
