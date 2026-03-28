@@ -34,7 +34,7 @@ def copyright():
 
 
 def current_version():
-    return "<i>Version: 30.01.2026</i>"
+    return "<i>Version: 28.03.2026</i>"
 
 
 if __name__ == "__main__":
