@@ -60,8 +60,10 @@ version_el_id = "#version"
 footer_el_id = "#footer"
 workout_sidebar_el_id = "#workout-sidebar"
 exercises_per_category_badges_row_id = "#exercises-per-category-badges-row"
+exercises_per_body_part_badges_row_id = "#exercises-per-body-part-badges-row"
 
 active_category_filter: str | None = None
+active_body_part_filter: str | None = None
 
 download_pdf_btn_id = "download-workouts"
 
@@ -456,144 +458,88 @@ def configure_exercise(exercise_id, exercise_name):
     overlay.style.left = "0"
     overlay.style.width = "100%"
     overlay.style.height = "100%"
-    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)"
+    overlay.style.backgroundColor = "rgba(0, 0, 0, 0.85)"
     overlay.style.display = "flex"
     overlay.style.flexDirection = "column"
-    overlay.style.alignItems = "center"
-    overlay.style.justifyContent = "space-between"
+    overlay.style.alignItems = "stretch"
+    overlay.style.justifyContent = "center"
     overlay.style.color = "white"
-    overlay.style.fontSize = "1.2rem"
     overlay.style.zIndex = "10"
-    overlay.style.gap = "0"
-    overlay.style.padding = "16px 0 24px 0"
+    overlay.style.padding = "12px 16px"
+    overlay.style.gap = "8px"
 
     inputs_container = document.createElement("div")
     inputs_container.style.display = "flex"
     inputs_container.style.flexDirection = "column"
-    inputs_container.style.alignItems = "flex-start"
+    inputs_container.style.gap = "8px"
     inputs_container.style.width = "100%"
-    inputs_container.style.marginTop = "0"
 
-    left_indent = "24px"
+    def make_group(label_text, input_el):
+        group = document.createElement("div")
+        group.style.display = "flex"
+        group.style.flexDirection = "column"
+        group.style.gap = "2px"
+
+        label = document.createElement("label")
+        label.textContent = label_text
+        label.style.fontSize = "0.75rem"
+        label.style.color = "rgba(255,255,255,0.75)"
+
+        input_el.style.width = "100%"
+        input_el.style.fontSize = "0.8rem"
+        input_el.style.height = "26px"
+        input_el.style.padding = "2px 6px"
+        input_el.style.borderRadius = "4px"
+        input_el.style.border = "1px solid rgba(255,255,255,0.2)"
+        input_el.style.backgroundColor = "rgba(255,255,255,0.1)"
+        input_el.style.color = "#fff"
+
+        group.appendChild(label)
+        group.appendChild(input_el)
+        return group
 
     # Sets
     input_sets = document.createElement("input")
     input_sets.type = "number"
     input_sets.min = "1"
     input_sets.value = "1"
-    input_sets.style.marginLeft = left_indent
-    input_sets.style.width = "48px"
-    input_sets.style.marginTop = "2px"
-    input_sets.style.fontSize = "0.85rem"
-    input_sets.style.display = "block"
-    input_sets.style.height = "24px"
-    input_sets.style.padding = "2px 6px"
-
-    label_sets = document.createElement("label")
-    label_sets.textContent = "Sets:"
-    label_sets.style.marginLeft = left_indent
-    label_sets.style.fontSize = "0.85rem"
-    label_sets.style.fontWeight = "400"
-    label_sets.style.color = "#fff"
-    label_sets.style.letterSpacing = "0.01em"
-
-    sets_group = document.createElement("div")
-    sets_group.style.display = "flex"
-    sets_group.style.flexDirection = "column"
-    sets_group.style.marginBottom = "16px"
-    sets_group.appendChild(label_sets)
-    sets_group.appendChild(input_sets)
 
     # Reps per set
-    label_reps_per_set = document.createElement("label")
-    label_reps_per_set.textContent = (
-        "Reps per set (comma separated, leave empty if not needed):"
-    )
-    label_reps_per_set.style.marginLeft = left_indent
-    label_reps_per_set.style.fontSize = "0.85rem"
-    label_reps_per_set.style.fontWeight = "400"
-    label_reps_per_set.style.color = "#fff"
-    label_reps_per_set.style.letterSpacing = "0.01em"
-
     input_reps_per_set = document.createElement("input")
     input_reps_per_set.type = "text"
     input_reps_per_set.placeholder = "e.g. 10,12,15"
-    input_reps_per_set.style.marginLeft = left_indent
-    input_reps_per_set.style.width = "96px"
-    input_reps_per_set.style.marginTop = "2px"
-    input_reps_per_set.style.fontSize = "0.85rem"
-    input_reps_per_set.style.display = "block"
-    input_reps_per_set.style.height = "24px"
-    input_reps_per_set.style.padding = "2px 6px"
-
-    reps_group = document.createElement("div")
-    reps_group.style.display = "flex"
-    reps_group.style.flexDirection = "column"
-    reps_group.style.marginBottom = "16px"
-    reps_group.appendChild(label_reps_per_set)
-    reps_group.appendChild(input_reps_per_set)
 
     # Time per set
-    label_time_per_set = document.createElement("label")
-    label_time_per_set.textContent = (
-        "Time per set (hh:mm:ss, leave empty if not needed):"
-    )
-    label_time_per_set.style.marginLeft = left_indent
-    label_time_per_set.style.fontSize = "0.85rem"
-    label_time_per_set.style.fontWeight = "400"
-    label_time_per_set.style.color = "#fff"
-    label_time_per_set.style.letterSpacing = "0.01em"
-
     input_time_per_set = document.createElement("input")
     input_time_per_set.type = "text"
     input_time_per_set.placeholder = "e.g. 00:01:30"
-    input_time_per_set.style.marginLeft = left_indent
-    input_time_per_set.style.width = "100px"
-    input_time_per_set.style.marginTop = "2px"
-    input_time_per_set.style.fontSize = "0.85rem"
-    input_time_per_set.style.display = "block"
-    input_time_per_set.style.height = "24px"
-    input_time_per_set.style.padding = "2px 6px"
 
-    time_group = document.createElement("div")
-    time_group.style.display = "flex"
-    time_group.style.flexDirection = "column"
-    time_group.appendChild(label_time_per_set)
-    time_group.appendChild(input_time_per_set)
-
-    inputs_container.appendChild(sets_group)
-    inputs_container.appendChild(reps_group)
-    inputs_container.appendChild(time_group)
+    inputs_container.appendChild(make_group("Sets", input_sets))
+    inputs_container.appendChild(make_group("Reps per set (comma separated, optional)", input_reps_per_set))
+    inputs_container.appendChild(make_group("Time per set — hh:mm:ss (optional)", input_time_per_set))
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
-    buttons_container.style.flexDirection = "row"
-    buttons_container.style.justifyContent = "center"
-    buttons_container.style.alignItems = "center"
-    buttons_container.style.gap = "10px"
-    buttons_container.style.width = "100%"
-    buttons_container.style.marginBottom = "0"
+    buttons_container.style.gap = "8px"
+    buttons_container.style.marginTop = "4px"
 
     confirm_btn = document.createElement("button")
-    confirm_btn.textContent = "Add to Workout"
+    confirm_btn.textContent = "Add"
     confirm_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
-    confirm_btn.style.padding = "4px 10px"
-    confirm_btn.style.fontSize = "0.85rem"
-    confirm_btn.style.borderRadius = "4px"
+    confirm_btn.style.flex = "1"
+    confirm_btn.style.fontSize = "0.8rem"
 
     close_btn = document.createElement("button")
     close_btn.textContent = "Cancel"
     close_btn.classList.add("btn", "btn-outline-secondary", "btn-sm")
-    close_btn.style.padding = "4px 10px"
-    close_btn.style.fontSize = "0.85rem"
-    close_btn.style.borderRadius = "4px"
+    close_btn.style.flex = "1"
+    close_btn.style.fontSize = "0.8rem"
     close_btn.onclick = lambda evt: overlay.remove()
 
     buttons_container.appendChild(confirm_btn)
     buttons_container.appendChild(close_btn)
 
     overlay.appendChild(inputs_container)
-    overlay.appendChild(document.createElement("div"))
     overlay.appendChild(buttons_container)
 
     ex_card._js.style.position = "relative"
@@ -758,8 +704,13 @@ def build_category_badges(category_count: dict[str, int]) -> str:
 
 
 def update_exercise_stats(display_count: int, total: int) -> None:
+    parts = []
     if active_category_filter:
-        stats = f"{display_count} {active_category_filter}"
+        parts.append(active_category_filter)
+    if active_body_part_filter:
+        parts.append(active_body_part_filter)
+    if parts:
+        stats = f"{display_count} · {' & '.join(parts)}"
     else:
         stats = f"{total} exercises"
     pydom["#exercise-stats"][0]._js.textContent = stats
@@ -780,6 +731,29 @@ def filter_by_category(event):
     update(search_str)
 
 
+def build_body_part_badges() -> str:
+    html = ""
+    for bp in body_parts_list:
+        active_class = " body-part-filter-active" if bp == active_body_part_filter else ""
+        html += f'<span class="badge bg-secondary{active_class} me-1" data-body-part="{bp}" style="cursor: pointer">{bp}</span>'
+    return html
+
+
+def attach_body_part_filter_listeners():
+    container = document.getElementById("exercises-per-body-part-badges-row")
+    badges = container.querySelectorAll("[data-body-part]")
+    for i in range(badges.length):
+        badges.item(i).addEventListener("click", create_proxy(filter_by_body_part))
+
+
+def filter_by_body_part(event):
+    global active_body_part_filter
+    bp = event.target.getAttribute("data-body-part")
+    active_body_part_filter = None if active_body_part_filter == bp else bp
+    search_str = pydom["#search-input"][0]._js.value
+    update(search_str)
+
+
 def update(search_str: str) -> None:
     # >>> empty_string = ""
     # >>> target_string = "Hello"
@@ -793,8 +767,13 @@ def update(search_str: str) -> None:
     display_data = search_filtered
     if active_category_filter:
         display_data = [
-            exercise for exercise in search_filtered
+            exercise for exercise in display_data
             if active_category_filter in [c.strip() for c in exercise["category"].split(",")]
+        ]
+    if active_body_part_filter:
+        display_data = [
+            exercise for exercise in display_data
+            if active_body_part_filter in [bp.strip() for bp in exercise["body_parts"].split(",")]
         ]
 
     exercises_row._js.innerHTML = ""
@@ -806,6 +785,10 @@ def update(search_str: str) -> None:
         0
     ]._js.innerHTML = build_category_badges(category_count)
     attach_category_filter_listeners()
+    pydom[exercises_per_body_part_badges_row_id][
+        0
+    ]._js.innerHTML = build_body_part_badges()
+    attach_body_part_filter_listeners()
     update_exercise_stats(len(display_data), len(search_filtered))
 
 
@@ -824,18 +807,29 @@ data = csv_to_json("exercises.csv")
 data = sorted(data, key=lambda x: x["name"])
 
 category_count: dict[str, int] = {}
+body_parts_set: set[str] = set()
+body_parts_list: list[str] = []
 
 for exercise_data in data:
     for category in exercise_data["category"].split(","):
         category = category.strip()
         category_count[category] = category_count.get(category, 0) + 1
+    for bp in exercise_data["body_parts"].split(","):
+        bp = bp.strip()
+        if bp and bp not in body_parts_set:
+            body_parts_set.add(bp)
+            body_parts_list.append(bp)
     exercise_html = create_card_exercise(exercise_template, exercise_data)
     exercises_row.append(exercise_html)
+
+body_parts_list.sort()
 
 pydom[exercises_per_category_badges_row_id][0]._js.innerHTML = build_category_badges(
     category_count
 )
 attach_category_filter_listeners()
+pydom[exercises_per_body_part_badges_row_id][0]._js.innerHTML = build_body_part_badges()
+attach_body_part_filter_listeners()
 update_exercise_stats(len(data), len(data))
 
 pydom["#spinner"][0]._js.classList.add("d-none")

@@ -250,6 +250,39 @@ body:not(:has(#workout-sidebar.d-none)) main {
   letter-spacing: 0.5px;
 }
 
+.filter-panel {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.filter-panel-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+}
+
+.filter-panel-divider {
+  height: 1px;
+  background-color: #e9ecef;
+  margin: 0 -1.25rem;
+}
+
+.filter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #ba945e;
+  white-space: nowrap;
+  min-width: 78px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .category-filter-active {
   outline: 2px solid #ba945e;
   outline-offset: 2px;
@@ -257,8 +290,16 @@ body:not(:has(#workout-sidebar.d-none)) main {
   transform: scale(1.1);
 }
 
-[data-category]:hover {
+[data-category]:hover,
+[data-body-part]:hover {
   opacity: 0.8;
   transform: scale(1.05);
   transition: opacity 0.15s, transform 0.15s;
+}
+
+.body-part-filter-active {
+  outline: 2px solid #ba945e;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(186, 148, 94, 0.35);
+  transform: scale(1.1);
 }
