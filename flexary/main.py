@@ -183,7 +183,7 @@ def create_pdf():
                     row_fill = row_num % 2 == 1
                     detailed_page_link = next(
                         (
-                            f"https://vladflore.fit/detail.html?exercise_id={exercise.id}"
+                            f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
                             for d in data
                             if int(d["id"]) == exercise.id
                         ),
