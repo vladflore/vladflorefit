@@ -59,7 +59,6 @@ def q(selector, root=document):
     return root.querySelector(selector)
 
 
-# Identifiers
 exercises_row_id = "#exercises-row"
 exercise_card_template_id = "#exercise-card-template"
 copyright_el_id = "#copyright"
@@ -74,7 +73,6 @@ active_body_part_filter: str | None = None
 
 download_pdf_btn_id = "download-workouts"
 
-# DOM elements
 exercises_row = pydom[exercises_row_id][0]
 exercise_template = pydom.Element(
     q(exercise_card_template_id).content.querySelector("#card-exercise")
@@ -208,10 +206,8 @@ def create_pdf():
                     if row_fill:
                         pdf.set_fill_color(245, 245, 245)
 
-                    # Exercise name cell spanning full height
                     pdf.rect(x_start, row_y, exercise_name_column_width, total_h, style=rect_style)
 
-                    # Category badges above the exercise name
                     pdf.set_font("opensans", style="B", size=6)
                     badge_x = x_start + 3
                     badge_y = row_y + badge_pad_v
@@ -226,11 +222,9 @@ def create_pdf():
                         pdf.cell(badge_text_w, pdf.font_size, cat, border=0, align="C")
                         badge_x += badge_text_w + 1.5
 
-                    # Restore fill for alternating rows
                     if row_fill:
                         pdf.set_fill_color(245, 245, 245)
 
-                    # Triangle icon + exercise name below badges
                     name_y = row_y + badge_area_h
                     pdf.set_text_color(0, 0, 0)
                     pdf.set_font("opensans", style="", size=10)
@@ -265,7 +259,6 @@ def create_pdf():
 
                     pdf.image(qr_buf, x=qr_x, y=qr_y, w=qr_size, h=qr_size, link=detailed_page_link)
 
-                    # Sets cell
                     sets_x = x_start + exercise_name_column_width
                     pdf.rect(sets_x, row_y, sets_column_width, total_h, style=rect_style)
                     pdf.set_xy(sets_x, row_y + (total_h - row_height) / 2)
@@ -273,7 +266,6 @@ def create_pdf():
                     pdf.set_font(style="")
                     pdf.cell(sets_column_width, row_height, str(exercise.sets), border=0, align="C")
 
-                    # Reps / Time cell
                     reps_time_cell_content = ""
                     if exercise.reps:
                         reps_time_cell_content = exercise.reps
@@ -286,7 +278,6 @@ def create_pdf():
                     pdf.set_xy(reps_x, row_y + (total_h - row_height) / 2)
                     pdf.cell(reps_time_column_width, row_height, reps_time_cell_content, border=0, align="C")
 
-                    # Weight column: one labelled blank per set (skip if time-based only)
                     weight_x = reps_x + reps_time_column_width
                     pdf.rect(weight_x, row_y, weight_column_width, total_h, style=rect_style)
                     is_time_based = exercise.time and not exercise.reps
@@ -303,21 +294,18 @@ def create_pdf():
                     pdf.set_y(row_y + total_h)
             pdf.ln(8)
             field_h = 18
-            notes_h = 28
             box_padding = 4
 
             pdf.set_font("opensans", style="I", size=10)
             pdf.set_text_color(100, 100, 100)
             pdf.set_draw_color(186, 148, 94)
 
-            # Executed on field
             pdf.set_x(x_start)
             pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
             pdf.set_xy(x_start + box_padding, pdf.get_y() + box_padding)
             pdf.cell(0, 0, "Done on:", border=0, align="L")
             executed_y = pdf.get_y() - box_padding
 
-            # Notes field
             notes_x = x_start + table_width / 2 + 2
             pdf.rect(notes_x, executed_y, table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
             pdf.set_xy(notes_x + box_padding, executed_y + box_padding)
@@ -565,18 +553,15 @@ def configure_exercise(exercise_id, exercise_name):
         group.appendChild(input_el)
         return group
 
-    # Sets
     input_sets = document.createElement("input")
     input_sets.type = "number"
     input_sets.min = "1"
     input_sets.value = "1"
 
-    # Reps per set
     input_reps_per_set = document.createElement("input")
     input_reps_per_set.type = "text"
     input_reps_per_set.placeholder = "e.g. 10,12,15"
 
-    # Time per set
     input_time_per_set = document.createElement("input")
     input_time_per_set.type = "text"
     input_time_per_set.placeholder = "e.g. 00:01:30"
@@ -658,7 +643,6 @@ def configure_exercise(exercise_id, exercise_name):
 
 
 def remove_exercise_from_workout(event):
-    # TODO revisit this when there are multiple workouts
     global active_workout
     ex_id = event.target.getAttribute("data-exercise-id")
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
@@ -669,8 +653,6 @@ def remove_exercise_from_workout(event):
                 if ex.id == int(ex_id) and ex.internal_id == workout_ex_id:
                     del w.exercises[j]
                     break
-            # if len(w.exercises) == 0:
-            #     del workouts[i]
             break
     localStorage.setItem(ls_workouts_key, workouts)
     event.target.parentElement.remove()
@@ -680,14 +662,12 @@ def remove_exercise_from_workout(event):
 
 
 def remove_workout(event):
-    # TODO revisit this when there are multiple workouts
     global active_workout
     workout_id = event.target.getAttribute("data-workout-id")
     for i, w in enumerate(workouts):
         if str(w.id) == workout_id:
             del workouts[i]
             break
-    # last workout becomes active
     active_workout = None if not workouts else workouts[-1].id
     localStorage.setItem(ls_workouts_key, workouts)
     render_workouts(workouts)
@@ -696,7 +676,6 @@ def remove_workout(event):
 
 
 def remove_workouts(event):
-    # TODO revisit this when there are multiple workouts
     global active_workout
     workouts.clear()
     active_workout = None
@@ -828,10 +807,6 @@ def filter_by_body_part(event):
 
 
 def update(search_str: str) -> None:
-    # >>> empty_string = ""
-    # >>> target_string = "Hello"
-    # >>> empty_string in target_string
-    # True
     search_str = search_str.strip().lower()
     search_filtered = [
         exercise for exercise in data if search_str in exercise["name"].lower()

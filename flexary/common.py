@@ -4,17 +4,6 @@ import datetime
 
 
 def csv_to_json(csv_file_path, exercise_id=None):
-    """
-    Reads a CSV file and converts its data to a JSON object. If exercise_id is provided,
-    filters the CSV data to return only the row with the matching exercise_id.
-
-    Args:
-        csv_file_path (str): Path to the CSV file.
-        exercise_id (str, optional): ID of the exercise to filter.
-
-    Returns:
-        dict or list: JSON object containing the filtered CSV data or all data.
-    """
     with open(csv_file_path, mode="r", encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file)
         if exercise_id:
