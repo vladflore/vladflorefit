@@ -15,6 +15,7 @@ exercise_id = current_link.split("?")[1].split("=")[1]
 data = csv_to_json("exercises.csv", exercise_id=exercise_id)
 
 pydom["#exercise-name"][0]._js.textContent = data["name"]
+pydom["#breadcrumb-exercise-name"][0]._js.textContent = data["name"]
 
 pydom["#exercise-img"][0]._js.src = f"./assets/exercises/{data['thumbnail_url']}"
 pydom["#exercise-img"][0]._js.alt = data["name"]
