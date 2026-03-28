@@ -15,10 +15,17 @@ exercise_id = current_link.split("?")[1].split("=")[1]
 data = csv_to_json("exercises.csv", exercise_id=exercise_id)
 
 pydom["#exercise-name"][0]._js.textContent = data["name"]
-pydom["#category-badge"][0]._js.textContent = data["category"]
-pydom["#category-badge"][0]._js.classList.add(
-    category_to_badge.get(data["category"].lower())
-)
+
+categories = data["category"].split(",")
+category_badge_element = pydom["#category-badge"][0]
+clean_cat_badge = category_badge_element.clone()
+for i, category in enumerate(categories):
+    category = category.strip()
+    cat_badge = category_badge_element if i == 0 else clean_cat_badge.clone()
+    cat_badge._js.textContent = category
+    cat_badge._js.classList.add(category_to_badge.get(category.lower()))
+    if i > 0:
+        pydom["#badges-container"][0]._js.append(cat_badge._js)
 
 
 def open_exercise(event):
