@@ -89,15 +89,7 @@ def render_workouts(workouts: list) -> None:
         for ei, exercise in enumerate(w.exercises):
             w_li = li if ei == 0 else li.clone()
             w_li._js.removeAttribute("id")
-            sets_label = f"{exercise.sets} set{'s' if str(exercise.sets) != '1' else ''}"
-            detail_parts = [sets_label]
-            if exercise.reps:
-                detail_parts.append(exercise.reps)
-            if exercise.time:
-                detail_parts.append(exercise.time)
-            if exercise.distance:
-                detail_parts.append(exercise.distance)
-            details_str = " · ".join(detail_parts)
+            details_str = exercise.detail_str()
             notes_html = (
                 f'<div class="exercise-item-notes">{exercise.notes}</div>'
                 if exercise.notes else ""

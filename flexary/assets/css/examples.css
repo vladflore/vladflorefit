@@ -436,14 +436,47 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
 
 .workout-sidebar-footer {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
   padding-top: 0.75rem;
   border-top: 1px solid #333;
   margin-top: auto;
 }
 
-.workout-sidebar-footer .btn {
+.sidebar-action-btn {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0.4rem 0.25rem;
+  background: transparent;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #ba945e;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.sidebar-action-btn i {
+  font-size: 1rem;
+}
+
+.sidebar-action-btn:hover {
+  background-color: rgba(186, 148, 94, 0.12);
+  border-color: #ba945e;
+}
+
+.sidebar-action-btn--danger {
+  color: #e05252;
+  border-color: #3a3a3a;
+}
+
+.sidebar-action-btn--danger:hover {
+  background-color: rgba(224, 82, 82, 0.12);
+  border-color: #e05252;
 }
 
 .add-exes-hint {

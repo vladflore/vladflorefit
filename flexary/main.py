@@ -15,6 +15,7 @@ from filters import (
     update_exercise_stats,
 )
 from pdf import download_file, make_pdf_download_handler
+from ics import download_ics
 from workouts import add_workout, hide_sidebar, render_workouts, remove_workouts, show_sidebar
 
 
@@ -61,6 +62,7 @@ pydom[state.footer_el_id][0]._js.classList.remove("d-none")
 
 # ── Event listeners ────────────────────────────────────────────────────────────
 add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", download_file)
+add_event_listener(document.getElementById("download-ics"), "click", download_ics)
 add_event_listener(document.getElementById("pdf-color-btn"), "click", make_pdf_download_handler(False))
 add_event_listener(document.getElementById("pdf-bw-btn"), "click", make_pdf_download_handler(True))
 

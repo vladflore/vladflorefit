@@ -329,20 +329,17 @@
           </template>
         </div>
         <div class="workout-sidebar-footer">
-          <button
-            id="download-workouts"
-            type="button"
-            class="btn btn-outline-gold"
-          >
-            <i class="bi bi-file-earmark-arrow-down me-1"></i>PDF
+          <button id="download-workouts" type="button" class="sidebar-action-btn">
+            <i class="bi bi-file-earmark-arrow-down"></i>
+            <span>PDF</span>
           </button>
-          <button
-            id="clear-workouts"
-            type="button"
-            class="btn btn-danger"
-            py-click="remove_workouts"
-          >
-            <i class="bi bi-trash me-1"></i>Clear
+          <button id="download-ics" type="button" class="sidebar-action-btn">
+            <i class="bi bi-calendar-event"></i>
+            <span>ICS</span>
+          </button>
+          <button id="clear-workouts" type="button" class="sidebar-action-btn sidebar-action-btn--danger" py-click="remove_workouts">
+            <i class="bi bi-trash"></i>
+            <span>Clear</span>
           </button>
         </div>
       </div>

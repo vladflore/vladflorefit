@@ -14,7 +14,7 @@
       🖨️ <strong>Export to PDF</strong> — Print your workout and take it with you wherever you train.
     </li>
     <li style="margin-bottom: 1rem;">
-      🔍 <strong>Search and Filtering Functionality</strong> — Quickly find exercises by name and/or category.
+      🔍 <strong>Search and Filtering Functionality</strong> — Quickly find exercises by name and / or by using filters.
     </li>
     <li style="margin-bottom: 1rem;">
       📆 <strong>Export to Calendar</strong> — Coming soon: add your workouts to your calendar with a simple ICS export.
