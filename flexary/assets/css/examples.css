@@ -97,14 +97,56 @@ nav {
 
 .exercise-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-area {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .card-img-top {
-  max-height: 200px;
+  height: 160px;
   object-fit: contain;
   width: 100%;
-  margin-top: 5px;
+  display: block;
+}
+
+.card-title-link {
+  color: #212529;
+  transition: color 0.2s ease;
+}
+
+.card-title-link:hover {
+  color: #ba945e;
+}
+
+.card-actions {
+  border-top: 1px solid #e9ecef;
+  padding-top: 0.4rem;
+}
+
+.card-action-icon {
+  color: #ba945e;
+  transition: opacity 0.2s ease;
+}
+
+.card-action-icon:hover {
+  opacity: 0.7;
+}
+
+.exercise-card .card-body {
+  padding: 0.65rem 0.75rem;
+}
+
+.exercise-card .card-title {
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+}
+
+.exercise-card .badge {
+  font-size: 0.65rem;
+  padding: 0.2em 0.45em;
 }
 
 .badge-group {
