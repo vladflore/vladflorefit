@@ -835,9 +835,14 @@ def update(search_str: str) -> None:
         ]
 
     exercises_row._js.innerHTML = ""
-    for exercise_data in display_data:
-        exercise_html = create_card_exercise(exercise_template, exercise_data)
-        exercises_row.append(exercise_html)
+    empty_state = pydom["#empty-state"][0]
+    if display_data:
+        empty_state._js.classList.add("d-none")
+        for exercise_data in display_data:
+            exercise_html = create_card_exercise(exercise_template, exercise_data)
+            exercises_row.append(exercise_html)
+    else:
+        empty_state._js.classList.remove("d-none")
 
     pydom[exercises_per_category_badges_row_id][
         0
