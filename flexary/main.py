@@ -757,10 +757,9 @@ def build_category_badges(category_count: dict[str, int]) -> str:
     return html
 
 
-def update_exercise_stats(category_count: dict[str, int], total: int) -> None:
-    if active_category_filter and active_category_filter in category_count:
-        cat_count = category_count[active_category_filter]
-        stats = f"{cat_count} {active_category_filter} · {total} total"
+def update_exercise_stats(display_count: int, total: int) -> None:
+    if active_category_filter:
+        stats = f"{display_count} {active_category_filter}"
     else:
         stats = f"{total} exercises"
     pydom["#exercise-stats"][0]._js.textContent = stats
@@ -791,12 +790,6 @@ def update(search_str: str) -> None:
         exercise for exercise in data if search_str in exercise["name"].lower()
     ]
 
-    filtered_category_count: dict[str, int] = {}
-    for exercise_data in search_filtered:
-        for category in exercise_data["category"].split(","):
-            category = category.strip()
-            filtered_category_count[category] = filtered_category_count.get(category, 0) + 1
-
     display_data = search_filtered
     if active_category_filter:
         display_data = [
@@ -811,9 +804,9 @@ def update(search_str: str) -> None:
 
     pydom[exercises_per_category_badges_row_id][
         0
-    ]._js.innerHTML = build_category_badges(filtered_category_count)
+    ]._js.innerHTML = build_category_badges(category_count)
     attach_category_filter_listeners()
-    update_exercise_stats(filtered_category_count, len(search_filtered))
+    update_exercise_stats(len(display_data), len(search_filtered))
 
 
 def filter_library(event) -> None:
@@ -843,7 +836,7 @@ pydom[exercises_per_category_badges_row_id][0]._js.innerHTML = build_category_ba
     category_count
 )
 attach_category_filter_listeners()
-update_exercise_stats(category_count, len(data))
+update_exercise_stats(len(data), len(data))
 
 pydom["#spinner"][0]._js.classList.add("d-none")
 
