@@ -290,6 +290,16 @@ nav {
   border-left: 3px solid #ba945e !important;
 }
 
+.workout-item-edit {
+  color: #ba945e;
+  cursor: pointer;
+}
+
+.workout-item-edit:hover {
+  transform: scale(1.2);
+  transition: color 0.2s, transform 0.2s;
+}
+
 .workout-item-remove {
   color: red;
   cursor: pointer;

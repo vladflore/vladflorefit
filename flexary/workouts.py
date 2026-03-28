@@ -105,6 +105,13 @@ def render_workouts(workouts: list) -> None:
                 f'<div class="exercise-item-details">{details_str}</div>'
                 f'{notes_html}'
             )
+            w_item_edit_icon = w_li.find("#workout-item-edit")[0]
+            w_item_edit_icon._js.onclick = edit_exercise_in_workout
+            w_item_edit_icon._js.setAttribute("data-exercise-id", str(exercise.id))
+            w_item_edit_icon._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
+            w_item_edit_icon._js.setAttribute("data-workout-id", str(w.id))
+            w_item_edit_icon._js.removeAttribute("id")
+
             w_item_remove_icon = w_li.find("#workout-item-remove")[0]
             w_item_remove_icon._js.onclick = remove_exercise_from_workout
             w_item_remove_icon._js.setAttribute("data-exercise-id", exercise.id)
@@ -274,6 +281,166 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         overlay.remove()
 
     confirm_btn.onclick = on_confirm_click
+
+
+def edit_exercise_in_workout(event) -> None:
+    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
+    workout_id = event.target.getAttribute("data-workout-id")
+
+    target_ex = None
+    target_workout = None
+    for w in state.workouts:
+        if str(w.id) == workout_id:
+            target_workout = w
+            for ex in w.exercises:
+                if ex.internal_id == workout_ex_id:
+                    target_ex = ex
+                    break
+            break
+
+    if target_ex is None or target_workout is None:
+        return
+
+    overlay = document.createElement("div")
+    overlay.classList.add("exercise-edit-overlay")
+    overlay.setAttribute("onclick", "event.stopPropagation()")
+    overlay.style.position = "fixed"
+    overlay.style.top = "0"
+    overlay.style.left = "0"
+    overlay.style.width = "100%"
+    overlay.style.height = "100%"
+    overlay.style.backgroundColor = "rgba(0,0,0,0.7)"
+    overlay.style.display = "flex"
+    overlay.style.alignItems = "center"
+    overlay.style.justifyContent = "center"
+    overlay.style.zIndex = "1000"
+
+    modal = document.createElement("div")
+    modal.style.backgroundColor = "#1a1a1a"
+    modal.style.border = "1px solid #444"
+    modal.style.borderRadius = "8px"
+    modal.style.padding = "20px"
+    modal.style.width = "320px"
+    modal.style.display = "flex"
+    modal.style.flexDirection = "column"
+    modal.style.gap = "12px"
+    modal.style.color = "white"
+
+    title = document.createElement("div")
+    title.textContent = f"Edit: {target_ex.name}"
+    title.style.fontWeight = "bold"
+    title.style.fontSize = "0.95rem"
+    title.style.color = "#ba945e"
+    title.style.marginBottom = "4px"
+    modal.appendChild(title)
+
+    def make_group(label_text, input_el):
+        group = document.createElement("div")
+        group.style.display = "flex"
+        group.style.flexDirection = "column"
+        group.style.gap = "2px"
+        label = document.createElement("label")
+        label.textContent = label_text
+        label.style.fontSize = "0.75rem"
+        label.style.color = "rgba(255,255,255,0.75)"
+        input_el.style.width = "100%"
+        input_el.style.fontSize = "0.8rem"
+        input_el.style.height = "26px"
+        input_el.style.padding = "2px 6px"
+        input_el.style.borderRadius = "4px"
+        input_el.style.border = "1px solid rgba(255,255,255,0.2)"
+        input_el.style.backgroundColor = "rgba(255,255,255,0.1)"
+        input_el.style.color = "#fff"
+        group.appendChild(label)
+        group.appendChild(input_el)
+        return group
+
+    input_sets = document.createElement("input")
+    input_sets.type = "number"
+    input_sets.min = "1"
+    input_sets.value = str(target_ex.sets)
+
+    input_reps = document.createElement("input")
+    input_reps.type = "text"
+    input_reps.placeholder = "e.g. 10,12,15"
+    input_reps.value = target_ex.reps or ""
+
+    input_time = document.createElement("input")
+    input_time.type = "text"
+    input_time.placeholder = "e.g. 00:01:30"
+    input_time.value = target_ex.time or ""
+
+    input_notes = document.createElement("textarea")
+    input_notes.placeholder = "Optional notes…"
+    input_notes.rows = "2"
+    input_notes.style.resize = "none"
+    input_notes.style.height = "auto"
+    input_notes.value = target_ex.notes or ""
+
+    modal.appendChild(make_group("Sets", input_sets))
+    modal.appendChild(make_group("Reps per set (comma separated, optional)", input_reps))
+    modal.appendChild(make_group("Time per set — hh:mm:ss (optional)", input_time))
+
+    notes_group = make_group("Notes (optional)", input_notes)
+    input_notes.style.height = "auto"
+    modal.appendChild(notes_group)
+
+    buttons_container = document.createElement("div")
+    buttons_container.style.display = "flex"
+    buttons_container.style.gap = "8px"
+    buttons_container.style.marginTop = "4px"
+
+    confirm_btn = document.createElement("button")
+    confirm_btn.textContent = "Save"
+    confirm_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
+    confirm_btn.style.flex = "1"
+    confirm_btn.style.fontSize = "0.8rem"
+
+    cancel_btn = document.createElement("button")
+    cancel_btn.textContent = "Cancel"
+    cancel_btn.classList.add("btn", "btn-outline-secondary", "btn-sm")
+    cancel_btn.style.flex = "1"
+    cancel_btn.style.fontSize = "0.8rem"
+    cancel_btn.onclick = lambda evt: overlay.remove()
+
+    buttons_container.appendChild(confirm_btn)
+    buttons_container.appendChild(cancel_btn)
+    modal.appendChild(buttons_container)
+    overlay.appendChild(modal)
+    document.body.appendChild(overlay)
+
+    def on_save(evt):
+        sets_val = input_sets.value
+        reps_val = input_reps.value
+        time_val = input_time.value
+        notes_val = input_notes.value.strip()
+
+        if not sets_val:
+            return
+        sets = int(sets_val)
+
+        if reps_val:
+            reps = [v for r in reps_val.split(",") if (v := r.strip()) and v.isdigit()]
+            if len(reps) != sets:
+                return
+
+        if time_val:
+            time_parts = time_val.split(":")
+            if len(time_parts) != 3 or not all(part.isdigit() for part in time_parts):
+                return
+            if any(int(part) < 0 for part in time_parts):
+                return
+
+        target_ex.sets = sets
+        target_ex.reps = reps_val
+        target_ex.time = time_val
+        target_ex.notes = notes_val
+
+        localStorage.setItem(state.ls_workouts_key, state.workouts)
+        render_workouts(state.workouts)
+        overlay.remove()
+
+    confirm_btn.onclick = on_save
 
 
 def remove_exercise_from_workout(event) -> None:
