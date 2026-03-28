@@ -903,7 +903,7 @@ pydom[exercises_per_body_part_badges_row_id][0]._js.innerHTML = build_body_part_
 attach_body_part_filter_listeners()
 update_exercise_stats(len(data), len(data))
 
-pydom["#spinner"][0]._js.classList.add("d-none")
+pydom["#skeleton-row"][0]._js.classList.add("d-none")
 pydom["#filter-row"][0]._js.classList.remove("d-none")
 
 copyright_element = pydom[copyright_el_id][0]

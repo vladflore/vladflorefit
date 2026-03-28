@@ -119,24 +119,53 @@
               </div>
               <p id="exercise-stats" class="text-center text-muted mb-0" style="font-size: 0.85rem; min-height: 1.2em"></p>
             </div>
+            <div id="skeleton-row" class="row g-4 justify-content-center align-content-center" style="min-height: calc(100vh - 120px);">
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3" aria-hidden="true">
+                <div class="card h-100 skeleton-card">
+                  <div class="skeleton-img"></div>
+                  <div class="card-body">
+                    <div class="skeleton-line w-75 mb-2"></div>
+                    <div class="skeleton-line w-50 mb-3"></div>
+                    <div class="skeleton-line w-25"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-none d-sm-block" aria-hidden="true">
+                <div class="card h-100 skeleton-card">
+                  <div class="skeleton-img"></div>
+                  <div class="card-body">
+                    <div class="skeleton-line w-75 mb-2"></div>
+                    <div class="skeleton-line w-50 mb-3"></div>
+                    <div class="skeleton-line w-25"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-lg-3 d-none d-md-block" aria-hidden="true">
+                <div class="card h-100 skeleton-card">
+                  <div class="skeleton-img"></div>
+                  <div class="card-body">
+                    <div class="skeleton-line w-75 mb-2"></div>
+                    <div class="skeleton-line w-50 mb-3"></div>
+                    <div class="skeleton-line w-25"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 d-none d-lg-block" aria-hidden="true">
+                <div class="card h-100 skeleton-card">
+                  <div class="skeleton-img"></div>
+                  <div class="card-body">
+                    <div class="skeleton-line w-75 mb-2"></div>
+                    <div class="skeleton-line w-50 mb-3"></div>
+                    <div class="skeleton-line w-25"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div id="exercises-row" class="row g-4"></div>
             <div id="empty-state" class="d-none text-center py-5">
               <i class="bi bi-search" style="font-size: 2.5rem; color: #dee2e6;"></i>
               <p class="mt-3 mb-1 fw-semibold" style="color: #6c757d;">No exercises found</p>
               <p style="font-size: 0.85rem; color: #adb5bd;">Try adjusting your search or filters.</p>
-            </div>
-            <div
-              id="spinner"
-              class="d-flex justify-content-center align-items-center w-100"
-              style="height: 120px; background: transparent"
-            >
-              <div
-                class="spinner-border text-secondary"
-                style="width: 3rem; height: 3rem"
-                role="status"
-                aria-label="Loading"
-              ></div>
-              <span class="visually-hidden">Loading...</span>
             </div>
             <!-- start exercise template -->
             <template id="exercise-card-template">
