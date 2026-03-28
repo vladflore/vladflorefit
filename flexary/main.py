@@ -855,6 +855,14 @@ def filter_library(event) -> None:
     update(search_str)
 
 
+def clear_filters(event) -> None:
+    global active_category_filter, active_body_part_filter
+    active_category_filter = None
+    active_body_part_filter = None
+    search_str = q("#search-input").value
+    update(search_str)
+
+
 @when("input", "#search-input")
 def handle_search_input(event):
     search_str = event.target.value

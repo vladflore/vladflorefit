@@ -287,6 +287,29 @@ body:not(:has(#workout-sidebar.d-none)) main {
   display: flex;
   flex-direction: column;
   gap: 0;
+  position: relative;
+}
+
+.clear-filters-btn {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.5rem;
+  background: none;
+  border: 1px solid #ba945e;
+  border-radius: 1rem;
+  color: #ba945e;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.clear-filters-btn:hover {
+  background-color: #ba945e;
+  color: #fff;
 }
 
 .filter-panel-row {
