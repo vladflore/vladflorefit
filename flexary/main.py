@@ -753,13 +753,17 @@ def build_category_badges(category_count: dict[str, int]) -> str:
     for category, count in category_count.items():
         badge_class = category_to_badge.get(category.lower())
         active_class = " category-filter-active" if category == active_category_filter else ""
-        html += f"""
-                <div class="d-flex align-items-center">
-                  <span class="badge {badge_class}{active_class} me-2" data-category="{category}" style="cursor: pointer">{category}</span>
-                  <span class="golden-text">{count}</span>
-                </div>
-        """
+        html += f'<span class="badge {badge_class}{active_class} me-1" data-category="{category}" style="cursor: pointer">{category}</span>'
     return html
+
+
+def update_exercise_stats(category_count: dict[str, int], total: int) -> None:
+    if active_category_filter and active_category_filter in category_count:
+        cat_count = category_count[active_category_filter]
+        stats = f"{cat_count} {active_category_filter} · {total} total"
+    else:
+        stats = f"{total} exercises"
+    pydom["#exercise-stats"][0]._js.textContent = stats
 
 
 def attach_category_filter_listeners():
@@ -809,6 +813,7 @@ def update(search_str: str) -> None:
         0
     ]._js.innerHTML = build_category_badges(filtered_category_count)
     attach_category_filter_listeners()
+    update_exercise_stats(filtered_category_count, len(search_filtered))
 
 
 def filter_library(event) -> None:
@@ -838,6 +843,7 @@ pydom[exercises_per_category_badges_row_id][0]._js.innerHTML = build_category_ba
     category_count
 )
 attach_category_filter_listeners()
+update_exercise_stats(category_count, len(data))
 
 pydom["#spinner"][0]._js.classList.add("d-none")
 
