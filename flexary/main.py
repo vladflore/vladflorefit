@@ -715,11 +715,17 @@ def create_card_exercise(template, data):
     (exercise_html.find("#card-title")[0])._js.textContent = data["name"]
     (exercise_html.find("#card-title")[0])._js.onclick = open_exercise
 
+    categories = data["category"].split(",")
+    body_parts_badge_element = exercise_html.find("#body-parts-badge")[0]
     category_badge_element = exercise_html.find("#category-badge")[0]
-    category_badge_element._js.textContent = data["category"]
-    category_badge_element._js.classList.add(
-        category_to_badge.get(data["category"].lower())
-    )
+    clean_cat_badge = category_badge_element.clone()
+    for i, category in enumerate(categories):
+        category = category.strip()
+        cat_badge = category_badge_element if i == 0 else clean_cat_badge.clone()
+        cat_badge._js.textContent = category
+        cat_badge._js.classList.add(category_to_badge.get(category.lower()))
+        if i > 0:
+            body_parts_badge_element._js.before(cat_badge._js)
 
     body_parts_badges = data["body_parts"].split(",")
     badges_container_element = exercise_html.find("#badges")[0]
@@ -766,8 +772,9 @@ def update(search_str: str) -> None:
     exercises_row._js.innerHTML = ""
     filtered_category_count: dict[str, int] = {}
     for exercise_data in filtered_data:
-        category = exercise_data["category"]
-        filtered_category_count[category] = filtered_category_count.get(category, 0) + 1
+        for category in exercise_data["category"].split(","):
+            category = category.strip()
+            filtered_category_count[category] = filtered_category_count.get(category, 0) + 1
         exercise_html = create_card_exercise(exercise_template, exercise_data)
         exercises_row.append(exercise_html)
 
@@ -794,8 +801,9 @@ data = sorted(data, key=lambda x: x["name"])
 category_count: dict[str, int] = {}
 
 for exercise_data in data:
-    category = exercise_data["category"]
-    category_count[category] = category_count.get(category, 0) + 1
+    for category in exercise_data["category"].split(","):
+        category = category.strip()
+        category_count[category] = category_count.get(category, 0) + 1
     exercise_html = create_card_exercise(exercise_template, exercise_data)
     exercises_row.append(exercise_html)
 
