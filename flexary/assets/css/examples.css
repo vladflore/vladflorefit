@@ -239,7 +239,7 @@ nav {
   z-index: 1100;
 }
 
-body:not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
+body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
   left: 320px !important;
 }
 
@@ -247,7 +247,7 @@ main {
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body:not(:has(#workout-sidebar.d-none)) main {
+body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   margin-left: 300px;
 }
 
@@ -354,4 +354,48 @@ body:not(:has(#workout-sidebar.d-none)) main {
   outline-offset: 2px;
   box-shadow: 0 0 0 4px rgba(186, 148, 94, 0.35);
   transform: scale(1.1);
+}
+
+/* Detail page */
+.detail-card {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.detail-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ba945e;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.detail-list {
+  padding-left: 1.25rem;
+  margin-bottom: 0;
+}
+
+.detail-list li {
+  margin-bottom: 0.3rem;
+}
+
+.detail-not-available {
+  font-size: 0.85rem;
+  color: #adb5bd;
+  font-style: italic;
+}
+
+.alt-ex-link {
+  color: #ba945e;
+  transition: color 0.2s ease;
+}
+
+.alt-ex-link:hover {
+  color: #9a7a4a;
 }
