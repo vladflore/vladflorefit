@@ -213,6 +213,12 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     inputs_container.appendChild(make_group("Time per set — hh:mm:ss (optional)", input_time_per_set))
     inputs_container.appendChild(make_group("Notes (optional)", input_notes))
 
+    warning_el = document.createElement("div")
+    warning_el.style.display = "none"
+    warning_el.style.color = "#f87171"
+    warning_el.style.fontSize = "0.75rem"
+    warning_el.style.marginTop = "-4px"
+
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
     buttons_container.style.gap = "8px"
@@ -234,6 +240,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     buttons_container.appendChild(confirm_btn)
     buttons_container.appendChild(close_btn)
     overlay.appendChild(inputs_container)
+    overlay.appendChild(warning_el)
     overlay.appendChild(buttons_container)
 
     exercise_card_el = ex_card._js.querySelector(".exercise-card")
@@ -246,6 +253,8 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         time_val = input_time_per_set.value
         notes_val = input_notes.value.strip()
 
+        warning_el.style.display = "none"
+
         if not sets_val:
             return
         sets = int(sets_val)
@@ -253,6 +262,8 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         if reps_val:
             reps = [v for r in reps_val.split(",") if (v := r.strip()) and v.isdigit()]
             if len(reps) != sets:
+                warning_el.textContent = f"Reps count ({len(reps)}) must match number of sets ({sets})."
+                warning_el.style.display = "block"
                 return
 
         if time_val:
@@ -402,8 +413,15 @@ def edit_exercise_in_workout(event) -> None:
     cancel_btn.style.fontSize = "0.8rem"
     cancel_btn.onclick = lambda evt: overlay.remove()
 
+    warning_el = document.createElement("div")
+    warning_el.style.display = "none"
+    warning_el.style.color = "#f87171"
+    warning_el.style.fontSize = "0.75rem"
+    warning_el.style.marginTop = "-4px"
+
     buttons_container.appendChild(confirm_btn)
     buttons_container.appendChild(cancel_btn)
+    modal.appendChild(warning_el)
     modal.appendChild(buttons_container)
     overlay.appendChild(modal)
     document.body.appendChild(overlay)
@@ -414,6 +432,8 @@ def edit_exercise_in_workout(event) -> None:
         time_val = input_time.value
         notes_val = input_notes.value.strip()
 
+        warning_el.style.display = "none"
+
         if not sets_val:
             return
         sets = int(sets_val)
@@ -421,6 +441,8 @@ def edit_exercise_in_workout(event) -> None:
         if reps_val:
             reps = [v for r in reps_val.split(",") if (v := r.strip()) and v.isdigit()]
             if len(reps) != sets:
+                warning_el.textContent = f"Reps count ({len(reps)}) must match number of sets ({sets})."
+                warning_el.style.display = "block"
                 return
 
         if time_val:
