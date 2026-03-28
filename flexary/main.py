@@ -18,6 +18,12 @@ category_to_badge = {
     "mobility": "bg-info",
 }
 
+category_to_rgb = {
+    "strength": (50, 50, 50),
+    "conditioning": (220, 53, 69),
+    "mobility": (13, 202, 240),
+}
+
 
 @dataclass
 class Exercise:
@@ -77,33 +83,31 @@ exercise_template = pydom.Element(
 def create_pdf():
     class PDF(FPDF):
         def header(self):
-            logo_size = 18
-            self.image("logo-nobg.png", x=self.w - self.r_margin - logo_size, y=6, w=logo_size, h=logo_size)
-            self.set_font("times", "B", 16)
-            self.cell(0, 10, "Your Workouts", new_x="LMARGIN", new_y="NEXT", align="C")
-            self.set_draw_color(186, 148, 94)
-            self.set_line_width(0.5)
-            self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
-            self.set_draw_color(0, 0, 0)
-            self.set_line_width(0.2)
-            self.ln(3)
-            self.set_font("times", "I", 9)
-            self.set_text_color(120, 120, 120)
-            self.cell(0, 5, f"Generated on {datetime.datetime.now().strftime('%d.%m.%Y')}", new_x="LMARGIN", new_y="NEXT", align="C")
-            self.set_text_color(0, 0, 0)
-            self.ln(3)
+            logo_size = 14
+            self.image("logo-nobg.png", x=self.w - self.r_margin - logo_size, y=3, w=logo_size, h=logo_size)
+            self.ln(logo_size - 4)
 
         def footer(self):
             self.set_y(-20)
-            self.set_font("times", "I", 10)
+            self.set_font("opensans", "I", 10)
             self.set_draw_color(180, 180, 180)
             self.set_line_width(0.3)
             self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
             self.ln(2)
-            self.cell(0, 10, f"Page {self.page_no()}", align="C")
+            self.set_text_color(120, 120, 120)
+            self.cell(0, 10, "vladflore.fit", align="L")
+            self.set_text_color(0, 0, 0)
+            self.set_y(self.get_y() - 10)
+            page_label = f"Page {getattr(self, 'workout_page_num', 1)} of {getattr(self, 'workout_total_pages', 1)}"
+            self.cell(0, 10, page_label, align="C")
 
     pdf = PDF()
-    pdf.set_font("times", style="", size=13)
+    pdf.set_top_margin(5)
+    pdf.add_font("opensans", style="", fname="OpenSans-Regular.ttf")
+    pdf.add_font("opensans", style="B", fname="OpenSans-Bold.ttf")
+    pdf.add_font("opensans", style="I", fname="OpenSans-Italic.ttf")
+    pdf.add_font("opensans", style="BI", fname="OpenSans-BoldItalic.ttf")
+    pdf.set_font("opensans", style="", size=10)
 
     exercise_name_column_width = 90
     sets_column_width = 20
@@ -120,8 +124,12 @@ def create_pdf():
                 continue
 
             chunk_size = 15
+            import math
+            workout_total_pages = math.ceil(len(exercises) / chunk_size)
             for i in range(0, len(exercises), chunk_size):
                 chunk = exercises[i : i + chunk_size]
+                pdf.workout_page_num = i // chunk_size + 1
+                pdf.workout_total_pages = workout_total_pages
                 pdf.add_page()
 
                 table_width = (
@@ -133,26 +141,32 @@ def create_pdf():
                 page_width = pdf.w - 2 * pdf.l_margin
                 x_start = (page_width - table_width) / 2 + pdf.l_margin
 
-                pdf.ln(4)
+                pdf.ln(2)
                 formatted_date = workout.execution_date.strftime("%d.%m.%Y")
 
-                pdf.set_font("times", style="I", size=12)
-                prefix = f"Workout {idx}  ·  Do on: "
+                pdf.set_font("opensans", style="I", size=10)
+                exercise_count = len(exercises)
+                ex_label = "exercise" if exercise_count == 1 else "exercises"
+                prefix = "Do on: "
                 prefix_w = pdf.get_string_width(prefix)
                 pdf.set_x(x_start)
                 pdf.cell(prefix_w, 8, prefix, new_x="END", new_y="LAST")
-                pdf.set_font("times", style="BI", size=12)
-                pdf.cell(pdf.get_string_width(formatted_date), 8, formatted_date, new_x="LMARGIN", new_y="NEXT")
+                pdf.set_font("opensans", style="BI", size=10)
+                date_w = pdf.get_string_width(formatted_date)
+                pdf.cell(date_w, 8, formatted_date, new_x="END", new_y="LAST")
+                pdf.set_font("opensans", style="I", size=10)
+                suffix = f"  ·  {exercise_count} {ex_label}"
+                pdf.cell(pdf.get_string_width(suffix), 8, suffix, new_x="LMARGIN", new_y="NEXT")
                 pdf.ln(4)
 
-                pdf.set_font("times", style="", size=13)
+                pdf.set_font("opensans", style="", size=10)
 
                 pdf.set_x(x_start)
-                row_height = 12
+                row_height = 8
 
-                pdf.set_fill_color(186, 148, 94)
+                pdf.set_fill_color(240, 228, 208)
                 pdf.set_text_color(0, 0, 0)
-                pdf.set_font("times", style="B", size=13)
+                pdf.set_font("opensans", style="B", size=10)
                 pdf.set_draw_color(186, 148, 94)
                 pdf.set_x(x_start)
                 pdf.cell(exercise_name_column_width, row_height, "Exercise", border=1, fill=True, align="C")
@@ -161,7 +175,7 @@ def create_pdf():
                 pdf.cell(weight_column_width, row_height, "Weight", border=1, fill=True, align="C")
                 pdf.ln()
                 pdf.set_text_color(0, 0, 0)
-                pdf.set_font("times", style="", size=13)
+                pdf.set_font("opensans", style="", size=10)
                 pdf.set_draw_color(186, 148, 94)
                 for row_num, exercise in enumerate(chunk):
                     pdf.set_x(x_start)
@@ -179,8 +193,15 @@ def create_pdf():
                     except Exception:
                         sets = 1
 
-                    sub_row_h = 10
-                    total_h = max(row_height, sets * sub_row_h)
+                    sub_row_h = 7
+                    ex_data = next((d for d in data if int(d["id"]) == exercise.id), None)
+                    categories = [c.strip() for c in ex_data["category"].split(",")] if ex_data else []
+
+                    badge_h = 4
+                    badge_pad_v = 1.5
+                    badge_area_h = badge_h + badge_pad_v * 2
+                    min_cell_h = badge_area_h + row_height + 1
+                    total_h = max(min_cell_h, sets * sub_row_h)
                     row_y = pdf.get_y()
                     rect_style = "FD" if row_fill else "D"
                     if row_fill:
@@ -188,12 +209,33 @@ def create_pdf():
 
                     # Exercise name cell spanning full height
                     pdf.rect(x_start, row_y, exercise_name_column_width, total_h, style=rect_style)
+
+                    # Category badges above the exercise name
+                    pdf.set_font("opensans", style="B", size=6)
+                    badge_x = x_start + 3
+                    badge_y = row_y + badge_pad_v
+                    for cat in categories:
+                        bg = category_to_rgb.get(cat.lower(), (186, 148, 94))
+                        badge_text_w = pdf.get_string_width(cat) + 4
+                        pdf.set_fill_color(*bg)
+                        pdf.rect(badge_x, badge_y, badge_text_w, badge_h, style="F", round_corners=True, corner_radius=1.5)
+                        pdf.set_text_color(255, 255, 255)
+                        text_y = badge_y + (badge_h - pdf.font_size) / 2
+                        pdf.set_xy(badge_x, text_y)
+                        pdf.cell(badge_text_w, pdf.font_size, cat, border=0, align="C")
+                        badge_x += badge_text_w + 1.5
+
+                    # Restore fill for alternating rows
+                    if row_fill:
+                        pdf.set_fill_color(245, 245, 245)
+
+                    # Triangle icon + exercise name below badges
+                    name_y = row_y + badge_area_h
                     pdf.set_text_color(0, 0, 0)
-                    pdf.set_font(style="")
-                    # Draw small gold right-pointing triangle as clickable indicator
+                    pdf.set_font("opensans", style="", size=10)
                     tri_size = 2.2
                     icon_x = x_start + 3
-                    icon_y_center = row_y + total_h / 2
+                    icon_y_center = name_y + row_height / 2
                     pdf.set_fill_color(186, 148, 94)
                     pdf.polygon([
                         (icon_x, icon_y_center - tri_size),
@@ -203,8 +245,10 @@ def create_pdf():
                     if row_fill:
                         pdf.set_fill_color(245, 245, 245)
                     text_x = icon_x + tri_size * 1.6 + 2
-                    pdf.set_xy(text_x, row_y + (total_h - row_height) / 2)
+                    pdf.set_xy(text_x, name_y)
+                    pdf.set_font("opensans", style="B", size=10)
                     pdf.cell(exercise_name_column_width - (text_x - x_start), row_height, exercise.name, border=0, align="L", link=detailed_page_link)
+                    pdf.set_font("opensans", style="", size=10)
 
                     # Sets cell
                     sets_x = x_start + exercise_name_column_width
@@ -231,35 +275,36 @@ def create_pdf():
                     weight_x = reps_x + reps_time_column_width
                     pdf.rect(weight_x, row_y, weight_column_width, total_h, style=rect_style)
                     is_time_based = exercise.time and not exercise.reps
-                    if not is_time_based:
-                        pdf.set_font("times", "I", 9)
+                    is_mobility = ex_data and "mobility" in [c.strip().lower() for c in ex_data["category"].split(",")]
+                    if not is_time_based and not is_mobility:
+                        pdf.set_font("opensans", "I", 9)
                         pdf.set_text_color(120, 120, 120)
                         for s in range(sets):
                             pdf.set_xy(weight_x + 2, row_y + s * sub_row_h + (sub_row_h - 9) / 2)
                             pdf.cell(weight_column_width - 4, 9, f"set {s + 1}:  _________", border=0, align="L")
 
                     pdf.set_text_color(0, 0, 0)
-                    pdf.set_font("times", style="", size=13)
+                    pdf.set_font("opensans", style="", size=10)
                     pdf.set_y(row_y + total_h)
             pdf.ln(8)
             field_h = 18
             notes_h = 28
             box_padding = 4
 
-            pdf.set_font("times", style="I", size=10)
+            pdf.set_font("opensans", style="I", size=10)
             pdf.set_text_color(100, 100, 100)
             pdf.set_draw_color(186, 148, 94)
 
             # Executed on field
             pdf.set_x(x_start)
-            pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h)
+            pdf.rect(x_start, pdf.get_y(), table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
             pdf.set_xy(x_start + box_padding, pdf.get_y() + box_padding)
-            pdf.cell(0, 0, "Executed on:", border=0, align="L")
+            pdf.cell(0, 0, "Done on:", border=0, align="L")
             executed_y = pdf.get_y() - box_padding
 
             # Notes field
             notes_x = x_start + table_width / 2 + 2
-            pdf.rect(notes_x, executed_y, table_width / 2 - 2, field_h)
+            pdf.rect(notes_x, executed_y, table_width / 2 - 2, field_h, round_corners=True, corner_radius=3)
             pdf.set_xy(notes_x + box_padding, executed_y + box_padding)
             pdf.cell(0, 0, "Notes:", border=0, align="L")
 
