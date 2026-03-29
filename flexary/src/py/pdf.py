@@ -47,10 +47,10 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
     pdf.add_font("opensans", style="BI", fname="OpenSans-BoldItalic.ttf")
     pdf.set_font("opensans", style="", size=10)
 
-    exercise_name_column_width = 90
+    exercise_name_column_width = 80
     sets_column_width = 15
     reps_time_column_width = 40
-    weight_column_width = 35
+    obs_column_width = 50
 
     raw = localStorage.getItem(state.ls_workouts_key)
     if not raw:
@@ -102,7 +102,7 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 exercise_name_column_width
                 + sets_column_width
                 + reps_time_column_width
-                + weight_column_width
+                + obs_column_width
             )
             page_width = pdf.w - 2 * pdf.l_margin
             x_start = (page_width - table_width) / 2 + pdf.l_margin
@@ -181,7 +181,7 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 pdf.cell(exercise_name_column_width, row_height, "Exercise", border=1, fill=True, align="C")
                 pdf.cell(sets_column_width, row_height, "Sets", border=1, fill=True, align="C")
                 pdf.cell(reps_time_column_width, row_height, "Reps/Time/Dist", border=1, fill=True, align="C")
-                pdf.cell(weight_column_width, row_height, "Weight", border=1, fill=True, align="C")
+                pdf.cell(obs_column_width, row_height, "Observations", border=1, fill=True, align="C")
                 pdf.ln()
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font("opensans", style="", size=10)
@@ -431,15 +431,8 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 pdf.set_xy(reps_x, row_y + (total_h - row_height) / 2)
                 pdf.cell(reps_time_column_width, row_height, reps_time_cell_content, border=0, align="C")
 
-                weight_x = reps_x + reps_time_column_width
-                pdf.rect(weight_x, row_y, weight_column_width, total_h, style=rect_style)
-                if not is_time_based and not is_mobility:
-                    pdf.set_font("opensans", "I", 9)
-                    pdf.set_text_color(120, 120, 120)
-                    v_offset = (total_h - row_count * sub_row_h) / 2
-                    for s in range(row_count):
-                        pdf.set_xy(weight_x, row_y + v_offset + s * sub_row_h + (sub_row_h - 9) / 2)
-                        pdf.cell(weight_column_width, 9, f"set {s + 1}:  _________", border=0, align="C")
+                obs_x = reps_x + reps_time_column_width
+                pdf.rect(obs_x, row_y, obs_column_width, total_h, style=rect_style)
 
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font("opensans", style="", size=10)
