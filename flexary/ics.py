@@ -69,7 +69,7 @@ def _build_ics() -> str:
                 rounds_label = f"{rounds} round{'s' if rounds != 1 else ''}"
                 exercise_lines.append(f"Superset ({rounds_label}):")
                 for g_ex in group:
-                    entry = f"  • {g_ex.name} — {g_ex.detail_str()}"
+                    entry = f"  • {g_ex.name} — {g_ex.detail_str(in_superset=True)}"
                     if g_ex.notes:
                         entry += f" ({g_ex.notes})"
                     exercise_lines.append(entry)

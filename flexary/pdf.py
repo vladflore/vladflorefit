@@ -189,6 +189,7 @@ def create_pdf(black_and_white: bool = False):
                     sets = int(exercise.sets)
                 except Exception:
                     sets = 1
+                row_count = workout.superset_rounds.get(exercise.superset_id, 1) if exercise.superset_id else sets
 
                 sub_row_h = 7
                 ex_data = next((d for d in state.data if int(d["id"]) == exercise.id), None)
@@ -216,7 +217,7 @@ def create_pdf(black_and_white: bool = False):
                 else:
                     notes_h = 0
                 min_cell_h = badge_area_h + row_height + notes_h + 1
-                total_h = max(min_cell_h, sets * sub_row_h)
+                total_h = max(min_cell_h, row_count * sub_row_h)
 
                 if pdf.get_y() + total_h > pdf.h - 25:
                     for _sid in list(ss_open.keys()):
@@ -300,7 +301,8 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_xy(sets_x, row_y + (total_h - row_height) / 2)
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font(style="")
-                pdf.cell(sets_column_width, row_height, str(exercise.sets), border=0, align="C")
+                sets_label = "—" if exercise.superset_id else str(exercise.sets)
+                pdf.cell(sets_column_width, row_height, sets_label, border=0, align="C")
 
                 reps_time_cell_content = ""
                 if exercise.reps:
@@ -325,8 +327,8 @@ def create_pdf(black_and_white: bool = False):
                 if not is_time_based and not is_mobility:
                     pdf.set_font("opensans", "I", 9)
                     pdf.set_text_color(120, 120, 120)
-                    v_offset = (total_h - sets * sub_row_h) / 2
-                    for s in range(sets):
+                    v_offset = (total_h - row_count * sub_row_h) / 2
+                    for s in range(row_count):
                         pdf.set_xy(weight_x, row_y + v_offset + s * sub_row_h + (sub_row_h - 9) / 2)
                         pdf.cell(weight_column_width, 9, f"set {s + 1}:  _________", border=0, align="C")
 
