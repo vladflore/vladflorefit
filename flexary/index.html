@@ -444,17 +444,6 @@
 
         sidebarBackdrop.addEventListener("click", closeSidebar);
 
-        // Keep backdrop in sync when PyScript shows/hides the sidebar directly
-        new MutationObserver(function () {
-          if (window.innerWidth < 992) {
-            if (sidebar.classList.contains("d-none")) {
-              sidebarBackdrop.classList.add("d-none");
-            } else {
-              sidebarBackdrop.classList.remove("d-none");
-            }
-          }
-        }).observe(sidebar, { attributes: true, attributeFilter: ["class"] });
-
         updateButtonIcon();
 
         const filterToggleBtn = document.getElementById("filter-toggle-btn");
