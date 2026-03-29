@@ -14,7 +14,6 @@ from filters import (
     build_body_part_badges,
     build_category_badges,
     clear_filters,
-    filter_library,
     update as update_filters,
     update_exercise_stats,
 )
