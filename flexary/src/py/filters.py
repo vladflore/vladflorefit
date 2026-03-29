@@ -18,6 +18,19 @@ def _save_filters() -> None:
             "body_parts": list(state.active_body_part_filters),
         }),
     )
+    _update_filter_badge()
+
+
+def _update_filter_badge() -> None:
+    count = len(state.active_category_filters) + len(state.active_body_part_filters)
+    badge = document.getElementById("filter-active-count")
+    if badge is None:
+        return
+    if count:
+        badge.textContent = str(count)
+        badge.classList.remove("d-none")
+    else:
+        badge.classList.add("d-none")
 
 
 def build_category_badges(counts: dict) -> str:
@@ -152,6 +165,7 @@ def update(search_str: str) -> None:
     pydom[state.exercises_per_body_part_badges_row_id][0]._js.innerHTML = build_body_part_badges(bp_counts)
     attach_body_part_filter_listeners()
     update_exercise_stats(len(display_data), len(search_filtered))
+    _update_filter_badge()
 
 
 def clear_filters(event) -> None:

@@ -17,7 +17,7 @@
       gtag("config", "G-1Q5PTQ3F7Y");
     </script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
     <link
       rel="stylesheet"
       href="https://pyscript.net/releases/2024.1.1/core.css"
@@ -83,8 +83,16 @@
             <h2 class="mb-0 text-center">Welcome to Flexary</h2>
             <p class="mb-1 text-center text-muted">Your Fitness Exercises Library</p>
             <div id="sticky-filters">
+              <button id="filter-toggle-btn" class="filter-toggle-btn d-lg-none" type="button" aria-expanded="false">
+                <span class="d-flex align-items-center gap-2">
+                  <i class="bi bi-sliders2"></i>
+                  <span>Filters</span>
+                  <span id="filter-active-count" class="filter-active-badge d-none"></span>
+                </span>
+                <i class="bi bi-chevron-down filter-toggle-chevron"></i>
+              </button>
               <div id="filter-row" class="row mb-2 mt-3 justify-content-center d-none">
-                <div class="col-auto">
+                <div class="col-12 col-lg-auto">
                   <div class="filter-panel">
                     <div class="filter-panel-row">
                       <span class="filter-label">
@@ -183,8 +191,11 @@
       </main>
     </section>
 
+    <div id="sidebar-backdrop" class="sidebar-backdrop d-none"></div>
+
     <aside id="workout-sidebar" class="workout-sidebar d-none">
-      <div class="p-3 d-flex flex-column h-100" style="height: 100%">
+      <div class="sidebar-sheet-handle d-lg-none"></div>
+      <div class="p-3 d-flex flex-column" style="flex: 1; min-height: 0;">
         <h5 class="text-center" style="color: #ba945e; font-weight: 600; letter-spacing: 0.5px;">Your Workouts</h5>
         <div class="d-flex justify-content-center align-items-center mb-3">
           <button
@@ -412,19 +423,38 @@
         infoModal.addEventListener("click", (e) => { if (e.target === infoModal) infoModal.close(); });
         const sidebar = document.getElementById("workout-sidebar");
         const toggleBtn = document.getElementById("toggle-workout-sidebar");
+        const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+
         function updateButtonIcon() {
-          toggleBtn.innerHTML = sidebar.classList.contains("d-none")
-            ? '<i class="bi bi-list"></i>'
-            : '<i class="bi bi-x-lg"></i>';
-          toggleBtn.title = sidebar.classList.contains("d-none")
-            ? "Show Workouts"
-            : "Hide Workouts";
+          const hidden = sidebar.classList.contains("d-none");
+          toggleBtn.innerHTML = hidden ? '<i class="bi bi-list"></i>' : '<i class="bi bi-x-lg"></i>';
+          toggleBtn.title = hidden ? "Show Workouts" : "Hide Workouts";
         }
+
+        function closeSidebar() {
+          sidebar.classList.add("d-none");
+          sidebarBackdrop.classList.add("d-none");
+          updateButtonIcon();
+        }
+
         toggleBtn.addEventListener("click", function () {
           sidebar.classList.toggle("d-none");
           updateButtonIcon();
         });
+
+        sidebarBackdrop.addEventListener("click", closeSidebar);
+
         updateButtonIcon();
+
+        const filterToggleBtn = document.getElementById("filter-toggle-btn");
+        const filterRow = document.getElementById("filter-row");
+        if (filterToggleBtn && filterRow) {
+          filterToggleBtn.addEventListener("click", function () {
+            const isOpen = filterRow.classList.toggle("filter-panel-open");
+            filterToggleBtn.setAttribute("aria-expanded", isOpen);
+            filterToggleBtn.querySelector(".filter-toggle-chevron").style.transform = isOpen ? "rotate(180deg)" : "";
+          });
+        }
 
         const gdprBanner = document.getElementById("gdpr-banner");
         const gdprAccept = document.getElementById("gdpr-accept");

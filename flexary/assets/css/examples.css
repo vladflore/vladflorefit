@@ -2,6 +2,11 @@ body {
   margin: 0;
 }
 
+/* Absorb the iOS/iPadOS home-indicator safe area into the footer */
+footer {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
 .exercise-stats {
   font-size: 0.8rem;
   font-style: italic;
@@ -233,6 +238,8 @@ nav {
   color: #e0e0e0;
   scrollbar-width: thin;
   scrollbar-color: #3a3a3a #1a1a1a;
+  display: flex;
+  flex-direction: column;
 }
 
 .workout-sidebar::-webkit-scrollbar {
@@ -513,12 +520,30 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   left: 20px !important;
 }
 
-@media (max-width: 767px) {
+/* ── Sidebar backdrop ────────────────────────────────────────────────────── */
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1040;
+}
+
+/* ── Mobile: bottom sheet ────────────────────────────────────────────────── */
+
+@media (max-width: 991px) {
   .workout-sidebar {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
-    border-radius: 0;
+    height: 82dvh;
+    border-radius: 20px 20px 0 0;
     border-right: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-top: 1px solid #3a3a3a;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
   }
 
   body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
@@ -528,6 +553,15 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
     left: 20px !important;
   }
+}
+
+.sidebar-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: #444;
+  border-radius: 2px;
+  margin: 10px auto 4px;
+  flex-shrink: 0;
 }
 
 .workout-exercise-count {
@@ -740,6 +774,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   display: flex;
   flex-direction: column;
   gap: 0;
+  width: 100%;
 }
 
 .clear-filters-btn {
@@ -767,6 +802,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   align-items: center;
   gap: 1.25rem;
   padding: 0.4rem 0;
+  flex-wrap: wrap;
 }
 
 .filter-panel-divider {
@@ -783,6 +819,84 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   min-width: 78px;
   letter-spacing: 0.03em;
   text-transform: none;
+}
+
+/* ── Mobile filter toggle ────────────────────────────────────────────────── */
+
+.filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.9rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ba945e;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.filter-toggle-btn:hover {
+  background-color: #f0ece6;
+  border-color: #ba945e;
+}
+
+.filter-toggle-chevron {
+  transition: transform 0.25s ease;
+  font-size: 0.8rem;
+  color: #ba945e;
+}
+
+.filter-active-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ba945e;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  line-height: 1;
+}
+
+/* On mobile: collapse the filter row unless toggled open */
+@media (max-width: 991px) {
+  #filter-row:not(.filter-panel-open) {
+    display: none !important;
+  }
+
+  #filter-row.filter-panel-open {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .filter-panel {
+    padding: 0.6rem 0.85rem;
+  }
+
+  .filter-panel-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 0.5rem 0;
+  }
+
+  .filter-panel-divider {
+    margin: 0 -0.85rem;
+  }
+
+  .filter-label {
+    min-width: unset;
+  }
 }
 
 .category-filter-active {
