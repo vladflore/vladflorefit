@@ -96,6 +96,44 @@ def hide_sidebar() -> None:
 
 # ── Workout rendering ──────────────────────────────────────────────────────────
 
+def _make_superset_connector(workout, idx_above, idx_below):
+    ex_above = workout.exercises[idx_above]
+    ex_below = workout.exercises[idx_below]
+    is_linked = bool(ex_above.superset_id and ex_above.superset_id == ex_below.superset_id)
+
+    el = document.createElement("div")
+    el.className = "superset-connector " + ("superset-connector--linked" if is_linked else "superset-connector--unlinked")
+    el.setAttribute("data-workout-exercise-id", ex_below.internal_id)
+    el.setAttribute("data-workout-id", str(workout.id))
+    el.title = "Split superset here" if is_linked else "Add to superset"
+
+    icon = document.createElement("i")
+    icon.className = "bi bi-scissors" if is_linked else "bi bi-link-45deg"
+    icon.setAttribute("data-workout-exercise-id", ex_below.internal_id)
+    icon.setAttribute("data-workout-id", str(workout.id))
+
+    el.appendChild(icon)
+    el.addEventListener("click", create_proxy(toggle_superset))
+
+    if not is_linked:
+        id_above = ex_above.internal_id
+        id_below = ex_below.internal_id
+
+        def _on_mouseenter(evt):
+            for ex_id in [id_above, id_below]:
+                node = document.querySelector(f'[data-exercise-item-id="{ex_id}"]')
+                if node:
+                    node.classList.add("superset-hover-stay")
+
+        def _on_mouseleave(evt):
+            for node in document.querySelectorAll(".superset-hover-stay"):
+                node.classList.remove("superset-hover-stay")
+
+        el.addEventListener("mouseenter", create_proxy(_on_mouseenter))
+        el.addEventListener("mouseleave", create_proxy(_on_mouseleave))
+
+    return el
+
 def workout_edit(event) -> None:
     state.active_workout = UUID(event.target.getAttribute("data-workout-id"))
     for w in state.workouts:
@@ -166,6 +204,7 @@ def render_workouts(workouts: list) -> None:
         for ei, exercise in enumerate(w.exercises):
             w_li = li if ei == 0 else li.clone()
             w_li._js.removeAttribute("id")
+            w_li._js.setAttribute("data-exercise-item-id", exercise.internal_id)
 
             name_el = document.createElement("div")
             name_el.className = "exercise-item-name"
@@ -184,22 +223,6 @@ def render_workouts(workouts: list) -> None:
                 notes_el.className = "exercise-item-notes"
                 notes_el.textContent = exercise.notes[:60] + "…" if len(exercise.notes) > 60 else exercise.notes
                 item_name_span.appendChild(notes_el)
-
-            w_item_link_icon = w_li.find("#workout-item-link")[0]
-            w_item_link_icon._js.setAttribute("data-workout-exercise-id", exercise.internal_id)
-            w_item_link_icon._js.setAttribute("data-workout-id", str(w.id))
-            if ei == 0:
-                w_item_link_icon._js.classList.add("invisible")
-            else:
-                w_item_link_icon._js.classList.remove("invisible")
-                w_item_link_icon._js.onclick = toggle_superset
-                prev_ex = w.exercises[ei - 1]
-                if exercise.superset_id and exercise.superset_id == prev_ex.superset_id:
-                    w_item_link_icon._js.classList.add("active")
-                    w_item_link_icon._js.title = "Unlink from superset"
-                else:
-                    w_item_link_icon._js.classList.remove("active")
-                    w_item_link_icon._js.title = "Link with exercise above (superset)"
 
             w_item_move_up = w_li.find("#workout-item-move-up")[0]
             w_item_move_up._js.onclick = move_exercise_up
@@ -234,6 +257,9 @@ def render_workouts(workouts: list) -> None:
             if exercise.superset_id:
                 is_group_start = ei == 0 or w.exercises[ei - 1].superset_id != exercise.superset_id
                 if is_group_start:
+                    if ei > 0:
+                        w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
+
                     sid = exercise.superset_id
                     current_superset_wrapper = document.createElement("div")
                     current_superset_wrapper.className = "superset-group"
@@ -270,9 +296,13 @@ def render_workouts(workouts: list) -> None:
                         return _on_change
 
                     rounds_input.addEventListener("change", create_proxy(_make_rounds_handler(w, sid)))
+                else:
+                    current_superset_wrapper.appendChild(_make_superset_connector(w, ei - 1, ei))
 
                 current_superset_wrapper.appendChild(w_li._js)
             else:
+                if ei > 0:
+                    w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
                 current_superset_wrapper = None
                 w_ul.append(w_li)
 
@@ -366,7 +396,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     inputs_container.appendChild(_make_input_group("Sets", input_sets))
     inputs_container.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
     inputs_container.appendChild(_make_input_group("Time per set — hh:mm:ss (optional)", input_time))
-    inputs_container.appendChild(_make_input_group("Distance (optional)", input_distance))
+    inputs_container.appendChild(_make_input_group("Distance per set (optional)", input_distance))
     inputs_container.appendChild(_make_input_group("Notes (optional)", input_notes))
 
     warning_el = _make_warning_el()
@@ -444,12 +474,33 @@ def toggle_superset(event) -> None:
         return
     prev_ex = w.exercises[j - 1]
     if ex.superset_id and ex.superset_id == prev_ex.superset_id:
-        ex.superset_id = ""
+        # Unlink: split the superset at this boundary.
+        # Exercises from j onwards that share the same sid form a new superset (if ≥2).
+        old_sid = ex.superset_id
+        tail = [e for i, e in enumerate(w.exercises) if i >= j and e.superset_id == old_sid]
+        if len(tail) >= 2:
+            new_sid = str(uuid4())
+            w.superset_rounds[new_sid] = w.superset_rounds.get(old_sid, 1)
+            for e in tail:
+                e.superset_id = new_sid
+        else:
+            ex.superset_id = ""
         _cleanup_supersets(w)
     else:
-        sid = prev_ex.superset_id if prev_ex.superset_id else str(uuid4())
+        # Prefer the existing superset id from whichever side already belongs to one.
+        # Priority: lower exercise's group > upper exercise's group > new id.
+        # This ensures adding ex1 above an existing ex2+ex3 superset extends it
+        # rather than creating a new one that orphans ex3.
+        sid = ex.superset_id or prev_ex.superset_id or str(uuid4())
         if sid not in w.superset_rounds:
             w.superset_rounds[sid] = 1
+        # If the upper exercise was in a different superset, migrate all its members.
+        if prev_ex.superset_id and prev_ex.superset_id != sid:
+            old_sid = prev_ex.superset_id
+            for e in w.exercises:
+                if e.superset_id == old_sid:
+                    e.superset_id = sid
+            w.superset_rounds.pop(old_sid, None)
         prev_ex.superset_id = sid
         ex.superset_id = sid
     state.save_workouts()
@@ -481,10 +532,34 @@ def _cleanup_supersets(w) -> None:
 
 
 def _can_move(exercises, j, delta) -> bool:
-    """True only when the swap stays within the same superset context."""
-    neighbour = j + delta
-    return 0 <= neighbour < len(exercises) and \
-        exercises[j].superset_id == exercises[neighbour].superset_id
+    """Superset exercises: only within their group. Standalones: always (jump over groups)."""
+    k = j + delta
+    if not (0 <= k < len(exercises)):
+        return False
+    if exercises[j].superset_id:
+        return exercises[k].superset_id == exercises[j].superset_id
+    return True
+
+
+def _do_move(exercises, j, delta) -> None:
+    """Perform the move. Standalones jump over entire superset groups as a unit."""
+    ex = exercises[j]
+    k = j + delta
+    if ex.superset_id or not exercises[k].superset_id:
+        exercises[j], exercises[k] = exercises[k], exercises[j]
+    else:
+        # Standalone jumping over a superset group — find the far boundary.
+        sid = exercises[k].superset_id
+        if delta == +1:
+            end = k
+            while end + 1 < len(exercises) and exercises[end + 1].superset_id == sid:
+                end += 1
+            exercises.insert(end, exercises.pop(j))
+        else:
+            start = k
+            while start - 1 >= 0 and exercises[start - 1].superset_id == sid:
+                start -= 1
+            exercises.insert(start, exercises.pop(j))
 
 
 def move_exercise_up(event) -> None:
@@ -492,7 +567,7 @@ def move_exercise_up(event) -> None:
     workout_id = event.target.getAttribute("data-workout-id")
     w, _, j = _find_exercise(workout_id, workout_ex_id)
     if w and _can_move(w.exercises, j, -1):
-        w.exercises[j], w.exercises[j - 1] = w.exercises[j - 1], w.exercises[j]
+        _do_move(w.exercises, j, -1)
         state.save_workouts()
         render_workouts(state.workouts)
 
@@ -502,7 +577,7 @@ def move_exercise_down(event) -> None:
     workout_id = event.target.getAttribute("data-workout-id")
     w, _, j = _find_exercise(workout_id, workout_ex_id)
     if w and _can_move(w.exercises, j, +1):
-        w.exercises[j], w.exercises[j + 1] = w.exercises[j + 1], w.exercises[j]
+        _do_move(w.exercises, j, +1)
         state.save_workouts()
         render_workouts(state.workouts)
 
@@ -579,7 +654,7 @@ def edit_exercise_in_workout(event) -> None:
     modal.appendChild(_make_input_group("Sets", input_sets))
     modal.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
     modal.appendChild(_make_input_group("Time per set — hh:mm:ss (optional)", input_time))
-    modal.appendChild(_make_input_group("Distance (optional)", input_distance))
+    modal.appendChild(_make_input_group("Distance per set (optional)", input_distance))
     modal.appendChild(_make_input_group("Notes (optional)", input_notes))
 
     buttons_container = document.createElement("div")

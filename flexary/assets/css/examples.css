@@ -401,6 +401,70 @@ nav {
   height: 18px;
 }
 
+.superset-connector {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 6px;
+  height: 18px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  transition: background-color 0.15s, color 0.15s;
+  user-select: none;
+  gap: 4px;
+}
+
+.superset-connector::before,
+.superset-connector::after {
+  content: '';
+  flex: 1;
+  height: 0;
+}
+
+.superset-connector--unlinked {
+  color: #484848;
+}
+
+.superset-connector--unlinked::before,
+.superset-connector--unlinked::after {
+  border-top: 1px dashed #484848;
+}
+
+.superset-connector--unlinked:hover {
+  color: #ba945e;
+  background-color: rgba(186, 148, 94, 0.08);
+}
+
+.superset-connector--unlinked:hover::before,
+.superset-connector--unlinked:hover::after {
+  border-color: #ba945e;
+}
+
+.superset-connector--linked {
+  color: #ba945e;
+}
+
+.superset-connector--linked::before,
+.superset-connector--linked::after {
+  border-top: 1px solid #ba945e;
+}
+
+.superset-connector--linked:hover {
+  color: #60a5fa;
+  background-color: rgba(96, 165, 250, 0.08);
+}
+
+.superset-connector--linked:hover::before,
+.superset-connector--linked:hover::after {
+  border-color: #60a5fa;
+}
+
+.list-group-item.superset-hover-stay {
+  border-left: 3px solid #ba945e !important;
+  transition: border-left 0.1s;
+}
+
+
 #toggle-workout-sidebar {
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1100;
