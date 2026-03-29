@@ -27,7 +27,7 @@ def current_version():
 
 
 if __name__ == "__main__":
-    csv_file_path = "exercises_library.csv"
+    csv_file_path = "../../data/exercises_library.csv"
 
     json_data = csv_to_json(csv_file_path, exercise_id="4")
     print(json.dumps(json_data, indent=4))
