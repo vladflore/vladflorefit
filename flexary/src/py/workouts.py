@@ -542,6 +542,19 @@ def render_workouts(workouts: list) -> None:
             w_ul._js.classList.add("d-none")
             hint.classList.remove("d-none")
 
+        describe_btn = document.createElement("button")
+        describe_btn.className = "describe-workout-btn" + ("" if w.exercises else " d-none")
+        describe_btn.setAttribute("data-workout-id", str(w.id))
+        describe_btn.innerHTML = '<i class="bi bi-stars"></i><span>Describe workout</span>'
+
+        def _make_describe_handler(wid):
+            def _on_click(evt):
+                asyncio.ensure_future(_fetch_description(wid))
+            return _on_click
+
+        describe_btn.addEventListener("click", create_proxy(_make_describe_handler(w.id)))
+        w_div._js.appendChild(describe_btn)
+
         ws_container.append(w_div)
 
     has_mismatch = any(
@@ -1013,17 +1026,18 @@ def add_workout(event) -> None:
 
 # ── AI workout description ─────────────────────────────────────────────────────
 
-async def _fetch_description() -> None:
-    btn = document.getElementById("describe-workout")
+async def _fetch_description(workout_id) -> None:
     modal = document.getElementById("describe-modal")
     modal_body = document.getElementById("describe-modal-body")
+    btn = document.querySelector(f'.describe-workout-btn[data-workout-id="{workout_id}"]')
 
-    workout = next((w for w in state.workouts if w.id == state.active_workout), None)
+    workout = next((w for w in state.workouts if w.id == workout_id), None)
     if not workout:
         return
 
-    btn.disabled = True
-    btn.classList.add("sidebar-action-btn--loading")
+    if btn:
+        btn.disabled = True
+        btn.classList.add("describe-workout-btn--loading")
 
     try:
         body = json.loads(workouts_to_json([workout]))[0]
@@ -1047,11 +1061,8 @@ async def _fetch_description() -> None:
     except Exception as e:
         modal_body.innerHTML = f'<p style="color:#e05252;">Request failed: {html_escape(str(e))}</p>'
     finally:
-        btn.disabled = False
-        btn.classList.remove("sidebar-action-btn--loading")
+        if btn:
+            btn.disabled = False
+            btn.classList.remove("describe-workout-btn--loading")
 
     modal.showModal()
-
-
-def describe_active_workout(event) -> None:
-    asyncio.ensure_future(_fetch_description())
