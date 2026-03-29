@@ -219,7 +219,7 @@ nav {
   top: 68px;
   left: 0;
   right: auto;
-  width: 300px;
+  width: 360px;
   height: calc(100vh - 68px);
   background-color: #1a1a1a;
   border-right: 1px solid #333;
@@ -407,7 +407,7 @@ nav {
 }
 
 body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
-  left: 320px !important;
+  left: 380px !important;
 }
 
 main {
@@ -415,7 +415,7 @@ main {
 }
 
 body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
-  margin-left: 300px;
+  margin-left: 360px;
 }
 
 #workout-sidebar.d-none ~ #toggle-workout-sidebar {
