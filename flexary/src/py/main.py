@@ -16,7 +16,7 @@ from filters import (
 )
 from pdf import download_file, make_pdf_download_handler
 from ics import download_ics
-from workouts import add_workout, hide_sidebar, render_workouts, remove_workouts, show_sidebar
+from workouts import add_workout, describe_active_workout, hide_sidebar, render_workouts, remove_workouts, show_sidebar
 
 
 def show_info(event) -> None:
@@ -56,6 +56,7 @@ add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", 
 add_event_listener(document.getElementById("download-ics"), "click", download_ics)
 add_event_listener(document.getElementById("pdf-color-btn"), "click", make_pdf_download_handler(False))
 add_event_listener(document.getElementById("pdf-bw-btn"), "click", make_pdf_download_handler(True))
+add_event_listener(document.getElementById("describe-workout"), "click", describe_active_workout)
 
 # ── Initial sidebar state ──────────────────────────────────────────────────────
 if state.workouts:

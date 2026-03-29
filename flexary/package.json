@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.25.0",
+    "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vercel/node": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

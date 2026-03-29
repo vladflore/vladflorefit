@@ -1,14 +1,17 @@
+import asyncio
 import datetime
+import json
 from html import escape as html_escape
 from uuid import UUID, uuid4
 
-from js import localStorage
+from js import localStorage, window
 from pyodide.ffi import create_proxy
+from pyodide.http import pyfetch
 from pyscript import document
 from pyweb import pydom
 
 import state
-from models import Exercise, Workout
+from models import Exercise, Workout, workouts_to_json
 
 
 # ── DOM helpers ────────────────────────────────────────────────────────────────
@@ -1006,3 +1009,49 @@ def add_workout(event) -> None:
     state.workouts.append(w)
     state.save_workouts()
     render_workouts(state.workouts)
+
+
+# ── AI workout description ─────────────────────────────────────────────────────
+
+async def _fetch_description() -> None:
+    btn = document.getElementById("describe-workout")
+    modal = document.getElementById("describe-modal")
+    modal_body = document.getElementById("describe-modal-body")
+
+    workout = next((w for w in state.workouts if w.id == state.active_workout), None)
+    if not workout:
+        return
+
+    btn.disabled = True
+    btn.classList.add("sidebar-action-btn--loading")
+
+    try:
+        body = json.loads(workouts_to_json([workout]))[0]
+        print(json.dumps(body, indent=2))
+        resp = await pyfetch(
+            f"{window.API_BASE}/api/describe_workout",
+            method="POST",
+            body=json.dumps(body),
+            headers={"Content-Type": "application/json"},
+        )
+        data = await resp.json()
+        if "description" in data:
+            paragraphs = "".join(
+                f"<p>{html_escape(p.strip())}</p>"
+                for p in data["description"].split("\n\n")
+                if p.strip()
+            )
+            modal_body.innerHTML = paragraphs
+        else:
+            modal_body.innerHTML = f'<p style="color:#e05252;">Error: {html_escape(data.get("error", "Unknown error"))}</p>'
+    except Exception as e:
+        modal_body.innerHTML = f'<p style="color:#e05252;">Request failed: {html_escape(str(e))}</p>'
+    finally:
+        btn.disabled = False
+        btn.classList.remove("sidebar-action-btn--loading")
+
+    modal.showModal()
+
+
+def describe_active_workout(event) -> None:
+    asyncio.ensure_future(_fetch_description())

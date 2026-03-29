@@ -306,6 +306,10 @@
             <i class="bi bi-calendar-event"></i>
             <span>ICS</span>
           </button>
+          <button id="describe-workout" type="button" class="sidebar-action-btn">
+            <i class="bi bi-stars"></i>
+            <span>Describe</span>
+          </button>
           <button id="clear-workouts" type="button" class="sidebar-action-btn sidebar-action-btn--danger" py-click="remove_workouts">
             <i class="bi bi-trash"></i>
             <span>Clear</span>
@@ -332,6 +336,9 @@
       </div>
     </footer>
 
+    <script>
+      window.API_BASE = location.port === "5500" ? "http://localhost:3000" : "";
+    </script>
     <script type="py" src="./src/py/main.py" config="./pyscript.toml"></script>
 
     <div
@@ -361,6 +368,22 @@
       </div>
     </dialog>
 
+    <dialog id="describe-modal">
+      <div class="describe-modal-header">
+        <span class="describe-modal-title">
+          <i class="bi bi-stars"></i>Workout Description
+        </span>
+        <button class="describe-modal-close" id="describe-modal-close" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div id="describe-modal-body" class="describe-modal-body"></div>
+      <div class="describe-modal-footer">
+        <span class="describe-modal-badge">✦ AI generated</span>
+        <button class="btn btn-outline-gold btn-sm" id="describe-modal-close-btn">Close</button>
+      </div>
+    </dialog>
+
     <dialog id="info-modal">
       <div class="info-modal-header">
         <span class="info-modal-title">About Flexary</span>
@@ -379,6 +402,10 @@
         const pdfColorModal = document.getElementById("pdf-color-modal");
         document.getElementById("pdf-color-modal-close").addEventListener("click", () => pdfColorModal.close());
         pdfColorModal.addEventListener("click", (e) => { if (e.target === pdfColorModal) pdfColorModal.close(); });
+        const describeModal = document.getElementById("describe-modal");
+        document.getElementById("describe-modal-close").addEventListener("click", () => describeModal.close());
+        document.getElementById("describe-modal-close-btn").addEventListener("click", () => describeModal.close());
+        describeModal.addEventListener("click", (e) => { if (e.target === describeModal) describeModal.close(); });
         const infoModal = document.getElementById("info-modal");
         document.getElementById("info-modal-close").addEventListener("click", () => infoModal.close());
         document.getElementById("info-modal-close-btn").addEventListener("click", () => infoModal.close());
