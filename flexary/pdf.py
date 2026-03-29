@@ -183,6 +183,35 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_line_width(0.2)
 
             for row_num, exercise in enumerate(chunk):
+                # ── Break row ────────────────────────────────────────────────
+                break_mins = workout.breaks.get(exercise.internal_id, 0)
+                if break_mins:
+                    break_h = 6
+                    if pdf.get_y() + break_h > pdf.h - 25:
+                        for _sid in list(ss_open.keys()):
+                            _close_ss_line(_sid)
+                        workout_total_pages += 1
+                        pdf.workout_total_pages = workout_total_pages
+                        next_page_num = pdf.workout_page_num + 1
+                        pdf.add_page()
+                        pdf.workout_page_num = next_page_num
+                        render_table_header()
+                    pdf.set_x(x_start)
+                    pdf.set_font("opensans", style="I", size=7)
+                    pdf.set_text_color(120, 120, 120)
+                    pdf.set_fill_color(242, 242, 242)
+                    pdf.set_draw_color(*gold)
+                    pdf.rect(x_start, pdf.get_y(), table_width, break_h, style="DF")
+                    pdf.set_xy(x_start, pdf.get_y())
+                    _m, _s = divmod(break_mins, 60)
+                    _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
+                    label = f"rest  {_fmt}"
+                    pdf.cell(table_width, break_h, label, border=0, align="C")
+                    pdf.set_y(pdf.get_y() + break_h)
+                    pdf.set_font("opensans", style="", size=10)
+                    pdf.set_text_color(0, 0, 0)
+                # ─────────────────────────────────────────────────────────────
+
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
                 detailed_page_link = next(

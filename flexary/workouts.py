@@ -120,6 +120,119 @@ def _show_confirm_popup(anchor_el, message, on_confirm) -> None:
     popup.style.transform = "translateY(-100%)"
 
 
+def _format_break(secs: int) -> str:
+    if secs < 60:
+        return f"{secs}s"
+    m, s = divmod(secs, 60)
+    return f"{m}m {s}s" if s else f"{m}m"
+
+
+def _show_break_popup(anchor_el, workout, ex_below) -> None:
+    existing = document.querySelector(".break-popup-overlay")
+    if existing:
+        existing.remove()
+
+    overlay = document.createElement("div")
+    overlay.className = "break-popup-overlay confirm-popup-overlay"
+
+    popup = document.createElement("div")
+    popup.className = "confirm-popup"
+
+    title_el = document.createElement("p")
+    title_el.className = "confirm-popup-message"
+    title_el.textContent = f"Rest before {ex_below.name}"
+    popup.appendChild(title_el)
+
+    input_row = document.createElement("div")
+    input_row.style.display = "flex"
+    input_row.style.alignItems = "center"
+    input_row.style.gap = "6px"
+    input_row.style.margin = "4px 0 8px"
+
+    inp = document.createElement("input")
+    inp.type = "number"
+    inp.min = "1"
+    inp.max = "3600"
+    current = workout.breaks.get(ex_below.internal_id, 0)
+    inp.value = str(current) if current else ""
+    inp.placeholder = "sec"
+    inp.style.width = "64px"
+    inp.style.fontSize = "0.8rem"
+    inp.style.padding = "2px 6px"
+    inp.style.borderRadius = "4px"
+    inp.style.border = "1px solid rgba(255,255,255,0.2)"
+    inp.style.backgroundColor = "rgba(255,255,255,0.1)"
+    inp.style.color = "#fff"
+
+    unit_label = document.createElement("span")
+    unit_label.textContent = "sec"
+    unit_label.style.fontSize = "0.8rem"
+    unit_label.style.color = "rgba(255,255,255,0.7)"
+
+    input_row.appendChild(inp)
+    input_row.appendChild(unit_label)
+    popup.appendChild(input_row)
+
+    btn_row = document.createElement("div")
+    btn_row.className = "confirm-popup-actions"
+
+    save_btn = document.createElement("button")
+    save_btn.textContent = "Set"
+    save_btn.className = "confirm-popup-confirm"
+
+    clear_btn = document.createElement("button")
+    clear_btn.textContent = "Clear"
+    clear_btn.className = "confirm-popup-cancel"
+
+    cancel_btn = document.createElement("button")
+    cancel_btn.textContent = "Cancel"
+    cancel_btn.className = "confirm-popup-cancel"
+
+    def _save(evt):
+        evt.stopPropagation()
+        val = inp.value.strip()
+        if val and int(val) > 0:
+            workout.breaks[ex_below.internal_id] = int(val)
+        else:
+            workout.breaks.pop(ex_below.internal_id, None)
+        overlay.remove()
+        state.save_workouts()
+        render_workouts(state.workouts)
+
+    def _clear(evt):
+        evt.stopPropagation()
+        inp.value = ""
+
+    def _cancel(evt):
+        evt.stopPropagation()
+        overlay.remove()
+
+    def _dismiss(evt):
+        if evt.target == overlay:
+            overlay.remove()
+
+    save_btn.addEventListener("click", create_proxy(_save))
+    clear_btn.addEventListener("click", create_proxy(_clear))
+    cancel_btn.addEventListener("click", create_proxy(_cancel))
+    overlay.addEventListener("click", create_proxy(_dismiss))
+
+    btn_row.appendChild(clear_btn)
+    btn_row.appendChild(cancel_btn)
+    btn_row.appendChild(save_btn)
+    popup.appendChild(btn_row)
+    overlay.appendChild(popup)
+    document.body.appendChild(overlay)
+
+    rect = anchor_el.getBoundingClientRect()
+    popup_w = 210
+    left = rect.left + rect.width / 2 - popup_w / 2
+    left = max(8, min(left, document.documentElement.clientWidth - popup_w - 8))
+    popup.style.width = f"{popup_w}px"
+    popup.style.left = f"{left}px"
+    popup.style.top = f"{rect.top - 8}px"
+    popup.style.transform = "translateY(-100%)"
+
+
 def _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el) -> bool:
     if not sets_val:
         _show_warning(warning_el, "Number of sets is required.")
@@ -193,6 +306,29 @@ def _make_superset_connector(workout, idx_above, idx_below):
         el.addEventListener("mouseleave", create_proxy(_on_mouseleave))
 
     return el
+
+
+def _make_break_row(workout, ex_below):
+    break_mins = workout.breaks.get(ex_below.internal_id, 0)
+
+    row = document.createElement("div")
+    row.className = "connector-break-row" + (" connector-break-row--set" if break_mins else "")
+
+    clock = document.createElement("i")
+    clock.className = "bi bi-hourglass-split"
+    row.appendChild(clock)
+
+    lbl = document.createElement("span")
+    lbl.textContent = f"{_format_break(break_mins)} rest" if break_mins else "add rest"
+    row.appendChild(lbl)
+
+    def _make_break_handler(w, ex_b):
+        def _on_click(evt):
+            _show_break_popup(row, w, ex_b)
+        return _on_click
+
+    row.addEventListener("click", create_proxy(_make_break_handler(workout, ex_below)))
+    return row
 
 def workout_edit(event) -> None:
     state.active_workout = UUID(event.target.getAttribute("data-workout-id"))
@@ -341,6 +477,7 @@ def render_workouts(workouts: list) -> None:
                 if is_group_start:
                     if ei > 0:
                         w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
+                        w_ul._js.appendChild(_make_break_row(w, exercise))
 
                     sid = exercise.superset_id
                     current_superset_wrapper = document.createElement("div")
@@ -386,6 +523,7 @@ def render_workouts(workouts: list) -> None:
             else:
                 if ei > 0:
                     w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
+                    w_ul._js.appendChild(_make_break_row(w, exercise))
                 current_superset_wrapper = None
                 w_ul.append(w_li)
 
@@ -816,7 +954,9 @@ def remove_exercise_from_workout(event) -> None:
     workout_id = event.target.getAttribute("data-workout-id")
     w, _, j = _find_exercise(workout_id, workout_ex_id)
     if w and j >= 0:
+        ex_id = w.exercises[j].internal_id
         del w.exercises[j]
+        w.breaks.pop(ex_id, None)
         _cleanup_supersets(w)
     state.save_workouts()
     render_workouts(state.workouts)
