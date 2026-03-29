@@ -24,7 +24,8 @@ def _make_input_group(label_text: str, input_el):
     label.style.color = "rgba(255,255,255,0.75)"
     input_el.style.width = "100%"
     input_el.style.fontSize = "0.8rem"
-    input_el.style.height = "26px"
+    if input_el.tagName.lower() != "textarea":
+        input_el.style.height = "26px"
     input_el.style.padding = "2px 6px"
     input_el.style.borderRadius = "4px"
     input_el.style.border = "1px solid rgba(255,255,255,0.2)"
@@ -181,7 +182,7 @@ def render_workouts(workouts: list) -> None:
             if exercise.notes:
                 notes_el = document.createElement("div")
                 notes_el.className = "exercise-item-notes"
-                notes_el.textContent = exercise.notes
+                notes_el.textContent = exercise.notes[:60] + "…" if len(exercise.notes) > 60 else exercise.notes
                 item_name_span.appendChild(notes_el)
 
             w_item_link_icon = w_li.find("#workout-item-link")[0]
@@ -359,9 +360,8 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
 
     input_notes = document.createElement("textarea")
     input_notes.placeholder = "Optional notes…"
-    input_notes.rows = "2"
-    input_notes.style.resize = "none"
-    input_notes.style.height = "auto"
+    input_notes.rows = "3"
+    input_notes.style.resize = "vertical"
 
     inputs_container.appendChild(_make_input_group("Sets", input_sets))
     inputs_container.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
@@ -572,18 +572,15 @@ def edit_exercise_in_workout(event) -> None:
 
     input_notes = document.createElement("textarea")
     input_notes.placeholder = "Optional notes…"
-    input_notes.rows = "2"
-    input_notes.style.resize = "none"
-    input_notes.style.height = "auto"
+    input_notes.rows = "3"
+    input_notes.style.resize = "vertical"
     input_notes.value = target_ex.notes or ""
 
     modal.appendChild(_make_input_group("Sets", input_sets))
     modal.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
     modal.appendChild(_make_input_group("Time per set — hh:mm:ss (optional)", input_time))
     modal.appendChild(_make_input_group("Distance (optional)", input_distance))
-    notes_group = _make_input_group("Notes (optional)", input_notes)
-    input_notes.style.height = "auto"
-    modal.appendChild(notes_group)
+    modal.appendChild(_make_input_group("Notes (optional)", input_notes))
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
