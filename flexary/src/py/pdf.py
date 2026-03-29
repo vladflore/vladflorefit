@@ -7,7 +7,7 @@ from fpdf import FPDF
 from js import Uint8Array, File, URL, document, localStorage
 
 import state
-from models import category_to_rgb, workouts_from_json
+from models import category_to_rgb, workouts_from_json, _reps_display, _time_display, _dist_display
 
 
 def create_pdf(black_and_white: bool = False, include_description: bool = True):
@@ -411,15 +411,15 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
 
                 reps_time_cell_content = ""
                 if exercise.reps:
-                    reps_time_cell_content = exercise.reps
+                    reps_time_cell_content = _reps_display(exercise.reps, sets)
                 if exercise.time:
                     if reps_time_cell_content:
                         reps_time_cell_content += " / "
-                    reps_time_cell_content += exercise.time
+                    reps_time_cell_content += _time_display(exercise.time, sets)
                 if exercise.distance:
                     if reps_time_cell_content:
                         reps_time_cell_content += " / "
-                    reps_time_cell_content += exercise.distance
+                    reps_time_cell_content += _dist_display(exercise.distance, sets)
                 reps_x = sets_x + sets_column_width
                 pdf.rect(reps_x, row_y, reps_time_column_width, total_h, style=rect_style)
                 pdf.set_xy(reps_x, row_y + (total_h - row_height) / 2)

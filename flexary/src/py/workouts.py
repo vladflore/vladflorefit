@@ -63,6 +63,612 @@ def _show_warning(el, msg: str) -> None:
     el.style.display = "block"
 
 
+def _make_sets_stepper(initial_value: int = 1):
+    """Returns (container_el, input_el). The input_el fires 'input' events normally."""
+    input_el = document.createElement("input")
+    input_el.type = "hidden"
+    input_el.value = str(initial_value)
+
+    display = document.createElement("span")
+    display.textContent = str(initial_value)
+    display.style.minWidth = "32px"
+    display.style.textAlign = "center"
+    display.style.fontSize = "0.95rem"
+    display.style.fontWeight = "600"
+    display.style.color = "#fff"
+    display.style.userSelect = "none"
+
+    def _make_step_btn(symbol):
+        btn = document.createElement("button")
+        btn.type = "button"
+        btn.textContent = symbol
+        btn.classList.add("btn", "btn-outline-gold", "btn-sm")
+        btn.style.width = "32px"
+        btn.style.height = "32px"
+        btn.style.padding = "0"
+        btn.style.fontSize = "1.1rem"
+        btn.style.lineHeight = "1"
+        btn.style.flexShrink = "0"
+        btn.style.borderRadius = "50%"
+        return btn
+
+    minus_btn = _make_step_btn("\u2212")
+    plus_btn = _make_step_btn("+")
+
+    def _on_minus(evt):
+        evt.preventDefault()
+        cur = int(input_el.value) if input_el.value.strip().isdigit() else 1
+        if cur > 1:
+            input_el.value = str(cur - 1)
+            display.textContent = input_el.value
+            input_el.dispatchEvent(window.Event.new("input", {"bubbles": True}))
+
+    def _on_plus(evt):
+        evt.preventDefault()
+        cur = int(input_el.value) if input_el.value.strip().isdigit() else 1
+        input_el.value = str(cur + 1)
+        display.textContent = input_el.value
+        input_el.dispatchEvent(window.Event.new("input", {"bubbles": True}))
+
+    minus_btn.addEventListener("click", create_proxy(_on_minus))
+    plus_btn.addEventListener("click", create_proxy(_on_plus))
+
+    label = document.createElement("label")
+    label.textContent = "Sets"
+    label.style.fontSize = "0.75rem"
+    label.style.color = "rgba(255,255,255,0.75)"
+    label.style.textAlign = "center"
+
+    row = document.createElement("div")
+    row.style.display = "flex"
+    row.style.alignItems = "center"
+    row.style.justifyContent = "center"
+    row.style.gap = "6px"
+    row.appendChild(minus_btn)
+    row.appendChild(display)
+    row.appendChild(plus_btn)
+    row.appendChild(input_el)
+
+    container = document.createElement("div")
+    container.style.display = "flex"
+    container.style.flexDirection = "column"
+    container.style.gap = "2px"
+    container.appendChild(label)
+    container.appendChild(row)
+
+    return container, input_el
+
+
+def _make_rest_stepper(initial_value: int = 0):
+    """Returns (container_el, input_el, set_value_fn). Steps in 15-second increments."""
+
+    def _fmt(v):
+        if v == 0:
+            return "0"
+        m, s = divmod(v, 60)
+        if m and s:
+            return f"{m}m {s}s"
+        return f"{m}m" if m else f"{s}s"
+
+    input_el = document.createElement("input")
+    input_el.type = "hidden"
+    input_el.value = str(initial_value)
+
+    display = document.createElement("span")
+    display.textContent = _fmt(initial_value)
+    display.style.minWidth = "48px"
+    display.style.textAlign = "center"
+    display.style.fontSize = "0.95rem"
+    display.style.fontWeight = "600"
+    display.style.color = "#fff"
+    display.style.userSelect = "none"
+
+    def _make_step_btn(symbol):
+        btn = document.createElement("button")
+        btn.type = "button"
+        btn.textContent = symbol
+        btn.classList.add("btn", "btn-outline-gold", "btn-sm")
+        btn.style.width = "32px"
+        btn.style.height = "32px"
+        btn.style.padding = "0"
+        btn.style.fontSize = "1.1rem"
+        btn.style.lineHeight = "1"
+        btn.style.flexShrink = "0"
+        btn.style.borderRadius = "50%"
+        return btn
+
+    minus_btn = _make_step_btn("\u2212")
+    plus_btn = _make_step_btn("+")
+
+    def _set_value(v):
+        input_el.value = str(v)
+        display.textContent = _fmt(v)
+
+    def _on_minus(evt):
+        evt.preventDefault()
+        cur = int(input_el.value) if input_el.value.strip().isdigit() else 0
+        if cur >= 15:
+            _set_value(cur - 15)
+
+    def _on_plus(evt):
+        evt.preventDefault()
+        cur = int(input_el.value) if input_el.value.strip().isdigit() else 0
+        _set_value(cur + 15)
+
+    minus_btn.addEventListener("click", create_proxy(_on_minus))
+    plus_btn.addEventListener("click", create_proxy(_on_plus))
+
+    label = document.createElement("label")
+    label.textContent = "Rest between sets"
+    label.style.fontSize = "0.75rem"
+    label.style.color = "rgba(255,255,255,0.75)"
+    label.style.textAlign = "center"
+
+    row = document.createElement("div")
+    row.style.display = "flex"
+    row.style.alignItems = "center"
+    row.style.justifyContent = "center"
+    row.style.gap = "6px"
+    row.appendChild(minus_btn)
+    row.appendChild(display)
+    row.appendChild(plus_btn)
+    row.appendChild(input_el)
+
+    container = document.createElement("div")
+    container.style.display = "flex"
+    container.style.flexDirection = "column"
+    container.style.gap = "2px"
+    container.appendChild(label)
+    container.appendChild(row)
+
+    return container, input_el, _set_value
+
+
+def _make_time_wheel(initial_value: str = ""):
+    """Three spinning-wheel columns (h / m / s). Returns (container_el, get_value_fn).
+    get_value_fn() returns 'HH:MM:SS' or '' when all zeros."""
+    h, m, s = 0, 0, 0
+    if initial_value:
+        parts_t = initial_value.split(":")
+        if len(parts_t) == 3:
+            try:
+                h = max(0, min(23, int(parts_t[0])))
+                m = max(0, min(59, int(parts_t[1])))
+                s = max(0, min(59, int(parts_t[2])))
+            except (ValueError, IndexError):
+                pass
+
+    vals = [h, m, s]
+    maxvals = [23, 59, 59]
+
+    def _make_col(idx, col_label):
+        col = document.createElement("div")
+        col.style.display = "flex"
+        col.style.flexDirection = "column"
+        col.style.alignItems = "center"
+        col.style.gap = "3px"
+
+        def _btn(icon_cls):
+            b = document.createElement("button")
+            b.type = "button"
+            b.innerHTML = f'<i class="bi {icon_cls}"></i>'
+            b.classList.add("btn", "btn-outline-gold", "btn-sm")
+            b.style.width = "26px"
+            b.style.height = "26px"
+            b.style.padding = "0"
+            b.style.fontSize = "0.65rem"
+            b.style.lineHeight = "1"
+            b.style.borderRadius = "50%"
+            b.style.flexShrink = "0"
+            return b
+
+        up = _btn("bi-chevron-up")
+        down = _btn("bi-chevron-down")
+
+        disp = document.createElement("span")
+        disp.textContent = f"{vals[idx]:02d}"
+        disp.style.fontSize = "1.05rem"
+        disp.style.fontWeight = "600"
+        disp.style.color = "#fff"
+        disp.style.minWidth = "28px"
+        disp.style.textAlign = "center"
+        disp.style.userSelect = "none"
+
+        unit_lbl = document.createElement("span")
+        unit_lbl.textContent = col_label
+        unit_lbl.style.fontSize = "0.6rem"
+        unit_lbl.style.color = "rgba(255,255,255,0.45)"
+        unit_lbl.style.textAlign = "center"
+
+        def _up(evt, i=idx):
+            evt.preventDefault()
+            vals[i] = 0 if vals[i] >= maxvals[i] else vals[i] + 1
+            disp.textContent = f"{vals[i]:02d}"
+
+        def _down(evt, i=idx):
+            evt.preventDefault()
+            vals[i] = maxvals[i] if vals[i] <= 0 else vals[i] - 1
+            disp.textContent = f"{vals[i]:02d}"
+
+        up.addEventListener("click", create_proxy(_up))
+        down.addEventListener("click", create_proxy(_down))
+
+        col.appendChild(up)
+        col.appendChild(disp)
+        col.appendChild(down)
+        col.appendChild(unit_lbl)
+        return col
+
+    def _colon():
+        sep = document.createElement("span")
+        sep.textContent = ":"
+        sep.style.color = "#ba945e"
+        sep.style.fontWeight = "700"
+        sep.style.fontSize = "1.1rem"
+        sep.style.alignSelf = "center"
+        sep.style.marginBottom = "14px"  # nudge up to align with digit display
+        return sep
+
+    field_lbl = document.createElement("label")
+    field_lbl.textContent = "Time"
+    field_lbl.style.fontSize = "0.75rem"
+    field_lbl.style.color = "rgba(255,255,255,0.75)"
+    field_lbl.style.textAlign = "center"
+
+    wheel_row = document.createElement("div")
+    wheel_row.style.display = "flex"
+    wheel_row.style.alignItems = "stretch"
+    wheel_row.style.justifyContent = "center"
+    wheel_row.style.gap = "4px"
+    wheel_row.appendChild(_make_col(0, "h"))
+    wheel_row.appendChild(_colon())
+    wheel_row.appendChild(_make_col(1, "m"))
+    wheel_row.appendChild(_colon())
+    wheel_row.appendChild(_make_col(2, "s"))
+
+    container = document.createElement("div")
+    container.style.display = "flex"
+    container.style.flexDirection = "column"
+    container.style.alignItems = "center"
+    container.style.gap = "4px"
+    container.appendChild(field_lbl)
+    container.appendChild(wheel_row)
+
+    def get_value():
+        if vals[0] == 0 and vals[1] == 0 and vals[2] == 0:
+            return ""
+        return f"{vals[0]:02d}:{vals[1]:02d}:{vals[2]:02d}"
+
+    return container, get_value
+
+
+def _make_reps_stepper(initial_value: str = ""):
+    """Returns (container_el, get_value_fn). get_value_fn() -> '' or str(int)."""
+    try:
+        v = int(initial_value.strip()) if initial_value.strip().isdigit() else 0
+    except ValueError:
+        v = 0
+    val = [max(0, v)]
+
+    display = document.createElement("span")
+    display.textContent = str(val[0])
+    display.style.minWidth = "32px"
+    display.style.textAlign = "center"
+    display.style.fontSize = "0.95rem"
+    display.style.fontWeight = "600"
+    display.style.color = "#fff"
+    display.style.userSelect = "none"
+
+    def _btn(symbol):
+        b = document.createElement("button")
+        b.type = "button"
+        b.textContent = symbol
+        b.classList.add("btn", "btn-outline-gold", "btn-sm")
+        b.style.width = "26px"
+        b.style.height = "26px"
+        b.style.padding = "0"
+        b.style.fontSize = "1rem"
+        b.style.lineHeight = "1"
+        b.style.borderRadius = "50%"
+        b.style.flexShrink = "0"
+        return b
+
+    minus_btn = _btn("\u2212")
+    plus_btn = _btn("+")
+
+    def _on_minus(evt):
+        evt.preventDefault()
+        if val[0] > 0:
+            val[0] -= 1
+            display.textContent = str(val[0])
+
+    def _on_plus(evt):
+        evt.preventDefault()
+        val[0] += 1
+        display.textContent = str(val[0])
+
+    minus_btn.addEventListener("click", create_proxy(_on_minus))
+    plus_btn.addEventListener("click", create_proxy(_on_plus))
+
+    lbl = document.createElement("label")
+    lbl.textContent = "Reps"
+    lbl.style.fontSize = "0.75rem"
+    lbl.style.color = "rgba(255,255,255,0.75)"
+    lbl.style.textAlign = "center"
+
+    row = document.createElement("div")
+    row.style.display = "flex"
+    row.style.alignItems = "center"
+    row.style.justifyContent = "center"
+    row.style.gap = "10px"
+    row.appendChild(minus_btn)
+    row.appendChild(display)
+    row.appendChild(plus_btn)
+
+    container = document.createElement("div")
+    container.style.display = "flex"
+    container.style.flexDirection = "column"
+    container.style.alignItems = "center"
+    container.style.gap = "4px"
+    container.appendChild(lbl)
+    container.appendChild(row)
+
+    def get_value():
+        return str(val[0]) if val[0] > 0 else ""
+
+    return container, get_value
+
+
+def _make_distance_stepper(initial_value: str = ""):
+    """Returns (container_el, get_value_fn). get_value_fn() -> '' or 'Xm'/'Xkm'."""
+    unit = ["m"]
+    val = [0]
+    s = initial_value.strip().lower()
+    if s.endswith("km"):
+        try:
+            val[0] = int(float(s[:-2]))
+            unit[0] = "km"
+        except ValueError:
+            pass
+    elif s.endswith("m"):
+        try:
+            val[0] = int(s[:-1])
+        except ValueError:
+            pass
+    elif s:
+        try:
+            val[0] = int(s)
+        except ValueError:
+            pass
+
+    STEPS = {"m": 1, "km": 1}
+
+    display = document.createElement("span")
+    display.textContent = str(val[0])
+    display.style.minWidth = "32px"
+    display.style.textAlign = "center"
+    display.style.fontSize = "0.95rem"
+    display.style.fontWeight = "600"
+    display.style.color = "#fff"
+    display.style.userSelect = "none"
+
+    unit_btn = document.createElement("button")
+    unit_btn.type = "button"
+    unit_btn.textContent = unit[0]
+    unit_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
+    unit_btn.style.padding = "0 6px"
+    unit_btn.style.height = "26px"
+    unit_btn.style.fontSize = "0.7rem"
+    unit_btn.style.borderRadius = "12px"
+    unit_btn.style.flexShrink = "0"
+
+    def _btn(symbol):
+        b = document.createElement("button")
+        b.type = "button"
+        b.textContent = symbol
+        b.classList.add("btn", "btn-outline-gold", "btn-sm")
+        b.style.width = "26px"
+        b.style.height = "26px"
+        b.style.padding = "0"
+        b.style.fontSize = "1rem"
+        b.style.lineHeight = "1"
+        b.style.borderRadius = "50%"
+        b.style.flexShrink = "0"
+        return b
+
+    minus_btn = _btn("\u2212")
+    plus_btn = _btn("+")
+
+    def _on_minus(evt):
+        evt.preventDefault()
+        step = STEPS[unit[0]]
+        val[0] = max(0, val[0] - step)
+        display.textContent = str(val[0])
+
+    def _on_plus(evt):
+        evt.preventDefault()
+        val[0] += STEPS[unit[0]]
+        display.textContent = str(val[0])
+
+    def _on_unit_toggle(evt):
+        evt.preventDefault()
+        unit[0] = "km" if unit[0] == "m" else "m"
+        unit_btn.textContent = unit[0]
+        val[0] = 0
+        display.textContent = "0"
+
+    minus_btn.addEventListener("click", create_proxy(_on_minus))
+    plus_btn.addEventListener("click", create_proxy(_on_plus))
+    unit_btn.addEventListener("click", create_proxy(_on_unit_toggle))
+
+    lbl = document.createElement("label")
+    lbl.textContent = "Distance"
+    lbl.style.fontSize = "0.75rem"
+    lbl.style.color = "rgba(255,255,255,0.75)"
+    lbl.style.textAlign = "center"
+
+    row = document.createElement("div")
+    row.style.display = "flex"
+    row.style.alignItems = "center"
+    row.style.justifyContent = "center"
+    row.style.gap = "10px"
+    row.appendChild(minus_btn)
+    row.appendChild(display)
+    row.appendChild(unit_btn)
+    row.appendChild(plus_btn)
+
+    container = document.createElement("div")
+    container.style.display = "flex"
+    container.style.flexDirection = "column"
+    container.style.alignItems = "center"
+    container.style.gap = "4px"
+    container.appendChild(lbl)
+    container.appendChild(row)
+
+    def get_value():
+        return f"{val[0]}{unit[0]}" if val[0] > 0 else ""
+
+    return container, get_value
+
+
+def _make_per_set_group(sets: int, reps_list=None, time_list=None, dist_list=None):
+    """Creates a navigable per-set reps/time/distance section.
+    Returns (wrapper_el, get_values_fn) where get_values_fn() -> (reps_csv, time_csv, dist_csv).
+    """
+    reps_list = list(reps_list or [])
+    time_list = list(time_list or [])
+    dist_list = list(dist_list or [])
+
+    def _pad(lst, n):
+        last = lst[-1] if lst else ""
+        while len(lst) < n:
+            lst.append(last)
+        return lst[:n]
+
+    reps_list = _pad(reps_list, sets)
+    time_list = _pad(time_list, sets)
+    dist_list = _pad(dist_list, sets)
+
+    set_panels = []
+    all_inputs = []
+    for i in range(sets):
+        reps_container, reps_get = _make_reps_stepper(reps_list[i])
+        time_container, time_get = _make_time_wheel(time_list[i])
+        dist_container, dist_get = _make_distance_stepper(dist_list[i])
+
+        all_inputs.append((reps_get, time_get, dist_get))
+
+        def _divider():
+            hr = document.createElement("div")
+            hr.style.borderTop = "1px solid rgba(255,255,255,0.08)"
+            hr.style.margin = "2px 0"
+            return hr
+
+        panel = document.createElement("div")
+        panel.style.display = "none"
+        panel.style.flexDirection = "column"
+        panel.style.gap = "10px"
+        panel.style.paddingTop = "4px"
+        panel.appendChild(reps_container)
+        panel.appendChild(_divider())
+        panel.appendChild(time_container)
+        panel.appendChild(_divider())
+        panel.appendChild(dist_container)
+        set_panels.append(panel)
+
+    current_set = [0]
+
+    wrapper = document.createElement("div")
+    wrapper.style.display = "flex"
+    wrapper.style.flexDirection = "column"
+    wrapper.style.gap = "6px"
+    wrapper.style.border = "1px solid rgba(255,255,255,0.1)"
+    wrapper.style.borderRadius = "6px"
+    wrapper.style.padding = "8px"
+
+    nav = document.createElement("div")
+    nav.style.display = "flex" if sets > 1 else "none"
+    nav.style.alignItems = "center"
+    nav.style.gap = "6px"
+    nav.style.marginBottom = "2px"
+
+    prev_btn = document.createElement("button")
+    prev_btn.type = "button"
+    prev_btn.textContent = "\u2039"
+    prev_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
+    prev_btn.style.padding = "0"
+    prev_btn.style.width = "24px"
+    prev_btn.style.height = "24px"
+    prev_btn.style.fontSize = "1.1rem"
+    prev_btn.style.lineHeight = "1"
+    prev_btn.style.borderRadius = "50%"
+    prev_btn.style.flexShrink = "0"
+
+    next_btn = document.createElement("button")
+    next_btn.type = "button"
+    next_btn.textContent = "\u203a"
+    next_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
+    next_btn.style.padding = "0"
+    next_btn.style.width = "24px"
+    next_btn.style.height = "24px"
+    next_btn.style.fontSize = "1.1rem"
+    next_btn.style.lineHeight = "1"
+    next_btn.style.borderRadius = "50%"
+    next_btn.style.flexShrink = "0"
+
+    set_label = document.createElement("span")
+    set_label.style.flex = "1"
+    set_label.style.textAlign = "center"
+    set_label.style.fontSize = "0.8rem"
+    set_label.style.color = "#ba945e"
+    set_label.style.fontWeight = "600"
+
+    nav.appendChild(prev_btn)
+    nav.appendChild(set_label)
+    nav.appendChild(next_btn)
+
+    content = document.createElement("div")
+    for panel in set_panels:
+        content.appendChild(panel)
+
+    def _show(idx):
+        current_set[0] = idx
+        set_label.textContent = f"Set {idx + 1} / {sets}"
+        prev_btn.disabled = idx == 0
+        next_btn.disabled = idx == sets - 1
+        for k, panel in enumerate(set_panels):
+            panel.style.display = "flex" if k == idx else "none"
+
+    def _on_prev(evt):
+        evt.preventDefault()
+        if current_set[0] > 0:
+            _show(current_set[0] - 1)
+
+    def _on_next(evt):
+        evt.preventDefault()
+        if current_set[0] < sets - 1:
+            _show(current_set[0] + 1)
+
+    prev_btn.addEventListener("click", create_proxy(_on_prev))
+    next_btn.addEventListener("click", create_proxy(_on_next))
+
+    _show(0)
+
+    wrapper.appendChild(nav)
+    wrapper.appendChild(content)
+
+    def get_values():
+        reps_parts = [rg() for rg, _, _ in all_inputs]
+        time_parts = [tg() for _, tg, _ in all_inputs]
+        dist_parts = [dg() for _, _, dg in all_inputs]
+        reps_csv = ",".join(reps_parts) if any(reps_parts) else ""
+        time_csv = ",".join(time_parts) if any(time_parts) else ""
+        dist_csv = ",".join(dist_parts) if any(dist_parts) else ""
+        return reps_csv, time_csv, dist_csv
+
+    return wrapper, get_values
+
+
 def _show_confirm_popup(anchor_el, message, on_confirm, confirm_label="Remove", cancel_label="Cancel") -> None:
     existing = document.querySelector(".confirm-popup-overlay")
     if existing:
@@ -631,48 +1237,45 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     inputs_container.style.gap = "8px"
     inputs_container.style.width = "100%"
 
-    input_sets = document.createElement("input")
-    input_sets.type = "number"
-    input_sets.min = "1"
-    input_sets.value = "1"
+    sets_stepper, input_sets = _make_sets_stepper(1)
 
-    input_reps = document.createElement("input")
-    input_reps.type = "text"
-    input_reps.placeholder = "e.g. 10,12,15"
-
-    input_time = document.createElement("input")
-    input_time.type = "text"
-    input_time.placeholder = "e.g. 00:01:30"
-
-    input_distance = document.createElement("input")
-    input_distance.type = "text"
-    input_distance.placeholder = "e.g. 400m, 5km"
-
-    input_rest = document.createElement("input")
-    input_rest.type = "number"
-    input_rest.min = "0"
-    input_rest.placeholder = "e.g. 60"
+    rest_group, input_rest, reset_rest = _make_rest_stepper(0)
+    rest_group.style.display = "none"  # hidden when sets == 1
 
     input_notes = document.createElement("textarea")
-    input_notes.placeholder = "Optional notes…"
+    input_notes.placeholder = "Notes…"
     input_notes.rows = "3"
     input_notes.style.resize = "vertical"
 
-    rest_group = _make_input_group("Rest between sets — seconds (optional)", input_rest)
-    rest_group.style.display = "none"  # hidden when sets == 1
+    per_set_wrapper = document.createElement("div")
+    per_set_wrapper.style.width = "100%"
+    get_per_set_values = [None]
 
-    inputs_container.appendChild(_make_input_group("Sets", input_sets))
-    inputs_container.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
-    inputs_container.appendChild(_make_input_group("Time per set — hh:mm:ss (optional)", input_time))
-    inputs_container.appendChild(_make_input_group("Distance per set (optional)", input_distance))
+    def _rebuild_per_set(n, reps_csv="", time_csv="", dist_csv=""):
+        reps_list = [v.strip() for v in reps_csv.split(",") if v.strip()] if reps_csv else []
+        time_list = [v.strip() for v in time_csv.split(",") if v.strip()] if time_csv else []
+        dist_list = [v.strip() for v in dist_csv.split(",") if v.strip()] if dist_csv else []
+        while per_set_wrapper.firstChild:
+            per_set_wrapper.removeChild(per_set_wrapper.firstChild)
+        group_el, get_vals = _make_per_set_group(n, reps_list, time_list, dist_list)
+        per_set_wrapper.appendChild(group_el)
+        get_per_set_values[0] = get_vals
+
+    _rebuild_per_set(1)
+
+    inputs_container.appendChild(sets_stepper)
+    inputs_container.appendChild(per_set_wrapper)
     inputs_container.appendChild(rest_group)
-    inputs_container.appendChild(_make_input_group("Notes (optional)", input_notes))
+    inputs_container.appendChild(_make_input_group("Notes", input_notes))
 
     def _on_sets_change(evt):
         val = input_sets.value.strip()
-        rest_group.style.display = "flex" if val and int(val) > 1 else "none"
+        rest_group.style.display = "flex" if val and val.isdigit() and int(val) > 1 else "none"
         if rest_group.style.display == "none":
-            input_rest.value = ""
+            reset_rest(0)
+        if val and val.isdigit() and int(val) >= 1:
+            reps_csv, time_csv, dist_csv = get_per_set_values[0]() if get_per_set_values[0] else ("", "", "")
+            _rebuild_per_set(int(val), reps_csv, time_csv, dist_csv)
 
     input_sets.addEventListener("change", create_proxy(_on_sets_change))
     input_sets.addEventListener("input", create_proxy(_on_sets_change))
@@ -704,9 +1307,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
 
     def on_confirm_click(evt):
         sets = int(input_sets.value) if input_sets.value.strip() else 1
-        reps_val = input_reps.value
-        time_val = input_time.value
-        distance_val = input_distance.value.strip()
+        reps_val, time_val, distance_val = get_per_set_values[0]()
         rest_val = int(input_rest.value) if input_rest.value.strip() else 0
         notes_val = input_notes.value.strip()
 
@@ -896,57 +1497,53 @@ def edit_exercise_in_workout(event) -> None:
     title.style.marginBottom = "4px"
     modal.appendChild(title)
 
-    input_sets = document.createElement("input")
-    input_sets.type = "number"
-    input_sets.min = "1"
-    input_sets.value = str(target_ex.sets)
+    initial_sets_val = int(target_ex.sets) if str(target_ex.sets).isdigit() else 1
+    sets_stepper, input_sets = _make_sets_stepper(initial_sets_val)
 
-    input_reps = document.createElement("input")
-    input_reps.type = "text"
-    input_reps.placeholder = "e.g. 10,12,15"
-    input_reps.value = target_ex.reps or ""
-
-    input_time = document.createElement("input")
-    input_time.type = "text"
-    input_time.placeholder = "e.g. 00:01:30"
-    input_time.value = target_ex.time or ""
-
-    input_distance = document.createElement("input")
-    input_distance.type = "text"
-    input_distance.placeholder = "e.g. 400m, 5km"
-    input_distance.value = target_ex.distance or ""
-
-    input_rest = document.createElement("input")
-    input_rest.type = "number"
-    input_rest.min = "0"
-    input_rest.placeholder = "e.g. 60"
-    input_rest.value = str(target_ex.rest_between_sets) if target_ex.rest_between_sets else ""
+    initial_rest = int(target_ex.rest_between_sets) if target_ex.rest_between_sets else 0
+    edit_rest_group, input_rest, reset_rest = _make_rest_stepper(initial_rest)
+    edit_rest_group.style.display = "flex" if initial_sets_val > 1 else "none"
 
     input_notes = document.createElement("textarea")
-    input_notes.placeholder = "Optional notes…"
+    input_notes.placeholder = "Notes…"
     input_notes.rows = "3"
     input_notes.style.resize = "vertical"
     input_notes.value = target_ex.notes or ""
 
-    edit_rest_group = _make_input_group("Rest between sets — seconds (optional)", input_rest)
-    initial_sets = int(input_sets.value) if input_sets.value.strip() and input_sets.value.strip().isdigit() else 1
-    edit_rest_group.style.display = "flex" if initial_sets > 1 else "none"
+    initial_sets = initial_sets_val
+
+    per_set_wrapper = document.createElement("div")
+    per_set_wrapper.style.width = "100%"
+    get_per_set_values = [None]
+
+    def _rebuild_per_set(n, reps_csv="", time_csv="", dist_csv=""):
+        reps_list = [v.strip() for v in reps_csv.split(",") if v.strip()] if reps_csv else []
+        time_list = [v.strip() for v in time_csv.split(",") if v.strip()] if time_csv else []
+        dist_list = [v.strip() for v in dist_csv.split(",") if v.strip()] if dist_csv else []
+        while per_set_wrapper.firstChild:
+            per_set_wrapper.removeChild(per_set_wrapper.firstChild)
+        group_el, get_vals = _make_per_set_group(n, reps_list, time_list, dist_list)
+        per_set_wrapper.appendChild(group_el)
+        get_per_set_values[0] = get_vals
+
+    _rebuild_per_set(initial_sets, target_ex.reps or "", target_ex.time or "", target_ex.distance or "")
 
     def _on_edit_sets_change(evt):
         val = input_sets.value.strip()
-        edit_rest_group.style.display = "flex" if val and int(val) > 1 else "none"
+        edit_rest_group.style.display = "flex" if val and val.isdigit() and int(val) > 1 else "none"
         if edit_rest_group.style.display == "none":
-            input_rest.value = ""
+            reset_rest(0)
+        if val and val.isdigit() and int(val) >= 1:
+            reps_csv, time_csv, dist_csv = get_per_set_values[0]() if get_per_set_values[0] else ("", "", "")
+            _rebuild_per_set(int(val), reps_csv, time_csv, dist_csv)
 
     input_sets.addEventListener("change", create_proxy(_on_edit_sets_change))
     input_sets.addEventListener("input", create_proxy(_on_edit_sets_change))
 
-    modal.appendChild(_make_input_group("Sets", input_sets))
-    modal.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
-    modal.appendChild(_make_input_group("Time per set — hh:mm:ss (optional)", input_time))
-    modal.appendChild(_make_input_group("Distance per set (optional)", input_distance))
+    modal.appendChild(sets_stepper)
+    modal.appendChild(per_set_wrapper)
     modal.appendChild(edit_rest_group)
-    modal.appendChild(_make_input_group("Notes (optional)", input_notes))
+    modal.appendChild(_make_input_group("Notes", input_notes))
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
@@ -974,9 +1571,7 @@ def edit_exercise_in_workout(event) -> None:
 
     def on_save(evt):
         sets = int(input_sets.value) if input_sets.value.strip() else 1
-        reps_val = input_reps.value
-        time_val = input_time.value
-        distance_val = input_distance.value.strip()
+        reps_val, time_val, distance_val = get_per_set_values[0]()
         rest_val = int(input_rest.value) if input_rest.value.strip() else 0
         notes_val = input_notes.value.strip()
 

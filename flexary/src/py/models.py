@@ -24,6 +24,12 @@ def _reps_display(raw: str, sets: int) -> str:
     return "/".join(values) + " reps"
 
 
+def _time_display(raw: str, sets: int) -> str:
+    values = [v.strip() for v in raw.split(",") if v.strip()]
+    if len(set(values)) == 1:
+        return f"{values[0]} each" if sets > 1 else values[0]
+    return "/".join(values)
+
 
 def _dist_display(raw: str, sets: int = 0) -> str:
     values = [v.strip() for v in raw.split(",") if v.strip()]
@@ -60,26 +66,25 @@ class Exercise:
             if self.reps:
                 parts.append(_reps_display(self.reps, 1))
             elif self.time:
-                parts.append(self.time)
+                parts.append(_time_display(self.time, 1))
             elif self.distance:
                 parts.append(_dist_display(self.distance))
             if self.reps and self.time:
-                parts.append(self.time)
+                parts.append(_time_display(self.time, 1))
             if self.distance and (self.reps or self.time):
                 parts.append(_dist_display(self.distance))
         else:
             sets_label = f"{sets} set{'s' if sets != 1 else ''}"
-            each = sets > 1
             if self.reps:
                 parts.append(f"{sets_label} × {_reps_display(self.reps, sets)}")
             elif self.time:
-                parts.append(f"{sets_label} × {self.time}{' each' if each else ''}")
+                parts.append(f"{sets_label} × {_time_display(self.time, sets)}")
             elif self.distance:
                 parts.append(f"{sets_label} × {_dist_display(self.distance, sets)}")
             else:
                 parts.append(sets_label)
             if self.reps and self.time:
-                parts.append(f"{self.time}{' each' if each else ''}")
+                parts.append(_time_display(self.time, sets))
             if self.distance and (self.reps or self.time):
                 parts.append(_dist_display(self.distance, sets))
         if self.rest_between_sets:
