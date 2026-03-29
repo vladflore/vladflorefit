@@ -1,5 +1,11 @@
 body {
   margin: 0;
+  background-color: #212529; /* matches footer bg-dark; safe-area overflow appears dark */
+}
+
+/* Absorb the iOS/iPadOS home-indicator safe area into the footer */
+footer {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
 .exercise-stats {
@@ -22,6 +28,7 @@ body {
 
 .pyscript {
   margin: 0.5rem;
+  background-color: #fff;
 }
 
 html {
