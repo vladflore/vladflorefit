@@ -137,6 +137,8 @@ def render_workouts(workouts: list) -> None:
         w_date._js.setAttribute("data-workout-id", str(w.id))
 
         def on_date_change(evt):
+            if not evt.target.value:
+                return
             new_date = datetime.datetime.strptime(evt.target.value, "%Y-%m-%d").date()
             w_id = UUID(evt.target.getAttribute("data-workout-id"))
             for w in state.workouts:
