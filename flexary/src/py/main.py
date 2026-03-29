@@ -1,8 +1,12 @@
+import asyncio
+
 from pyodide.ffi.wrappers import add_event_listener
+from pyodide.http import pyfetch
 from pyscript import document
 from pyweb import pydom
 
 from common import copyright, current_version, csv_to_json
+from js import window
 import state
 from filters import (
     attach_body_part_filter_listeners,
@@ -64,3 +68,17 @@ if state.workouts:
     render_workouts(state.workouts)
 else:
     hide_sidebar()
+
+
+# ── Feature flags ──────────────────────────────────────────────────────────────
+async def _apply_feature_flags() -> None:
+    try:
+        resp = await pyfetch(f"{window.API_BASE}/api/feature_flags")
+        flags = await resp.json()
+        if flags.get("describe_workout", False):
+            document.getElementById("describe-workout").classList.remove("d-none")
+    except Exception:
+        pass  # flags endpoint unreachable — all features stay hidden
+
+
+asyncio.ensure_future(_apply_feature_flags())
