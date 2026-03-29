@@ -90,6 +90,7 @@ class Workout:
     execution_date: datetime.date
     exercises: list
     superset_rounds: dict = field(default_factory=dict)  # superset_id -> rounds
+    name: str = ""
 
 
 # ── Serialisation ──────────────────────────────────────────────────────────────
@@ -114,6 +115,7 @@ def workouts_to_json(workouts: list) -> str:
             "execution_date": w.execution_date.isoformat(),
             "exercises": [_ex(ex) for ex in w.exercises],
             "superset_rounds": w.superset_rounds,
+            "name": w.name,
         }
 
     return json.dumps([_w(w) for w in workouts])
@@ -140,6 +142,7 @@ def workouts_from_json(raw: str) -> list:
                 execution_date=datetime.date.fromisoformat(w_data["execution_date"]),
                 exercises=exercises,
                 superset_rounds=w_data.get("superset_rounds", {}),
+                name=w_data.get("name", ""),
             ))
         return result
     except Exception:

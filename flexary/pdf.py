@@ -110,6 +110,14 @@ def create_pdf(black_and_white: bool = False):
             pdf.ln(2)
             formatted_date = workout.execution_date.strftime("%d.%m.%Y")
 
+            if workout.name:
+                pdf.set_font("opensans", style="B", size=13)
+                pdf.set_text_color(*gold)
+                pdf.set_x(x_start)
+                pdf.cell(0, 9, workout.name, new_x="LMARGIN", new_y="NEXT")
+                pdf.set_text_color(0, 0, 0)
+                pdf.ln(1)
+
             pdf.set_font("opensans", style="I", size=10)
             exercise_count = len(exercises)
             ex_label = "exercise" if exercise_count == 1 else "exercises"

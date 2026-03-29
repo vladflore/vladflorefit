@@ -230,6 +230,21 @@ def render_workouts(workouts: list) -> None:
         workout_edit_btn_icon._js.setAttribute("data-workout-id", str(w.id))
         workout_edit_btn_icon._js.removeAttribute("id")
 
+        w_name = w_div.find("#workout-name")[0]
+        w_name._js.value = w.name or ""
+        w_name._js.setAttribute("id", f"workout-name-{w.id}")
+        w_name._js.setAttribute("data-workout-id", str(w.id))
+
+        def on_name_change(evt):
+            w_id = UUID(evt.target.getAttribute("data-workout-id"))
+            for workout in state.workouts:
+                if workout.id == w_id:
+                    workout.name = evt.target.value.strip()
+                    break
+            state.save_workouts()
+
+        w_name._js.addEventListener("change", create_proxy(on_name_change))
+
         w_date = w_div.find("#workout-date")[0]
         w_date._js.value = w.execution_date.strftime("%Y-%m-%d")
         w_date._js.setAttribute("id", f"workout-date-{w.id}")

@@ -83,7 +83,8 @@ def _build_ics() -> str:
                 i += 1
 
         count = len(workout.exercises)
-        summary = f"Workout — {count} exercise{'s' if count != 1 else ''}"
+        workout_label = workout.name if workout.name else "Workout"
+        summary = f"{workout_label} — {count} exercise{'s' if count != 1 else ''}"
         description = "\\n".join(_escape(l) for l in exercise_lines)
 
         lines += [
