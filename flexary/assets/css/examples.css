@@ -829,21 +829,58 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   animation: modal-fade-in 0.2s ease;
 }
 
-.pdf-color-modal-body {
-  padding: 1.25rem;
-  color: #ccc;
-  text-align: center;
+.pdf-modal-body {
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
-.pdf-color-modal-body p {
-  margin: 0;
+.pdf-modal-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pdf-modal-option-label {
+  font-size: 0.85rem;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.pdf-toggle-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.pdf-toggle-btn {
+  padding: 0.3rem 0.85rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.pdf-toggle-btn:hover {
+  border-color: #ba945e;
+  color: #ba945e;
+}
+
+.pdf-toggle-btn--active {
+  background: rgba(186,148,94,0.15);
+  border-color: #ba945e;
+  color: #ba945e;
 }
 
 .pdf-color-modal-footer {
   padding: 0.75rem 1.25rem;
   border-top: 1px solid #333;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 0.75rem;
   flex-shrink: 0;
 }

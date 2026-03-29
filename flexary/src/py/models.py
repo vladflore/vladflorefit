@@ -43,6 +43,7 @@ class Exercise:
     distance: str = ""
     notes: str = ""
     superset_id: str = ""
+    rest_between_sets: int = 0
 
     def reps_mismatch(self, rounds: int) -> bool:
         """True when varying reps values don't match the superset rounds count."""
@@ -81,6 +82,10 @@ class Exercise:
                 parts.append(f"{self.time}{' each' if each else ''}")
             if self.distance and (self.reps or self.time):
                 parts.append(_dist_display(self.distance, sets))
+        if self.rest_between_sets:
+            m, s = divmod(self.rest_between_sets, 60)
+            rest_str = (f"{m}m {s}s" if s else f"{m}m") if m else f"{s}s"
+            parts.append(f"{rest_str} rest between sets")
         return " · ".join(parts)
 
 
@@ -92,6 +97,7 @@ class Workout:
     superset_rounds: dict = field(default_factory=dict)  # superset_id -> rounds
     name: str = ""
     breaks: dict = field(default_factory=dict)  # exercise internal_id -> seconds
+    description: str = ""
 
 
 # ── Serialisation ──────────────────────────────────────────────────────────────
@@ -108,6 +114,7 @@ def workouts_to_json(workouts: list) -> str:
             "distance": ex.distance,
             "notes": ex.notes,
             "superset_id": ex.superset_id,
+            "rest_between_sets": ex.rest_between_sets,
         }
 
     def _w(w):
@@ -118,6 +125,7 @@ def workouts_to_json(workouts: list) -> str:
             "superset_rounds": w.superset_rounds,
             "name": w.name,
             "breaks": w.breaks,
+            "description": w.description,
         }
 
     return json.dumps([_w(w) for w in workouts])
@@ -138,6 +146,7 @@ def workouts_from_json(raw: str) -> list:
                 distance=ex_data.get("distance", ""),
                 notes=ex_data.get("notes", ""),
                 superset_id=ex_data.get("superset_id", ""),
+                rest_between_sets=int(ex_data.get("rest_between_sets", 0)),
             ) for ex_data in w_data["exercises"]]
             result.append(Workout(
                 id=UUID(w_data["id"]),
@@ -146,6 +155,7 @@ def workouts_from_json(raw: str) -> list:
                 superset_rounds=w_data.get("superset_rounds", {}),
                 name=w_data.get("name", ""),
                 breaks={k: int(v) for k, v in w_data.get("breaks", {}).items()},
+                description=w_data.get("description", ""),
             ))
         return result
     except Exception:

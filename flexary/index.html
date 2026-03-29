@@ -356,12 +356,19 @@
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
-      <div class="info-modal-body pdf-color-modal-body">
-        <p>Choose your preferred format:</p>
+      <div class="pdf-modal-body">
+        <div class="pdf-modal-option">
+          <span class="pdf-modal-option-label">Format</span>
+          <div class="pdf-toggle-group">
+            <button class="pdf-toggle-btn pdf-toggle-btn--active" id="pdf-color-btn">Color</button>
+            <button class="pdf-toggle-btn" id="pdf-bw-btn">B&amp;W</button>
+          </div>
+        </div>
       </div>
       <div class="pdf-color-modal-footer">
-        <button class="btn btn-outline-gold" id="pdf-color-btn">Color</button>
-        <button class="btn btn-outline-secondary" id="pdf-bw-btn">Black &amp; White</button>
+        <button class="btn btn-outline-gold" id="pdf-download-btn">
+          <i class="bi bi-file-earmark-arrow-down me-1"></i>Download
+        </button>
       </div>
     </dialog>
 
@@ -399,6 +406,10 @@
         const pdfColorModal = document.getElementById("pdf-color-modal");
         document.getElementById("pdf-color-modal-close").addEventListener("click", () => pdfColorModal.close());
         pdfColorModal.addEventListener("click", (e) => { if (e.target === pdfColorModal) pdfColorModal.close(); });
+        const pdfColorBtn = document.getElementById("pdf-color-btn");
+        const pdfBwBtn = document.getElementById("pdf-bw-btn");
+        pdfColorBtn.addEventListener("click", () => { pdfColorBtn.classList.add("pdf-toggle-btn--active"); pdfBwBtn.classList.remove("pdf-toggle-btn--active"); });
+        pdfBwBtn.addEventListener("click", () => { pdfBwBtn.classList.add("pdf-toggle-btn--active"); pdfColorBtn.classList.remove("pdf-toggle-btn--active"); });
         const describeModal = document.getElementById("describe-modal");
         document.getElementById("describe-modal-close").addEventListener("click", () => describeModal.close());
         document.getElementById("describe-modal-close-btn").addEventListener("click", () => describeModal.close());

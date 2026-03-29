@@ -10,7 +10,7 @@ import state
 from models import category_to_rgb, workouts_from_json
 
 
-def create_pdf(black_and_white: bool = False):
+def create_pdf(black_and_white: bool = False, include_description: bool = True):
     gold = (80, 80, 80) if black_and_white else (186, 148, 94)
     header_fill = (220, 220, 220) if black_and_white else (240, 228, 208)
     cat_colors = {
@@ -137,6 +137,41 @@ def create_pdf(black_and_white: bool = False):
             pdf.set_x(x_start)
             row_height = 8
 
+            describe_enabled = document.body.classList.contains("feature-describe")
+            if i == 0 and workout.description and include_description and describe_enabled:
+                line_h = 4.5
+                pad = 3.5
+                text_w = table_width - pad * 2 - 1.5
+                pdf.set_font("opensans", style="I", size=8.5)
+                _lines = 0
+                for _para in workout.description.split("\n"):
+                    if not _para.strip():
+                        _lines += 1
+                        continue
+                    _line_w, _para_lines = 0, 1
+                    for _word in _para.split():
+                        _word_w = pdf.get_string_width(_word + " ")
+                        if _line_w + _word_w > text_w:
+                            _para_lines += 1
+                            _line_w = _word_w
+                        else:
+                            _line_w += _word_w
+                    _lines += _para_lines
+                desc_h = _lines * line_h + pad * 2 + 2  # +2 safety margin
+                desc_y = pdf.get_y()
+                pdf.set_fill_color(252, 249, 244)
+                pdf.set_draw_color(*gold)
+                pdf.set_line_width(0.3)
+                pdf.rect(x_start, desc_y, table_width, desc_h, style="FD", round_corners=True, corner_radius=2)
+                pdf.set_fill_color(*gold)
+                pdf.rect(x_start, desc_y, 1.5, desc_h, style="F", round_corners=True, corner_radius=1)
+                pdf.set_text_color(80, 80, 80)
+                pdf.set_xy(x_start + pad + 1.5, desc_y + pad)
+                pdf.multi_cell(text_w, line_h, workout.description, border=0, align="L")
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_font("opensans", style="", size=10)
+                pdf.ln(8)
+
             def render_table_header():
                 pdf.set_fill_color(*header_fill)
                 pdf.set_text_color(0, 0, 0)
@@ -199,9 +234,8 @@ def create_pdf(black_and_white: bool = False):
                     pdf.set_x(x_start)
                     pdf.set_font("opensans", style="I", size=7)
                     pdf.set_text_color(120, 120, 120)
-                    pdf.set_fill_color(242, 242, 242)
                     pdf.set_draw_color(*gold)
-                    pdf.rect(x_start, pdf.get_y(), table_width, break_h, style="DF")
+                    pdf.rect(x_start, pdf.get_y(), table_width, break_h, style="D")
                     pdf.set_xy(x_start, pdf.get_y())
                     _m, _s = divmod(break_mins, 60)
                     _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
@@ -253,7 +287,30 @@ def create_pdf(black_and_white: bool = False):
                     pdf.set_font("opensans", style="", size=10)
                 else:
                     notes_h = 0
-                min_cell_h = badge_area_h + row_height + notes_h + 1
+                is_time_based = exercise.time and not exercise.reps
+                is_mobility = ex_data and "mobility" in [c.strip().lower() for c in ex_data["category"].split(",")]
+                has_rest = bool(exercise.rest_between_sets) and not exercise.superset_id
+                if has_rest:
+                    _m_r, _s_r = divmod(exercise.rest_between_sets, 60)
+                    _fmt_r = (f"{_m_r}m {_s_r}s" if _s_r else f"{_m_r}m") if _m_r else f"{_s_r}s"
+                    rest_label = f"{_fmt_r} rest between sets"
+                    _rest_line_h = 3.5
+                    pdf.set_font("opensans", "I", 5.5)
+                    _rl_count, _rl_w = 1, 0
+                    for _rw in rest_label.split():
+                        _rww = pdf.get_string_width(_rw + " ")
+                        if _rl_w + _rww > sets_column_width - 1:
+                            _rl_count += 1
+                            _rl_w = _rww
+                        else:
+                            _rl_w += _rww
+                    rest_row_h = _rl_count * _rest_line_h + 1
+                    pdf.set_font("opensans", style="", size=10)
+                else:
+                    rest_label = ""
+                    rest_row_h = 0
+                sets_content_h = row_height + rest_row_h
+                min_cell_h = badge_area_h + max(row_height + notes_h, sets_content_h) + 1
                 total_h = max(min_cell_h, row_count * sub_row_h)
 
                 if pdf.get_y() + total_h > pdf.h - 25:
@@ -335,11 +392,22 @@ def create_pdf(black_and_white: bool = False):
 
                 sets_x = x_start + exercise_name_column_width
                 pdf.rect(sets_x, row_y, sets_column_width, total_h, style=rect_style)
-                pdf.set_xy(sets_x, row_y + (total_h - row_height) / 2)
                 pdf.set_text_color(0, 0, 0)
                 pdf.set_font(style="")
                 sets_label = "—" if exercise.superset_id else str(exercise.sets)
-                pdf.cell(sets_column_width, row_height, sets_label, border=0, align="C")
+                if has_rest:
+                    y_sets_block = row_y + (total_h - sets_content_h) / 2
+                    pdf.set_xy(sets_x, y_sets_block)
+                    pdf.cell(sets_column_width, row_height, sets_label, border=0, align="C")
+                    pdf.set_font("opensans", "I", 5.5)
+                    pdf.set_text_color(150, 150, 150)
+                    pdf.set_xy(sets_x, y_sets_block + row_height)
+                    pdf.multi_cell(sets_column_width, _rest_line_h, rest_label, border=0, align="C")
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.set_font("opensans", style="", size=10)
+                else:
+                    pdf.set_xy(sets_x, row_y + (total_h - row_height) / 2)
+                    pdf.cell(sets_column_width, row_height, sets_label, border=0, align="C")
 
                 reps_time_cell_content = ""
                 if exercise.reps:
@@ -359,8 +427,6 @@ def create_pdf(black_and_white: bool = False):
 
                 weight_x = reps_x + reps_time_column_width
                 pdf.rect(weight_x, row_y, weight_column_width, total_h, style=rect_style)
-                is_time_based = exercise.time and not exercise.reps
-                is_mobility = ex_data and "mobility" in [c.strip().lower() for c in ex_data["category"].split(",")]
                 if not is_time_based and not is_mobility:
                     pdf.set_font("opensans", "I", 9)
                     pdf.set_text_color(120, 120, 120)
@@ -421,8 +487,8 @@ def create_pdf(black_and_white: bool = False):
     return pdf
 
 
-def _perform_download(black_and_white: bool = False) -> None:
-    pdf = create_pdf(black_and_white=black_and_white)
+def _perform_download(black_and_white: bool = False, include_description: bool = True) -> None:
+    pdf = create_pdf(black_and_white=black_and_white, include_description=include_description)
     encoded_data = pdf.output()
     my_stream = io.BytesIO(encoded_data)
 
@@ -447,8 +513,7 @@ def download_file(*args) -> None:
     document.getElementById(state.pdf_color_modal_id).showModal()
 
 
-def make_pdf_download_handler(black_and_white: bool):
-    def handler(*args):
-        document.getElementById(state.pdf_color_modal_id).close()
-        _perform_download(black_and_white=black_and_white)
-    return handler
+def download_pdf_with_options(*args) -> None:
+    bw = document.getElementById("pdf-bw-btn").classList.contains("pdf-toggle-btn--active")
+    document.getElementById(state.pdf_color_modal_id).close()
+    _perform_download(black_and_white=bw)

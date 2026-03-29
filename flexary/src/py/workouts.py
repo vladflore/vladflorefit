@@ -63,7 +63,7 @@ def _show_warning(el, msg: str) -> None:
     el.style.display = "block"
 
 
-def _show_confirm_popup(anchor_el, message, on_confirm) -> None:
+def _show_confirm_popup(anchor_el, message, on_confirm, confirm_label="Remove", cancel_label="Cancel") -> None:
     existing = document.querySelector(".confirm-popup-overlay")
     if existing:
         existing.remove()
@@ -83,11 +83,11 @@ def _show_confirm_popup(anchor_el, message, on_confirm) -> None:
     btn_row.className = "confirm-popup-actions"
 
     cancel_btn = document.createElement("button")
-    cancel_btn.textContent = "Cancel"
+    cancel_btn.textContent = cancel_label
     cancel_btn.className = "confirm-popup-cancel"
 
     confirm_btn = document.createElement("button")
-    confirm_btn.textContent = "Remove"
+    confirm_btn.textContent = confirm_label
     confirm_btn.className = "confirm-popup-confirm"
 
     def _confirm(evt):
@@ -549,7 +549,18 @@ def render_workouts(workouts: list) -> None:
 
         def _make_describe_handler(wid):
             def _on_click(evt):
-                asyncio.ensure_future(_fetch_description(wid))
+                w = next((x for x in state.workouts if x.id == wid), None)
+                if w and w.description:
+                    anchor = evt.target.closest("button") or evt.target
+                    _show_confirm_popup(
+                        anchor,
+                        "Regenerate description?",
+                        lambda: asyncio.ensure_future(_fetch_description(wid)),
+                        confirm_label="Yes",
+                        cancel_label="No",
+                    )
+                else:
+                    asyncio.ensure_future(_fetch_description(wid))
             return _on_click
 
         describe_btn.addEventListener("click", create_proxy(_make_describe_handler(w.id)))
@@ -637,18 +648,34 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     input_distance.type = "text"
     input_distance.placeholder = "e.g. 400m, 5km"
 
+    input_rest = document.createElement("input")
+    input_rest.type = "number"
+    input_rest.min = "0"
+    input_rest.placeholder = "e.g. 60"
+
     input_notes = document.createElement("textarea")
     input_notes.placeholder = "Optional notes…"
     input_notes.rows = "3"
     input_notes.style.resize = "vertical"
 
+    rest_group = _make_input_group("Rest between sets — seconds (optional)", input_rest)
+    rest_group.style.display = "none"  # hidden when sets == 1
+
     inputs_container.appendChild(_make_input_group("Sets", input_sets))
     inputs_container.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
     inputs_container.appendChild(_make_input_group("Time per set — hh:mm:ss (optional)", input_time))
     inputs_container.appendChild(_make_input_group("Distance per set (optional)", input_distance))
+    inputs_container.appendChild(rest_group)
     inputs_container.appendChild(_make_input_group("Notes (optional)", input_notes))
 
-    warning_el = _make_warning_el()
+    def _on_sets_change(evt):
+        val = input_sets.value.strip()
+        rest_group.style.display = "flex" if val and int(val) > 1 else "none"
+        if rest_group.style.display == "none":
+            input_rest.value = ""
+
+    input_sets.addEventListener("change", create_proxy(_on_sets_change))
+    input_sets.addEventListener("input", create_proxy(_on_sets_change))
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
@@ -671,29 +698,19 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     buttons_container.appendChild(confirm_btn)
     buttons_container.appendChild(close_btn)
     modal.appendChild(inputs_container)
-    modal.appendChild(warning_el)
     modal.appendChild(buttons_container)
     overlay.appendChild(modal)
     document.body.appendChild(overlay)
 
     def on_confirm_click(evt):
-        sets_val = input_sets.value
+        sets = int(input_sets.value) if input_sets.value.strip() else 1
         reps_val = input_reps.value
         time_val = input_time.value
         distance_val = input_distance.value.strip()
+        rest_val = int(input_rest.value) if input_rest.value.strip() else 0
         notes_val = input_notes.value.strip()
 
-        warning_el.style.display = "none"
-
-        if not sets_val:
-            _show_warning(warning_el, "Number of sets is required.")
-            return
-        sets = int(sets_val)
-
-        if not _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el):
-            return
-
-        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, distance_val, notes_val)
+        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, distance_val, notes_val, rest_between_sets=rest_val)
 
         if state.active_workout is None:
             state.active_workout = uuid4()
@@ -703,6 +720,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
             for w in state.workouts:
                 if w.id == state.active_workout:
                     w.exercises.append(ex)
+                    _invalidate_description(w)
                     break
 
         state.save_workouts()
@@ -752,6 +770,10 @@ def toggle_superset(event) -> None:
             w.superset_rounds.pop(old_sid, None)
         prev_ex.superset_id = sid
         ex.superset_id = sid
+        # Clear per-set rest for all exercises now in this superset — rest belongs at superset level.
+        for e in w.exercises:
+            if e.superset_id == sid:
+                e.rest_between_sets = 0
     state.save_workouts()
     render_workouts(state.workouts)
 
@@ -837,7 +859,7 @@ def edit_exercise_in_workout(event) -> None:
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
     workout_id = event.target.getAttribute("data-workout-id")
 
-    _, target_ex, _ = _find_exercise(workout_id, workout_ex_id)
+    target_workout, target_ex, _ = _find_exercise(workout_id, workout_ex_id)
     if target_ex is None:
         return
 
@@ -894,16 +916,36 @@ def edit_exercise_in_workout(event) -> None:
     input_distance.placeholder = "e.g. 400m, 5km"
     input_distance.value = target_ex.distance or ""
 
+    input_rest = document.createElement("input")
+    input_rest.type = "number"
+    input_rest.min = "0"
+    input_rest.placeholder = "e.g. 60"
+    input_rest.value = str(target_ex.rest_between_sets) if target_ex.rest_between_sets else ""
+
     input_notes = document.createElement("textarea")
     input_notes.placeholder = "Optional notes…"
     input_notes.rows = "3"
     input_notes.style.resize = "vertical"
     input_notes.value = target_ex.notes or ""
 
+    edit_rest_group = _make_input_group("Rest between sets — seconds (optional)", input_rest)
+    initial_sets = int(input_sets.value) if input_sets.value.strip() and input_sets.value.strip().isdigit() else 1
+    edit_rest_group.style.display = "flex" if initial_sets > 1 else "none"
+
+    def _on_edit_sets_change(evt):
+        val = input_sets.value.strip()
+        edit_rest_group.style.display = "flex" if val and int(val) > 1 else "none"
+        if edit_rest_group.style.display == "none":
+            input_rest.value = ""
+
+    input_sets.addEventListener("change", create_proxy(_on_edit_sets_change))
+    input_sets.addEventListener("input", create_proxy(_on_edit_sets_change))
+
     modal.appendChild(_make_input_group("Sets", input_sets))
     modal.appendChild(_make_input_group("Reps per set (comma separated, optional)", input_reps))
     modal.appendChild(_make_input_group("Time per set — hh:mm:ss (optional)", input_time))
     modal.appendChild(_make_input_group("Distance per set (optional)", input_distance))
+    modal.appendChild(edit_rest_group)
     modal.appendChild(_make_input_group("Notes (optional)", input_notes))
 
     buttons_container = document.createElement("div")
@@ -924,38 +966,28 @@ def edit_exercise_in_workout(event) -> None:
     cancel_btn.style.fontSize = "0.8rem"
     cancel_btn.onclick = lambda evt: overlay.remove()
 
-    warning_el = _make_warning_el()
-
     buttons_container.appendChild(confirm_btn)
     buttons_container.appendChild(cancel_btn)
-    modal.appendChild(warning_el)
     modal.appendChild(buttons_container)
     overlay.appendChild(modal)
     document.body.appendChild(overlay)
 
     def on_save(evt):
-        sets_val = input_sets.value
+        sets = int(input_sets.value) if input_sets.value.strip() else 1
         reps_val = input_reps.value
         time_val = input_time.value
         distance_val = input_distance.value.strip()
+        rest_val = int(input_rest.value) if input_rest.value.strip() else 0
         notes_val = input_notes.value.strip()
-
-        warning_el.style.display = "none"
-
-        if not sets_val:
-            _show_warning(warning_el, "Number of sets is required.")
-            return
-        sets = int(sets_val)
-
-        if not _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el):
-            return
 
         target_ex.sets = sets
         target_ex.reps = reps_val
         target_ex.time = time_val
         target_ex.distance = distance_val
+        target_ex.rest_between_sets = rest_val
         target_ex.notes = notes_val
 
+        _invalidate_description(target_workout)
         state.save_workouts()
         render_workouts(state.workouts)
         overlay.remove()
@@ -968,17 +1000,25 @@ def edit_exercise_in_workout(event) -> None:
 def remove_exercise_from_workout(event) -> None:
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
     workout_id = event.target.getAttribute("data-workout-id")
-    w, _, j = _find_exercise(workout_id, workout_ex_id)
-    if w and j >= 0:
+    w, ex, j = _find_exercise(workout_id, workout_ex_id)
+    if not w or j < 0:
+        return
+
+    anchor = event.target.closest("i") or event.target
+
+    def _do():
         ex_id = w.exercises[j].internal_id
         del w.exercises[j]
         w.breaks.pop(ex_id, None)
         _cleanup_supersets(w)
-    state.save_workouts()
-    render_workouts(state.workouts)
-    if not state.workouts:
-        state.active_workout = None
-        hide_sidebar()
+        _invalidate_description(w)
+        state.save_workouts()
+        render_workouts(state.workouts)
+        if not state.workouts:
+            state.active_workout = None
+            hide_sidebar()
+
+    _show_confirm_popup(anchor, f"Remove {ex.name}?", _do, confirm_label="Yes", cancel_label="No")
 
 
 def remove_workout(event) -> None:
@@ -997,7 +1037,11 @@ def remove_workout(event) -> None:
         if not state.workouts:
             hide_sidebar()
 
-    _show_confirm_popup(anchor, "Remove this workout?", _do)
+    target = next((w for w in state.workouts if str(w.id) == workout_id), None)
+    if target and target.exercises:
+        _show_confirm_popup(anchor, "Remove this workout?", _do)
+    else:
+        _do()
 
 
 def remove_workouts(event) -> None:
@@ -1013,7 +1057,10 @@ def remove_workouts(event) -> None:
             ws_container._js.removeChild(ws_container._js.firstChild)
         hide_sidebar()
 
-    _show_confirm_popup(anchor, "Remove all workouts?", _do)
+    if any(w.exercises for w in state.workouts):
+        _show_confirm_popup(anchor, "Remove all workouts?", _do)
+    else:
+        _do()
 
 
 def add_workout(event) -> None:
@@ -1025,6 +1072,10 @@ def add_workout(event) -> None:
 
 
 # ── AI workout description ─────────────────────────────────────────────────────
+
+def _invalidate_description(workout) -> None:
+    if workout and workout.description:
+        workout.description = ""
 
 async def _fetch_description(workout_id) -> None:
     modal = document.getElementById("describe-modal")
@@ -1050,6 +1101,8 @@ async def _fetch_description(workout_id) -> None:
         )
         data = await resp.json()
         if "description" in data:
+            workout.description = data["description"]
+            state.save_workouts()
             paragraphs = "".join(
                 f"<p>{html_escape(p.strip())}</p>"
                 for p in data["description"].split("\n\n")

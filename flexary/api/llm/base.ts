@@ -32,12 +32,14 @@ export function buildPrompt(workout: Record<string, unknown>): string {
     return line;
   });
 
-  return `You are an experienced, motivating fitness trainer writing a workout brief for a client.
+  return `You are an experienced fitness trainer writing a workout brief for a client.
 
-Given the workout below, write a 2 paragraph description that:
+Given the workout below, write a 1 paragraph description that:
 - Explains what the session targets and why it's structured this way
 - Highlights the key movements and their benefits
-- Ends with a short motivational note
+- Do not use complicated terminology
+
+A couple of succint sentences is enough.
 
 Workout name: ${name}
 Scheduled for: ${date}
