@@ -539,7 +539,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
     left: 0;
     right: 0;
     width: 100%;
-    height: 82dvh;
+    height: 41dvh;
     border-radius: 20px 20px 0 0;
     border-right: none;
     border-top: 1px solid #3a3a3a;
@@ -875,6 +875,25 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   #filter-row.filter-panel-open {
     margin-top: 0.5rem !important;
     margin-bottom: 0.5rem !important;
+  }
+
+  /* When the bottom sheet is open: hide FABs and float the close button above the sheet */
+  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #fab-buttons {
+    display: none !important;
+  }
+
+  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
+    top: auto !important;
+    bottom: calc(41dvh + 10px);
+    left: 50% !important;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
 }
 
