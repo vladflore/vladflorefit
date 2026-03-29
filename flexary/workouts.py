@@ -60,6 +60,66 @@ def _show_warning(el, msg: str) -> None:
     el.style.display = "block"
 
 
+def _show_confirm_popup(anchor_el, message, on_confirm) -> None:
+    existing = document.querySelector(".confirm-popup-overlay")
+    if existing:
+        existing.remove()
+
+    overlay = document.createElement("div")
+    overlay.className = "confirm-popup-overlay"
+
+    popup = document.createElement("div")
+    popup.className = "confirm-popup"
+
+    msg_el = document.createElement("p")
+    msg_el.className = "confirm-popup-message"
+    msg_el.textContent = message
+    popup.appendChild(msg_el)
+
+    btn_row = document.createElement("div")
+    btn_row.className = "confirm-popup-actions"
+
+    cancel_btn = document.createElement("button")
+    cancel_btn.textContent = "Cancel"
+    cancel_btn.className = "confirm-popup-cancel"
+
+    confirm_btn = document.createElement("button")
+    confirm_btn.textContent = "Remove"
+    confirm_btn.className = "confirm-popup-confirm"
+
+    def _confirm(evt):
+        evt.stopPropagation()
+        overlay.remove()
+        on_confirm()
+
+    def _cancel(evt):
+        evt.stopPropagation()
+        overlay.remove()
+
+    def _dismiss(evt):
+        if evt.target == overlay:
+            overlay.remove()
+
+    confirm_btn.addEventListener("click", create_proxy(_confirm))
+    cancel_btn.addEventListener("click", create_proxy(_cancel))
+    overlay.addEventListener("click", create_proxy(_dismiss))
+
+    btn_row.appendChild(cancel_btn)
+    btn_row.appendChild(confirm_btn)
+    popup.appendChild(btn_row)
+    overlay.appendChild(popup)
+    document.body.appendChild(overlay)
+
+    rect = anchor_el.getBoundingClientRect()
+    popup_w = 210
+    left = rect.left + rect.width / 2 - popup_w / 2
+    left = max(8, min(left, document.documentElement.clientWidth - popup_w - 8))
+    popup.style.width = f"{popup_w}px"
+    popup.style.left = f"{left}px"
+    popup.style.top = f"{rect.top - 8}px"
+    popup.style.transform = "translateY(-100%)"
+
+
 def _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el) -> bool:
     if not sets_val:
         _show_warning(warning_el, "Number of sets is required.")
@@ -210,9 +270,16 @@ def render_workouts(workouts: list) -> None:
             name_el.className = "exercise-item-name"
             name_el.textContent = exercise.name
 
+            rounds = w.superset_rounds.get(exercise.superset_id, 1) if exercise.superset_id else 1
             details_el = document.createElement("div")
             details_el.className = "exercise-item-details"
-            details_el.textContent = exercise.detail_str()
+            details_el.textContent = exercise.detail_str(in_superset=bool(exercise.superset_id))
+            if exercise.superset_id and exercise.reps_mismatch(rounds):
+                warn = document.createElement("div")
+                warn.className = "superset-reps-warning"
+                reps_count = len([v for v in exercise.reps.split(",") if v.strip()])
+                warn.textContent = f"⚠ Exercise configured with {reps_count} executions but the superset has {rounds} rounds — edit either the exercise's configuration or the superset's number of rounds so that they match"
+                details_el.appendChild(warn)
 
             item_name_span = w_li.find("#workout-item-name")[0]._js
             item_name_span.innerHTML = ""
@@ -293,6 +360,7 @@ def render_workouts(workouts: list) -> None:
                             if val and int(val) > 0:
                                 workout.superset_rounds[superset_id] = int(val)
                                 state.save_workouts()
+                                render_workouts(state.workouts)
                         return _on_change
 
                     rounds_input.addEventListener("change", create_proxy(_make_rounds_handler(w, sid)))
@@ -319,6 +387,18 @@ def render_workouts(workouts: list) -> None:
             hint.classList.remove("d-none")
 
         ws_container.append(w_div)
+
+    has_mismatch = any(
+        ex.superset_id and ex.reps_mismatch(w.superset_rounds.get(ex.superset_id, 1))
+        for w in workouts
+        for ex in w.exercises
+    )
+    mismatch_title = "Fix reps/rounds mismatches before downloading" if has_mismatch else ""
+    for btn_id in ("download-workouts", "download-ics"):
+        btn = document.getElementById(btn_id)
+        if btn:
+            btn.disabled = has_mismatch
+            btn.title = mismatch_title
 
 
 # ── Add / configure exercise ───────────────────────────────────────────────────
@@ -731,26 +811,38 @@ def remove_exercise_from_workout(event) -> None:
 
 
 def remove_workout(event) -> None:
+    event.stopPropagation()
+    anchor = event.target.closest("button") or event.target
     workout_id = event.target.getAttribute("data-workout-id")
-    for i, w in enumerate(state.workouts):
-        if str(w.id) == workout_id:
-            del state.workouts[i]
-            break
-    state.active_workout = None if not state.workouts else state.workouts[-1].id
-    state.save_workouts()
-    render_workouts(state.workouts)
-    if not state.workouts:
-        hide_sidebar()
+
+    def _do():
+        for i, w in enumerate(state.workouts):
+            if str(w.id) == workout_id:
+                del state.workouts[i]
+                break
+        state.active_workout = None if not state.workouts else state.workouts[-1].id
+        state.save_workouts()
+        render_workouts(state.workouts)
+        if not state.workouts:
+            hide_sidebar()
+
+    _show_confirm_popup(anchor, "Remove this workout?", _do)
 
 
 def remove_workouts(event) -> None:
-    state.workouts.clear()
-    state.active_workout = None
-    localStorage.removeItem(state.ls_workouts_key)
-    ws_container = pydom["#workout-list-container"][0]
-    while ws_container._js.firstChild:
-        ws_container._js.removeChild(ws_container._js.firstChild)
-    hide_sidebar()
+    event.stopPropagation()
+    anchor = event.target.closest("button") or event.target
+
+    def _do():
+        state.workouts.clear()
+        state.active_workout = None
+        localStorage.removeItem(state.ls_workouts_key)
+        ws_container = pydom["#workout-list-container"][0]
+        while ws_container._js.firstChild:
+            ws_container._js.removeChild(ws_container._js.firstChild)
+        hide_sidebar()
+
+    _show_confirm_popup(anchor, "Remove all workouts?", _do)
 
 
 def add_workout(event) -> None:

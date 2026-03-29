@@ -529,6 +529,13 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   margin-top: 2px;
 }
 
+.superset-reps-warning {
+  font-size: 0.65rem;
+  color: #f87171;
+  font-weight: 600;
+  margin-top: 3px;
+}
+
 .exercise-item-notes {
   font-size: 0.75rem;
   color: #aaa;
@@ -571,6 +578,18 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   border-color: #ba945e;
 }
 
+.sidebar-action-btn:disabled {
+  color: #444;
+  border-color: #2a2a2a;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.sidebar-action-btn:disabled:hover {
+  background-color: transparent;
+  border-color: #2a2a2a;
+}
+
 .sidebar-action-btn--danger {
   color: #e05252;
   border-color: #3a3a3a;
@@ -579,6 +598,87 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
 .sidebar-action-btn--danger:hover {
   background-color: rgba(224, 82, 82, 0.12);
   border-color: #e05252;
+}
+
+.confirm-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+}
+
+.confirm-popup {
+  position: fixed;
+  background-color: #1e1e1e;
+  border: 1px solid #ba945e;
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
+  z-index: 2001;
+  animation: confirm-popup-in 0.15s ease;
+}
+
+.confirm-popup::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  margin-left: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: #1e1e1e;
+  border-right: 1px solid #ba945e;
+  border-bottom: 1px solid #ba945e;
+  transform: rotate(45deg);
+}
+
+@keyframes confirm-popup-in {
+  from { opacity: 0; transform: translateY(-96%); }
+  to   { opacity: 1; transform: translateY(-100%); }
+}
+
+.confirm-popup-message {
+  font-size: 0.8rem;
+  color: #e0e0e0;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.confirm-popup-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.confirm-popup-confirm,
+.confirm-popup-cancel {
+  border-radius: 4px;
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.confirm-popup-confirm {
+  background: transparent;
+  border: 1px solid #ba945e;
+  color: #ba945e;
+}
+
+.confirm-popup-confirm:hover {
+  background: #ba945e;
+  color: #fff;
+}
+
+.confirm-popup-cancel {
+  background: transparent;
+  border: 1px solid #555;
+  color: #aaa;
+}
+
+.confirm-popup-cancel:hover {
+  background: #333;
+  border-color: #777;
+  color: #fff;
 }
 
 .add-exes-hint {

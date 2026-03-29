@@ -24,6 +24,7 @@ def _reps_display(raw: str, sets: int) -> str:
     return "/".join(values) + " reps"
 
 
+
 def _dist_display(raw: str, sets: int = 0) -> str:
     values = [v.strip() for v in raw.split(",") if v.strip()]
     if len(set(values)) == 1:
@@ -43,23 +44,43 @@ class Exercise:
     notes: str = ""
     superset_id: str = ""
 
-    def detail_str(self) -> str:
+    def reps_mismatch(self, rounds: int) -> bool:
+        """True when varying reps values don't match the superset rounds count."""
+        if not self.reps:
+            return False
+        values = [v.strip() for v in self.reps.split(",") if v.strip()]
+        return len(values) > 1 and len(values) != rounds
+
+    def detail_str(self, in_superset: bool = False) -> str:
         sets = int(self.sets) if str(self.sets).isdigit() else 1
-        sets_label = f"{sets} set{'s' if sets != 1 else ''}"
-        each = sets > 1
         parts = []
-        if self.reps:
-            parts.append(f"{sets_label} × {_reps_display(self.reps, sets)}")
-        elif self.time:
-            parts.append(f"{sets_label} × {self.time}{' each' if each else ''}")
-        elif self.distance:
-            parts.append(f"{sets_label} × {_dist_display(self.distance, sets)}")
+        if in_superset:
+            # Rounds are controlled at the superset level — show only per-round details.
+            if self.reps:
+                parts.append(_reps_display(self.reps, 1))
+            elif self.time:
+                parts.append(self.time)
+            elif self.distance:
+                parts.append(_dist_display(self.distance))
+            if self.reps and self.time:
+                parts.append(self.time)
+            if self.distance and (self.reps or self.time):
+                parts.append(_dist_display(self.distance))
         else:
-            parts.append(sets_label)
-        if self.reps and self.time:
-            parts.append(f"{self.time}{' each' if each else ''}")
-        if self.distance and (self.reps or self.time):
-            parts.append(_dist_display(self.distance, sets))
+            sets_label = f"{sets} set{'s' if sets != 1 else ''}"
+            each = sets > 1
+            if self.reps:
+                parts.append(f"{sets_label} × {_reps_display(self.reps, sets)}")
+            elif self.time:
+                parts.append(f"{sets_label} × {self.time}{' each' if each else ''}")
+            elif self.distance:
+                parts.append(f"{sets_label} × {_dist_display(self.distance, sets)}")
+            else:
+                parts.append(sets_label)
+            if self.reps and self.time:
+                parts.append(f"{self.time}{' each' if each else ''}")
+            if self.distance and (self.reps or self.time):
+                parts.append(_dist_display(self.distance, sets))
         return " · ".join(parts)
 
 
