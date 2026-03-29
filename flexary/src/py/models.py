@@ -51,12 +51,14 @@ class Exercise:
     superset_id: str = ""
     rest_between_sets: int = 0
 
-    def reps_mismatch(self, rounds: int) -> bool:
-        """True when varying reps values don't match the superset rounds count."""
-        if not self.reps:
-            return False
-        values = [v.strip() for v in self.reps.split(",") if v.strip()]
-        return len(values) > 1 and len(values) != rounds
+    def execution_mismatch(self, rounds: int) -> bool:
+        """True when any per-set field has multiple values that don't match the superset rounds count."""
+        def _check(raw):
+            if not raw:
+                return False
+            values = [v.strip() for v in raw.split(",") if v.strip()]
+            return len(values) > 1 and len(values) != rounds
+        return _check(self.reps) or _check(self.time) or _check(self.distance)
 
     def detail_str(self, in_superset: bool = False) -> str:
         sets = int(self.sets) if str(self.sets).isdigit() else 1

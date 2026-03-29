@@ -1034,11 +1034,13 @@ def render_workouts(workouts: list) -> None:
             details_el = document.createElement("div")
             details_el.className = "exercise-item-details"
             details_el.textContent = exercise.detail_str(in_superset=bool(exercise.superset_id))
-            if exercise.superset_id and exercise.reps_mismatch(rounds):
+            if exercise.superset_id and exercise.execution_mismatch(rounds):
                 warn = document.createElement("div")
                 warn.className = "superset-reps-warning"
-                reps_count = len([v for v in exercise.reps.split(",") if v.strip()])
-                warn.textContent = f"⚠ Exercise configured with {reps_count} executions but the superset has {rounds} rounds — edit either the exercise's configuration or the superset's number of rounds so that they match"
+                def _mismatch_count(raw):
+                    return len([v for v in raw.split(",") if v.strip()]) if raw else 0
+                ex_count = max(_mismatch_count(exercise.reps), _mismatch_count(exercise.time), _mismatch_count(exercise.distance))
+                warn.textContent = f"⚠ Exercise configured with {ex_count} executions but the superset has {rounds} rounds — edit either the exercise's configuration or the superset's number of rounds so that they match"
                 details_el.appendChild(warn)
 
             item_name_span = w_li.find("#workout-item-name")[0]._js
@@ -1175,7 +1177,7 @@ def render_workouts(workouts: list) -> None:
         ws_container.append(w_div)
 
     has_mismatch = any(
-        ex.superset_id and ex.reps_mismatch(w.superset_rounds.get(ex.superset_id, 1))
+        ex.superset_id and ex.execution_mismatch(w.superset_rounds.get(ex.superset_id, 1))
         for w in workouts
         for ex in w.exercises
     )

@@ -220,7 +220,13 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
             for row_num, exercise in enumerate(chunk):
                 # ── Break row ────────────────────────────────────────────────
                 break_mins = workout.breaks.get(exercise.internal_id, 0)
-                if break_mins:
+                prev_ex = chunk[row_num - 1] if row_num > 0 else None
+                inside_superset = (
+                    exercise.superset_id
+                    and prev_ex is not None
+                    and prev_ex.superset_id == exercise.superset_id
+                )
+                if break_mins and not inside_superset:
                     break_h = 6
                     if pdf.get_y() + break_h > pdf.h - 25:
                         for _sid in list(ss_open.keys()):
