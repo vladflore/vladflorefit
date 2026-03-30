@@ -21,6 +21,7 @@ pdf_color_modal_id = "pdf-color-modal"
 # ── localStorage keys ──────────────────────────────────────────────────────────
 ls_workouts_key = "workouts"
 ls_filters_key = "filters"
+ls_custom_exercises_key = "custom_exercises"
 
 
 # ── DOM helper ─────────────────────────────────────────────────────────────────
@@ -62,5 +63,25 @@ if _filters_raw:
 
 # ── Exercise library (populated during init in main.py) ────────────────────────
 data: list[dict] = []
+base_data: list[dict] = []          # CSV-only data, never modified after init
 category_count: dict[str, int] = {}
 body_parts_list: list[str] = []
+
+# ── Custom exercises ───────────────────────────────────────────────────────────
+custom_exercises: list[dict] = []
+_custom_raw = localStorage.getItem(ls_custom_exercises_key)
+if _custom_raw:
+    try:
+        custom_exercises = json.loads(_custom_raw)
+    except Exception:
+        pass
+
+
+def save_custom_exercises() -> None:
+    localStorage.setItem(ls_custom_exercises_key, json.dumps(custom_exercises))
+
+
+def next_custom_id() -> int:
+    if not custom_exercises:
+        return -1
+    return min(int(ex["id"]) for ex in custom_exercises) - 1

@@ -254,7 +254,8 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
 
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
-                detailed_page_link = next(
+                is_custom_ex = exercise.id < 0
+                detailed_page_link = "" if is_custom_ex else next(
                     (
                         f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
                         for d in state.data
@@ -279,7 +280,8 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 if exercise.notes:
                     # Pre-calculate available text width (mirrors values computed later)
                     _tri_size = 2.2
-                    _text_w = exercise_name_column_width - 12 - 2 - 3 - _tri_size * 1.6 - 2 - 2
+                    _qr_reserved = 0 if is_custom_ex else (12 + 2)
+                    _text_w = exercise_name_column_width - _qr_reserved - 3 - _tri_size * 1.6 - 2 - 2
                     pdf.set_font("opensans", style="I", size=7)
                     _lines, _line_w = 1, 0
                     for _word in exercise.notes.split():
@@ -369,18 +371,21 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                     pdf.set_fill_color(245, 245, 245)
 
                 qr_size = 12
-                qr = qrcode.QRCode(version=1, box_size=3, border=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
-                qr.add_data(detailed_page_link)
-                qr.make(fit=True)
-                qr_img = qr.make_image(fill_color="black", back_color="white")
-                qr_buf = io.BytesIO()
-                qr_img.save(qr_buf, format="PNG")
-                qr_buf.seek(0)
-                qr_x = x_start + exercise_name_column_width - qr_size - 2
-                qr_y = row_y + (total_h - qr_size) / 2
-
                 text_x = icon_x + tri_size * 1.6 + 2
-                text_w = qr_x - text_x - 2
+                if is_custom_ex:
+                    text_w = x_start + exercise_name_column_width - 2 - text_x
+                else:
+                    qr_x = x_start + exercise_name_column_width - qr_size - 2
+                    qr_y = row_y + (total_h - qr_size) / 2
+                    qr = qrcode.QRCode(version=1, box_size=3, border=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
+                    qr.add_data(detailed_page_link)
+                    qr.make(fit=True)
+                    qr_img = qr.make_image(fill_color="black", back_color="white")
+                    qr_buf = io.BytesIO()
+                    qr_img.save(qr_buf, format="PNG")
+                    qr_buf.seek(0)
+                    text_w = qr_x - text_x - 2
+
                 pdf.set_xy(text_x, name_y)
                 pdf.set_font("opensans", style="B", size=10)
                 pdf.cell(text_w, row_height, exercise.name, border=0, align="L", link=detailed_page_link)
@@ -394,7 +399,8 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                     pdf.set_text_color(0, 0, 0)
                     pdf.set_font("opensans", style="", size=10)
 
-                pdf.image(qr_buf, x=qr_x, y=qr_y, w=qr_size, h=qr_size, link=detailed_page_link)
+                if not is_custom_ex:
+                    pdf.image(qr_buf, x=qr_x, y=qr_y, w=qr_size, h=qr_size, link=detailed_page_link)
 
                 sets_x = x_start + exercise_name_column_width
                 pdf.rect(sets_x, row_y, sets_column_width, total_h, style=rect_style)

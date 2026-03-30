@@ -19,17 +19,17 @@ from filters import (
 )
 from pdf import download_file, download_pdf_with_options
 from ics import download_ics
-from workouts import add_workout, hide_sidebar, render_workouts, remove_workouts, show_sidebar
+from workouts import add_workout, hide_sidebar, render_workouts, remove_workouts, update_workout_badge
+from custom_exercises import open_add_custom_modal
 
 
 def show_info(event) -> None:
-    with open("info.txt", "r") as f:
-        document.getElementById("info-modal-body").innerHTML = f.read()
     document.getElementById("info-modal").showModal()
 
 
 # ── Initialise exercise library ────────────────────────────────────────────────
-state.data = sorted(csv_to_json("exercises.csv"), key=lambda x: x["name"])
+state.base_data = sorted(csv_to_json("exercises.csv"), key=lambda x: x["name"])
+state.data = sorted(state.custom_exercises, key=lambda x: x["name"]) + state.base_data
 
 body_parts_seen: set[str] = set()
 for exercise_data in state.data:
@@ -61,8 +61,8 @@ add_event_listener(document.getElementById("pdf-download-btn"), "click", downloa
 
 # ── Initial sidebar state ──────────────────────────────────────────────────────
 if state.workouts:
-    show_sidebar()
     render_workouts(state.workouts)
+    update_workout_badge()
 else:
     hide_sidebar()
 

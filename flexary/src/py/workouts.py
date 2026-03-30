@@ -866,14 +866,32 @@ def _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el) ->
 
 def show_sidebar() -> None:
     pydom[state.workout_sidebar_el_id][0]._js.classList.remove("d-none")
-    pydom["#toggle-workout-sidebar"][0]._js.innerHTML = '<i class="bi bi-x-lg"></i>'
+    icon = pydom["#toggle-workout-sidebar"][0]._js.querySelector("i")
+    if icon:
+        icon.className = "bi bi-x-lg"
     pydom["#toggle-workout-sidebar"][0]._js.title = "Hide Workouts"
 
 
 def hide_sidebar() -> None:
     pydom[state.workout_sidebar_el_id][0]._js.classList.add("d-none")
-    pydom["#toggle-workout-sidebar"][0]._js.innerHTML = '<i class="bi bi-list"></i>'
+    icon = pydom["#toggle-workout-sidebar"][0]._js.querySelector("i")
+    if icon:
+        icon.className = "bi bi-list"
     pydom["#toggle-workout-sidebar"][0]._js.title = "Show Workouts"
+    update_workout_badge()
+
+
+def update_workout_badge() -> None:
+    count = len(state.workouts)
+    btn = pydom["#toggle-workout-sidebar"][0]._js
+    existing = btn.querySelector(".workout-count-badge")
+    if existing:
+        existing.remove()
+    if count > 0:
+        badge = document.createElement("span")
+        badge.className = "workout-count-badge"
+        badge.textContent = str(count)
+        btn.appendChild(badge)
 
 
 # ── Workout rendering ──────────────────────────────────────────────────────────
@@ -1327,7 +1345,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
                     break
 
         state.save_workouts()
-        show_sidebar()
+        update_workout_badge()
         render_workouts(state.workouts)
         overlay.remove()
 
@@ -1631,6 +1649,7 @@ def remove_workout(event) -> None:
         state.active_workout = None if not state.workouts else state.workouts[-1].id
         state.save_workouts()
         render_workouts(state.workouts)
+        update_workout_badge()
         if not state.workouts:
             hide_sidebar()
 
@@ -1652,6 +1671,7 @@ def remove_workouts(event) -> None:
         ws_container = pydom["#workout-list-container"][0]
         while ws_container._js.firstChild:
             ws_container._js.removeChild(ws_container._js.firstChild)
+        update_workout_badge()
         hide_sidebar()
 
     if any(w.exercises for w in state.workouts):
@@ -1666,6 +1686,7 @@ def add_workout(event) -> None:
     state.workouts.append(w)
     state.save_workouts()
     render_workouts(state.workouts)
+    update_workout_badge()
 
 
 # ── AI workout description ─────────────────────────────────────────────────────

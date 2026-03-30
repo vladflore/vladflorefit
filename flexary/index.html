@@ -53,24 +53,20 @@
       <img src="./assets/logo-nobg.png" class="logo pulsate" alt="Loading..." />
     </dialog>
 
-    <nav
-      class="navbar sticky-top py-1 flex-wrap"
-      style="background-color: #000000; min-height: 60px"
-    >
+    <nav class="navbar sticky-top site-nav flex-wrap">
       <div
         class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2"
       >
         <a href="index.html">
-          <img src="./assets/logo.jpeg" class="logo-header" alt="Logo" />
+          <img src="./assets/logo-nobg.png" class="logo-header" alt="Logo" />
         </a>
         <form class="d-flex flex-grow-1 justify-content-end" role="search" style="min-width: 0">
           <input
-            class="form-control form-control-sm"
+            class="site-nav-search"
             type="search"
             placeholder="Search by name, category or body part"
             aria-label="Search"
             id="search-input"
-            style="max-width: 360px; min-width: 0; flex: 1 1 120px"
           />
         </form>
       </div>
@@ -80,8 +76,8 @@
       <main>
         <section>
           <div id="container" class="container py-3 d-none">
-            <h2 class="mb-0 text-center">Welcome to Flexary</h2>
-            <p class="mb-1 text-center text-muted">Your Fitness Exercises Library</p>
+            <h2 class="mb-0 text-center page-title">Welcome to Flexary</h2>
+            <p class="mb-1 text-center page-subtitle">Your Fitness Exercises Library</p>
             <div id="sticky-filters">
               <button id="filter-toggle-btn" class="filter-toggle-btn d-lg-none" type="button" aria-expanded="false">
                 <span class="d-flex align-items-center gap-2">
@@ -107,7 +103,7 @@
                       </span>
                       <div id="exercises-per-body-part-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
                     </div>
-                    <div class="filter-panel-row justify-content-center" style="padding: 1.75rem 0 0.1rem 0;">
+                    <div class="filter-panel-row justify-content-start" style="padding: 0.5rem 0 0.1rem 0;">
                       <button
                         id="clear-filters"
                         py-click="clear_filters"
@@ -118,7 +114,15 @@
                   </div>
                 </div>
               </div>
-              <p id="exercise-stats" class="exercise-stats"></p>
+              <div class="exercise-stats-row">
+                <p id="exercise-stats" class="exercise-stats mb-0"></p>
+                <button
+                  id="add-custom-exercise"
+                  py-click="open_add_custom_modal"
+                  class="clear-filters-btn"
+                  title="Add a custom exercise"
+                ><i class="bi bi-plus-circle me-1"></i>Add exercise</button>
+              </div>
               <div class="section-divider"></div>
             </div>
             <div id="skeleton-row" class="d-flex justify-content-center align-items-center" style="min-height: calc(100dvh - 120px);">
@@ -327,12 +331,11 @@
       <i class="bi bi-list"></i>
     </button>
 
-    <footer id="footer" class="bg-dark text-white d-none py-2">
-      <div class="container d-flex justify-content-center align-items-center">
-        <div class="text-center w-100">
-          <p id="copyright" class="mb-1" style="font-size: 0.875rem"></p>
-          <p id="version" class="mb-0" style="font-size: 0.875rem"></p>
-        </div>
+    <footer id="footer" class="site-footer d-none">
+      <div class="site-footer-inner">
+        <span class="site-footer-divider">✦</span>
+        <p id="copyright" class="site-footer-text mb-0"></p>
+        <p id="version" class="site-footer-version mb-0"></p>
       </div>
     </footer>
 
@@ -398,7 +401,48 @@
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
-      <div id="info-modal-body" class="info-modal-body"></div>
+      <div id="info-modal-body" class="info-modal-body">
+        <div class="info-content">
+          <p class="info-tagline">A growing resource to support your training with clear guidance and flexible workout tools.</p>
+          <ul class="info-features">
+            <li class="info-feature">
+              <span class="info-feature-icon"><i class="bi bi-collection"></i></span>
+              <div class="info-feature-body">
+                <strong class="info-feature-title">Expanding Exercise Collection</strong>
+                <span class="info-feature-desc">Instructions, tips, and muscle focus for each movement.</span>
+              </div>
+            </li>
+            <li class="info-feature">
+              <span class="info-feature-icon"><i class="bi bi-journal-plus"></i></span>
+              <div class="info-feature-body">
+                <strong class="info-feature-title">Create and Customize Workouts</strong>
+                <span class="info-feature-desc">Combine your favourite exercises into routines that fit your goals.</span>
+              </div>
+            </li>
+            <li class="info-feature">
+              <span class="info-feature-icon"><i class="bi bi-file-earmark-arrow-down"></i></span>
+              <div class="info-feature-body">
+                <strong class="info-feature-title">Export to PDF</strong>
+                <span class="info-feature-desc">Print your workout and take it with you wherever you train.</span>
+              </div>
+            </li>
+            <li class="info-feature">
+              <span class="info-feature-icon"><i class="bi bi-search"></i></span>
+              <div class="info-feature-body">
+                <strong class="info-feature-title">Search and Filtering</strong>
+                <span class="info-feature-desc">Quickly find exercises by name, category, or body part.</span>
+              </div>
+            </li>
+            <li class="info-feature">
+              <span class="info-feature-icon"><i class="bi bi-calendar-event"></i></span>
+              <div class="info-feature-body">
+                <strong class="info-feature-title">Export to Calendar</strong>
+                <span class="info-feature-desc">Add your workouts to your calendar with a simple ICS export.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
       <div class="info-modal-footer">
         <button class="btn btn-outline-gold" id="info-modal-close-btn">Close</button>
       </div>
@@ -427,7 +471,8 @@
 
         function updateButtonIcon() {
           const hidden = sidebar.classList.contains("d-none");
-          toggleBtn.innerHTML = hidden ? '<i class="bi bi-list"></i>' : '<i class="bi bi-x-lg"></i>';
+          const icon = toggleBtn.querySelector("i");
+          if (icon) icon.className = hidden ? "bi bi-list" : "bi bi-x-lg";
           toggleBtn.title = hidden ? "Show Workouts" : "Hide Workouts";
         }
 
@@ -474,6 +519,7 @@
             scrollTopBtn.classList.add("d-none");
           }
         });
+
       });
     </script>
 
