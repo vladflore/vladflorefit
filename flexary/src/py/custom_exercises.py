@@ -8,8 +8,6 @@ from i18n import t
 from workouts import render_workouts
 
 
-# ── CSS injection ──────────────────────────────────────────────────────────────
-
 def _inject_modal_css() -> None:
     if document.getElementById("custom-modal-styles"):
         return
@@ -27,8 +25,6 @@ def _inject_modal_css() -> None:
     )
     document.head.appendChild(style)
 
-
-# ── Internal helpers ───────────────────────────────────────────────────────────
 
 def _make_input_group(label_text: str, input_el, is_textarea: bool = False):
     group = document.createElement("div")
@@ -106,14 +102,12 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     is_edit = ex is not None
     exercise_id = str(ex["id"]) if is_edit else None
 
-    # ── Overlay ────────────────────────────────────────────────────────────────
     overlay = document.createElement("div")
     overlay.className = "cm-overlay"
 
     modal = document.createElement("div")
     modal.className = "cm-box"
 
-    # ── Header ────────────────────────────────────────────────────────────────
     header = document.createElement("div")
     header.style.display = "flex"
     header.style.alignItems = "center"
@@ -135,7 +129,6 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     header.appendChild(step_el)
     modal.appendChild(header)
 
-    # ── Step 1: essentials ────────────────────────────────────────────────────
     step1 = document.createElement("div")
     step1.style.display = "flex"
     step1.style.flexDirection = "column"
@@ -235,7 +228,6 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     step1.appendChild(footer1)
     modal.appendChild(step1)
 
-    # ── Step 2: details ───────────────────────────────────────────────────────
     step2 = document.createElement("div")
     step2.style.display = "none"
     step2.style.flexDirection = "column"
@@ -307,8 +299,6 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     overlay.appendChild(modal)
     document.body.appendChild(overlay)
     name_input.focus()
-
-    # ── Event handlers ────────────────────────────────────────────────────────
 
     def on_cancel(evt):
         overlay.remove()
@@ -389,8 +379,6 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     confirm_btn.onclick = create_proxy(on_confirm)
     overlay.addEventListener("click", create_proxy(on_overlay_click))
 
-
-# ── Public API ─────────────────────────────────────────────────────────────────
 
 def delete_custom_exercise(event) -> None:
     event.stopPropagation()

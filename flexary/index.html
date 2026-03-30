@@ -36,13 +36,7 @@
       src="https://pyscript.net/releases/2024.1.1/core.js"
     ></script>
     <script type="module">
-      const loading = document.getElementById("loading");
-      const container = document.getElementById("container");
-      addEventListener("py:ready", () => {
-        loading.close();
-        container.classList.remove("d-none");
-      });
-      loading.showModal();
+      document.getElementById("loading").showModal();
     </script>
     <title>Flexary</title>
     <link rel="icon" type="image/png" href="./assets/favicon.jpeg" />
@@ -70,7 +64,7 @@
             id="search-input"
           />
         </form>
-        <select id="lang-select" class="lang-select" title="Language" aria-label="Language">
+        <select id="lang-select" class="lang-select" data-i18n-title="language" title="Language" aria-label="Language">
           <option value="en">EN</option>
           <option value="es">ES</option>
           <option value="de">DE</option>
@@ -115,7 +109,7 @@
                         py-click="clear_filters"
                         class="clear-filters-btn"
                         data-i18n-title="clear_filters"
-                        title="Clear all filters"
+                        title="Clear filters"
                       ><i class="bi bi-x-circle me-1"></i><span data-i18n="clear_filters">Clear filters</span></button>
                     </div>
                   </div>
@@ -128,7 +122,7 @@
                   py-click="open_add_custom_modal"
                   class="clear-filters-btn"
                   data-i18n-title="add_exercise"
-                  title="Add a custom exercise"
+                  title="Add exercise"
                 ><i class="bi bi-plus-circle me-1"></i><span data-i18n="add_exercise">Add exercise</span></button>
               </div>
               <div class="section-divider"></div>
@@ -237,6 +231,7 @@
                   id="workout-edit"
                   type="button"
                   class="btn btn-outline-gold btn-sm"
+                  data-i18n-title="activate_workout"
                   title="Activate workout"
                 >
                   <i id="workout-edit-icon" class="bi bi-check2-circle me-1"></i><span data-i18n="activate">Activate</span>
@@ -267,11 +262,11 @@
                   class="form-control form-control-sm"
                   style="max-width: 160px"
                   value=""
-                  title="Edit workout date"
                 />
                 <button
                   id="workout-remove"
                   class="btn btn-sm btn-outline-danger"
+                  data-i18n-title="remove_workout"
                   title="Remove workout"
                 >
                   <i id="workout-remove-icon" class="bi bi-dash-circle"></i>

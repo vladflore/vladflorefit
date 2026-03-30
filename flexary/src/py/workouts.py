@@ -15,8 +15,6 @@ from i18n import t
 from models import Exercise, Workout, workouts_to_json
 
 
-# ── DOM helpers ────────────────────────────────────────────────────────────────
-
 def _make_input_group(label_text: str, input_el):
     group = document.createElement("div")
     group.style.display = "flex"
@@ -41,7 +39,6 @@ def _make_input_group(label_text: str, input_el):
 
 
 def _find_exercise(workout_id: str, workout_ex_id: str):
-    """Return (workout, exercise, index) or (None, None, -1)."""
     for w in state.workouts:
         if str(w.id) == workout_id:
             for j, ex in enumerate(w.exercises):
@@ -307,7 +304,7 @@ def _make_time_wheel(initial_value: str = ""):
         sep.style.fontWeight = "700"
         sep.style.fontSize = "1.1rem"
         sep.style.alignSelf = "center"
-        sep.style.marginBottom = "14px"  # nudge up to align with digit display
+        sep.style.marginBottom = "14px"
         return sep
 
     field_lbl = document.createElement("label")
@@ -863,8 +860,6 @@ def _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el) ->
     return True
 
 
-# ── Sidebar visibility ─────────────────────────────────────────────────────────
-
 def show_sidebar() -> None:
     pydom[state.workout_sidebar_el_id][0]._js.classList.remove("d-none")
     icon = pydom["#toggle-workout-sidebar"][0]._js.querySelector("i")
@@ -894,8 +889,6 @@ def update_workout_badge() -> None:
         badge.textContent = str(count)
         btn.appendChild(badge)
 
-
-# ── Workout rendering ──────────────────────────────────────────────────────────
 
 def _make_superset_connector(workout, idx_above, idx_below):
     ex_above = workout.exercises[idx_above]
@@ -1126,7 +1119,7 @@ def render_workouts(workouts: list) -> None:
                     rounds_input.min = "1"
                     rounds_input.value = str(rounds)
                     rounds_input.className = "superset-rounds-input"
-                    rounds_input.title = "Superset rounds"
+                    rounds_input.title = t("superset_rounds")
 
                     rounds_label = document.createElement("span")
                     rounds_label.textContent = t("rounds_label")
@@ -1208,8 +1201,6 @@ def render_workouts(workouts: list) -> None:
             btn.title = mismatch_title
 
 
-# ── Add / configure exercise ───────────────────────────────────────────────────
-
 def add_exercise_to_workout(event) -> None:
     event.stopPropagation()
     card = event.target.closest("[data-exercise-id]")
@@ -1261,7 +1252,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     sets_stepper, input_sets = _make_sets_stepper(1)
 
     rest_group, input_rest, reset_rest = _make_rest_stepper(0)
-    rest_group.style.display = "none"  # hidden when sets == 1
+    rest_group.style.display = "none"
 
     input_notes = document.createElement("textarea")
     input_notes.placeholder = t("notes_placeholder")
@@ -1353,8 +1344,6 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     confirm_btn.onclick = on_confirm_click
 
 
-# ── Superset linking ──────────────────────────────────────────────────────────
-
 def toggle_superset(event) -> None:
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
     workout_id = event.target.getAttribute("data-workout-id")
@@ -1363,8 +1352,6 @@ def toggle_superset(event) -> None:
         return
     prev_ex = w.exercises[j - 1]
     if ex.superset_id and ex.superset_id == prev_ex.superset_id:
-        # Unlink: split the superset at this boundary.
-        # Exercises from j onwards that share the same sid form a new superset (if ≥2).
         old_sid = ex.superset_id
         tail = [e for i, e in enumerate(w.exercises) if i >= j and e.superset_id == old_sid]
         if len(tail) >= 2:
@@ -1376,14 +1363,9 @@ def toggle_superset(event) -> None:
             ex.superset_id = ""
         _cleanup_supersets(w)
     else:
-        # Prefer the existing superset id from whichever side already belongs to one.
-        # Priority: lower exercise's group > upper exercise's group > new id.
-        # This ensures adding ex1 above an existing ex2+ex3 superset extends it
-        # rather than creating a new one that orphans ex3.
         sid = ex.superset_id or prev_ex.superset_id or str(uuid4())
         if sid not in w.superset_rounds:
             w.superset_rounds[sid] = 1
-        # If the upper exercise was in a different superset, migrate all its members.
         if prev_ex.superset_id and prev_ex.superset_id != sid:
             old_sid = prev_ex.superset_id
             for e in w.exercises:
@@ -1392,15 +1374,12 @@ def toggle_superset(event) -> None:
             w.superset_rounds.pop(old_sid, None)
         prev_ex.superset_id = sid
         ex.superset_id = sid
-        # Clear per-set rest for all exercises now in this superset — rest belongs at superset level.
         for e in w.exercises:
             if e.superset_id == sid:
                 e.rest_between_sets = 0
     state.save_workouts()
     render_workouts(state.workouts)
 
-
-# ── Move exercises ─────────────────────────────────────────────────────────────
 
 def _cleanup_supersets(w) -> None:
     """Clear superset_id from exercises no longer adjacent to a partner, then
@@ -1441,7 +1420,6 @@ def _do_move(exercises, j, delta) -> None:
     if ex.superset_id or not exercises[k].superset_id:
         exercises[j], exercises[k] = exercises[k], exercises[j]
     else:
-        # Standalone jumping over a superset group — find the far boundary.
         sid = exercises[k].superset_id
         if delta == +1:
             end = k
@@ -1474,8 +1452,6 @@ def move_exercise_down(event) -> None:
         state.save_workouts()
         render_workouts(state.workouts)
 
-
-# ── Edit exercise ──────────────────────────────────────────────────────────────
 
 def edit_exercise_in_workout(event) -> None:
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
@@ -1611,8 +1587,6 @@ def edit_exercise_in_workout(event) -> None:
     confirm_btn.onclick = on_save
 
 
-# ── Remove exercise / workout ──────────────────────────────────────────────────
-
 def remove_exercise_from_workout(event) -> None:
     workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
     workout_id = event.target.getAttribute("data-workout-id")
@@ -1689,8 +1663,6 @@ def add_workout(event) -> None:
     render_workouts(state.workouts)
     update_workout_badge()
 
-
-# ── AI workout description ─────────────────────────────────────────────────────
 
 def _invalidate_description(workout) -> None:
     if workout and workout.description:

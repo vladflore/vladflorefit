@@ -28,10 +28,8 @@ def show_info(event) -> None:
     document.getElementById("info-modal").showModal()
 
 
-# ── Apply translations to static HTML ─────────────────────────────────────────
 apply_html_translations()
 
-# ── Initialise exercise library ────────────────────────────────────────────────
 state.base_data = sorted(csv_to_json("exercises.csv"), key=lambda x: x["name"])
 state.data = sorted(state.custom_exercises, key=lambda x: x["name"]) + state.base_data
 
@@ -47,23 +45,19 @@ for exercise_data in state.data:
             state.body_parts_list.append(bp)
 state.body_parts_list.sort()
 
-# ── Render cards + badges (applies any persisted filters) ──────────────────────
 update_filters("")
 
 pydom["#skeleton-row"][0]._js.classList.add("d-none")
 pydom["#filter-row"][0]._js.classList.remove("d-none")
 
-# ── Footer ─────────────────────────────────────────────────────────────────────
 pydom[state.copyright_el_id][0]._js.innerHTML = copyright()
 pydom[state.version_el_id][0]._js.innerHTML = current_version()
 pydom[state.footer_el_id][0]._js.classList.remove("d-none")
 
-# ── Event listeners ────────────────────────────────────────────────────────────
 add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", download_file)
 add_event_listener(document.getElementById("download-ics"), "click", download_ics)
 add_event_listener(document.getElementById("pdf-download-btn"), "click", download_pdf_with_options)
 
-# ── Initial sidebar state ──────────────────────────────────────────────────────
 if state.workouts:
     render_workouts(state.workouts)
     update_workout_badge()
@@ -71,7 +65,6 @@ else:
     hide_sidebar()
 
 
-# ── Feature flags ──────────────────────────────────────────────────────────────
 async def _apply_feature_flags() -> None:
     try:
         resp = await pyfetch(f"{window.API_BASE}/api/feature_flags")
@@ -79,7 +72,10 @@ async def _apply_feature_flags() -> None:
         if flags.get("describe_workout", False):
             document.body.classList.add("feature-describe")
     except Exception:
-        pass  # flags endpoint unreachable — all features stay hidden
+        pass
 
 
 asyncio.ensure_future(_apply_feature_flags())
+
+document.getElementById("loading").close()
+document.getElementById("container").classList.remove("d-none")

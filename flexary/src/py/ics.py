@@ -56,9 +56,9 @@ def _build_ics() -> str:
             ex = exs[i]
             if exercise_lines:
                 if prev_was_superset or ex.superset_id:
-                    exercise_lines += ["", ""]   # larger gap around supersets
+                    exercise_lines += ["", ""]
                 else:
-                    exercise_lines += [""]        # single blank line between standalone exercises
+                    exercise_lines += [""]
             break_secs = workout.breaks.get(ex.internal_id, 0)
             if break_secs:
                 _m, _s = divmod(break_secs, 60)

@@ -136,7 +136,6 @@ def update(search_str: str) -> None:
     else:
         empty_state._js.classList.remove("d-none")
 
-    # Faceted counts: each dimension is counted from data filtered by the *other* dimension
     bp_filtered = [
         ex for ex in search_filtered
         if not state.active_body_part_filters

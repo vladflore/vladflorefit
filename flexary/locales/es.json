@@ -17,6 +17,8 @@
   "scheduled_for": "Programado para:",
   "workout_name_placeholder": "Nombre (opcional)",
   "activate": "Activar",
+  "activate_workout": "Activar entrenamiento",
+  "remove_workout": "Eliminar entrenamiento",
   "add_exes_hint": "A\u00f1ade ejercicios haciendo clic en el icono <i class=\"bi bi-plus-circle\"></i> de las tarjetas.",
   "move_up": "Subir",
   "move_down": "Bajar",
@@ -62,6 +64,7 @@
   "rest_unit": "descanso",
 
   "superset_label": "Superserie",
+  "superset_rounds": "Rondas de superserie",
   "rounds_label": "\u00d7 rondas",
   "split_superset": "Dividir superserie aqu\u00ed",
   "add_to_superset": "A\u00f1adir a superserie",

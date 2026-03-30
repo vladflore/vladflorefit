@@ -6,7 +6,6 @@ from pyweb import pydom
 
 from models import Workout, workouts_from_json, workouts_to_json
 
-# ── Element selectors ──────────────────────────────────────────────────────────
 exercises_row_id = "#exercises-row"
 exercise_card_template_id = "#exercise-card-template"
 copyright_el_id = "#copyright"
@@ -18,18 +17,15 @@ exercises_per_body_part_badges_row_id = "#exercises-per-body-part-badges-row"
 download_pdf_btn_id = "download-workouts"
 pdf_color_modal_id = "pdf-color-modal"
 
-# ── localStorage keys ──────────────────────────────────────────────────────────
 ls_workouts_key = "workouts"
 ls_filters_key = "filters"
 ls_custom_exercises_key = "custom_exercises"
 
 
-# ── DOM helper ─────────────────────────────────────────────────────────────────
 def q(selector, root=document):
     return root.querySelector(selector)
 
 
-# ── Cached DOM references ──────────────────────────────────────────────────────
 exercises_row = pydom[exercises_row_id][0]
 exercise_template = pydom.Element(
     q(exercise_card_template_id).content.querySelector("#card-exercise")
@@ -38,7 +34,6 @@ w_template = pydom.Element(
     q("#workout-template").content.querySelector("#workout")
 )
 
-# ── Workout state ──────────────────────────────────────────────────────────────
 _raw = localStorage.getItem(ls_workouts_key)
 workouts: list[Workout] = workouts_from_json(_raw) if _raw else []
 active_workout = workouts[0].id if workouts else None
@@ -48,7 +43,6 @@ def save_workouts() -> None:
     localStorage.setItem(ls_workouts_key, workouts_to_json(workouts))
 
 
-# ── Filter state ───────────────────────────────────────────────────────────────
 active_category_filters: set[str] = set()
 active_body_part_filters: set[str] = set()
 
@@ -61,13 +55,11 @@ if _filters_raw:
     except Exception:
         pass
 
-# ── Exercise library (populated during init in main.py) ────────────────────────
 data: list[dict] = []
-base_data: list[dict] = []          # CSV-only data, never modified after init
+base_data: list[dict] = []
 category_count: dict[str, int] = {}
 body_parts_list: list[str] = []
 
-# ── Custom exercises ───────────────────────────────────────────────────────────
 custom_exercises: list[dict] = []
 _custom_raw = localStorage.getItem(ls_custom_exercises_key)
 if _custom_raw:

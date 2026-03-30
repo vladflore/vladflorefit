@@ -82,7 +82,7 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
         if not exercises:
             continue
 
-        ss_color_map: dict = {}  # superset_id -> color, stable across chunks
+        ss_color_map: dict = {}
 
         def _ss_color(sid):
             if sid not in ss_color_map:
@@ -157,7 +157,7 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                         else:
                             _line_w += _word_w
                     _lines += _para_lines
-                desc_h = _lines * line_h + pad * 2 + 2  # +2 safety margin
+                desc_h = _lines * line_h + pad * 2 + 2
                 desc_y = pdf.get_y()
                 pdf.set_fill_color(252, 249, 244)
                 pdf.set_draw_color(*gold)
@@ -189,9 +189,8 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
 
             render_table_header()
 
-            line_x = x_start - 4   # x-centre of the thick side-line
-            line_w = 2.5           # line thickness in mm
-            # ss_open: superset_id -> {'y_top': float, 'y_bottom': float}
+            line_x = x_start - 4
+            line_w = 2.5
             ss_open = {}
 
             def _close_ss_line(sid):
@@ -218,7 +217,6 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 pdf.set_line_width(0.2)
 
             for row_num, exercise in enumerate(chunk):
-                # ── Break row ────────────────────────────────────────────────
                 break_mins = workout.breaks.get(exercise.internal_id, 0)
                 prev_ex = chunk[row_num - 1] if row_num > 0 else None
                 inside_superset = (
@@ -250,19 +248,23 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                     pdf.set_y(pdf.get_y() + break_h)
                     pdf.set_font("opensans", style="", size=10)
                     pdf.set_text_color(0, 0, 0)
-                # ─────────────────────────────────────────────────────────────
 
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
                 is_custom_ex = exercise.id < 0
-                detailed_page_link = "" if is_custom_ex else next(
-                    (
-                        f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
-                        for d in state.data
-                        if int(d["id"]) == exercise.id
-                    ),
-                    "",
-                )
+                ex_data = next((d for d in state.data if int(d["id"]) == exercise.id), None)
+                if is_custom_ex:
+                    _yt_id = ex_data.get("yt_video_id", "") if ex_data else ""
+                    detailed_page_link = f"https://www.youtube.com/watch?v={_yt_id}" if _yt_id else ""
+                else:
+                    detailed_page_link = next(
+                        (
+                            f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
+                            for d in state.data
+                            if int(d["id"]) == exercise.id
+                        ),
+                        "",
+                    )
                 try:
                     sets = int(exercise.sets)
                 except Exception:
@@ -270,7 +272,6 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 row_count = workout.superset_rounds.get(exercise.superset_id, 1) if exercise.superset_id else sets
 
                 sub_row_h = 7
-                ex_data = next((d for d in state.data if int(d["id"]) == exercise.id), None)
                 categories = [c.strip() for c in ex_data["category"].split(",")] if ex_data else []
 
                 badge_h = 4
@@ -278,9 +279,8 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 badge_area_h = badge_h + badge_pad_v * 2
                 notes_line_h = 4
                 if exercise.notes:
-                    # Pre-calculate available text width (mirrors values computed later)
                     _tri_size = 2.2
-                    _qr_reserved = 0 if is_custom_ex else (12 + 2)
+                    _qr_reserved = (12 + 2) if detailed_page_link else 0
                     _text_w = exercise_name_column_width - _qr_reserved - 3 - _tri_size * 1.6 - 2 - 2
                     pdf.set_font("opensans", style="I", size=7)
                     _lines, _line_w = 1, 0
@@ -361,20 +361,21 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 tri_size = 2.2
                 icon_x = x_start + 3
                 icon_y_center = name_y + row_height / 2
-                pdf.set_fill_color(*gold)
-                pdf.polygon([
-                    (icon_x, icon_y_center - tri_size),
-                    (icon_x, icon_y_center + tri_size),
-                    (icon_x + tri_size * 1.6, icon_y_center),
-                ], style="F")
-                if row_fill:
-                    pdf.set_fill_color(245, 245, 245)
+                if detailed_page_link:
+                    pdf.set_fill_color(*gold)
+                    pdf.polygon([
+                        (icon_x, icon_y_center - tri_size),
+                        (icon_x, icon_y_center + tri_size),
+                        (icon_x + tri_size * 1.6, icon_y_center),
+                    ], style="F")
+                    if row_fill:
+                        pdf.set_fill_color(245, 245, 245)
+                    text_x = icon_x + tri_size * 1.6 + 2
+                else:
+                    text_x = icon_x
 
                 qr_size = 12
-                text_x = icon_x + tri_size * 1.6 + 2
-                if is_custom_ex:
-                    text_w = x_start + exercise_name_column_width - 2 - text_x
-                else:
+                if detailed_page_link:
                     qr_x = x_start + exercise_name_column_width - qr_size - 2
                     qr_y = row_y + (total_h - qr_size) / 2
                     qr = qrcode.QRCode(version=1, box_size=3, border=1, error_correction=qrcode.constants.ERROR_CORRECT_L)
@@ -385,6 +386,8 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                     qr_img.save(qr_buf, format="PNG")
                     qr_buf.seek(0)
                     text_w = qr_x - text_x - 2
+                else:
+                    text_w = x_start + exercise_name_column_width - 2 - text_x
 
                 pdf.set_xy(text_x, name_y)
                 pdf.set_font("opensans", style="B", size=10)
@@ -399,7 +402,7 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                     pdf.set_text_color(0, 0, 0)
                     pdf.set_font("opensans", style="", size=10)
 
-                if not is_custom_ex:
+                if detailed_page_link:
                     pdf.image(qr_buf, x=qr_x, y=qr_y, w=qr_size, h=qr_size, link=detailed_page_link)
 
                 sets_x = x_start + exercise_name_column_width
@@ -445,7 +448,6 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 y_bottom = row_y + total_h
                 pdf.set_y(y_bottom)
 
-                # ── Superset side-line (state only; drawn when group closes) ──
                 if exercise.superset_id:
                     sid = exercise.superset_id
                     if sid not in ss_open:
@@ -455,7 +457,6 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                     next_ex = chunk[row_num + 1] if row_num + 1 < len(chunk) else None
                     if next_ex is None or next_ex.superset_id != sid:
                         _close_ss_line(sid)
-                # ──────────────────────────────────────────────────────────────
                 pdf.set_y(y_bottom)
 
             if is_last_chunk:

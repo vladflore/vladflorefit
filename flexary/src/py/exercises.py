@@ -1,6 +1,7 @@
 from pyscript import document, window
 
 import state
+from i18n import t
 from models import category_to_badge
 from workouts import add_exercise_to_workout
 
@@ -84,24 +85,22 @@ def create_card_exercise(template, exercise_data: dict):
         card_body = exercise_html.find(".card-body")[0]._js
         card_actions = exercise_html.find(".card-actions")[0]._js
 
-        # Row above video/add: edit + delete, right-aligned with a subtle separator
         custom_actions_row = document.createElement("div")
         custom_actions_row.className = "custom-actions-row"
 
         edit_icon = document.createElement("i")
         edit_icon.className = "bi bi-pencil card-action-icon custom-action-icon"
-        edit_icon.title = "Edit"
+        edit_icon.title = t("edit_exercise")
         edit_icon.onclick = open_edit_custom_modal
 
         delete_icon = document.createElement("i")
         delete_icon.className = "bi bi-trash card-action-icon card-action-icon--danger custom-action-icon"
-        delete_icon.title = "Delete"
+        delete_icon.title = t("remove_btn")
         delete_icon.onclick = delete_custom_exercise
 
         custom_actions_row.appendChild(edit_icon)
         custom_actions_row.appendChild(delete_icon)
 
-        # Insert the custom actions row just before card-actions
         card_body.insertBefore(custom_actions_row, card_actions)
 
     return exercise_html

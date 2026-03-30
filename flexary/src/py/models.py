@@ -64,7 +64,6 @@ class Exercise:
         sets = int(self.sets) if str(self.sets).isdigit() else 1
         parts = []
         if in_superset:
-            # Rounds are controlled at the superset level — show only per-round details.
             if self.reps:
                 parts.append(_reps_display(self.reps, 1))
             elif self.time:
@@ -101,13 +100,11 @@ class Workout:
     id: UUID
     execution_date: datetime.date
     exercises: list
-    superset_rounds: dict = field(default_factory=dict)  # superset_id -> rounds
+    superset_rounds: dict = field(default_factory=dict)
     name: str = ""
-    breaks: dict = field(default_factory=dict)  # exercise internal_id -> seconds
+    breaks: dict = field(default_factory=dict)
     description: str = ""
 
-
-# ── Serialisation ──────────────────────────────────────────────────────────────
 
 def workouts_to_json(workouts: list) -> str:
     def _ex(ex):
@@ -166,8 +163,7 @@ def workouts_from_json(raw: str) -> list:
             ))
         return result
     except Exception:
-        # Fallback: legacy eval-based storage format
         try:
-            return eval(raw)  # noqa: S307
+            return eval(raw)
         except Exception:
             return []

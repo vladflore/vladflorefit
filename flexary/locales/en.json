@@ -17,6 +17,8 @@
   "scheduled_for": "Scheduled for:",
   "workout_name_placeholder": "Name (optional)",
   "activate": "Activate",
+  "activate_workout": "Activate workout",
+  "remove_workout": "Remove workout",
   "add_exes_hint": "Add exercises by clicking the <i class=\"bi bi-plus-circle\"></i> icon on the exercise cards.",
   "move_up": "Move up",
   "move_down": "Move down",
@@ -62,6 +64,7 @@
   "rest_unit": "rest",
 
   "superset_label": "Superset",
+  "superset_rounds": "Superset rounds",
   "rounds_label": "\u00d7 rounds",
   "split_superset": "Split superset here",
   "add_to_superset": "Add to superset",

@@ -18,7 +18,6 @@ exercise_id = current_link.split("?")[1].split("=")[1]
 
 data = csv_to_json("exercises.csv", exercise_id=exercise_id)
 
-# Fall back to localStorage for custom exercises (negative IDs)
 if not data:
     try:
         raw = localStorage.getItem("custom_exercises")
@@ -59,7 +58,6 @@ def open_exercise(event):
     window.open(f"detail.html?exercise_id={exercise_id}", "_blank")
 
 
-# ── Video ──────────────────────────────────────────────────────────────────────
 yt_id = data.get("yt_video_id", "")
 iframe = pydom["#exercise-video"][0]._js
 ratio_div = iframe.closest(".ratio")
@@ -77,14 +75,12 @@ else:
     placeholder.appendChild(label)
     ratio_div.replaceWith(placeholder)
 
-# ── Instructions ───────────────────────────────────────────────────────────────
 instructions = data.get("instructions", "")
 if instructions:
     pydom["#exercise-instructions"][0]._js.textContent = instructions
 else:
     pydom["#instructions-not-available"][0]._js.classList.remove("d-none")
 
-# ── Muscles ────────────────────────────────────────────────────────────────────
 primary_muscles = data.get("primary_muscles", "")
 secondary_muscles = data.get("secondary_muscles", "")
 if primary_muscles:
@@ -94,7 +90,6 @@ if secondary_muscles:
 if not primary_muscles and not secondary_muscles:
     pydom["#muscles-not-available"][0]._js.classList.remove("d-none")
 
-# ── Key cues ───────────────────────────────────────────────────────────────────
 cues = data.get("key_cues", "")
 if cues:
     for i, cue in enumerate(cues.split(",")):
@@ -105,7 +100,6 @@ if cues:
 else:
     pydom["#cues-not-available"][0]._js.classList.remove("d-none")
 
-# ── Alternatives ───────────────────────────────────────────────────────────────
 alternatives = data.get("alternatives", "")
 if alternatives:
     for i, alternative_id in enumerate(alternatives.split(",")):
@@ -119,10 +113,8 @@ if alternatives:
 else:
     pydom["#alt-not-available"][0]._js.classList.remove("d-none")
 
-# ── Translations ───────────────────────────────────────────────────────────────
 apply_html_translations()
 
-# ── Footer ─────────────────────────────────────────────────────────────────────
 pydom["#copyright"][0]._js.innerHTML = copyright()
 pydom["#version"][0]._js.innerHTML = current_version()
 pydom["#footer"][0]._js.classList.remove("d-none")
