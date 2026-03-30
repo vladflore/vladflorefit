@@ -11,6 +11,7 @@ from pyscript import document
 from pyweb import pydom
 
 import state
+from i18n import t
 from models import Exercise, Workout, workouts_to_json
 
 
@@ -114,7 +115,7 @@ def _make_sets_stepper(initial_value: int = 1):
     plus_btn.addEventListener("click", create_proxy(_on_plus))
 
     label = document.createElement("label")
-    label.textContent = "Sets"
+    label.textContent = t("sets_label")
     label.style.fontSize = "0.75rem"
     label.style.color = "rgba(255,255,255,0.75)"
     label.style.textAlign = "center"
@@ -199,7 +200,7 @@ def _make_rest_stepper(initial_value: int = 0):
     plus_btn.addEventListener("click", create_proxy(_on_plus))
 
     label = document.createElement("label")
-    label.textContent = "Rest between sets"
+    label.textContent = t("rest_label")
     label.style.fontSize = "0.75rem"
     label.style.color = "rgba(255,255,255,0.75)"
     label.style.textAlign = "center"
@@ -310,7 +311,7 @@ def _make_time_wheel(initial_value: str = ""):
         return sep
 
     field_lbl = document.createElement("label")
-    field_lbl.textContent = "Time"
+    field_lbl.textContent = t("time_label")
     field_lbl.style.fontSize = "0.75rem"
     field_lbl.style.color = "rgba(255,255,255,0.75)"
     field_lbl.style.textAlign = "center"
@@ -391,7 +392,7 @@ def _make_reps_stepper(initial_value: str = ""):
     plus_btn.addEventListener("click", create_proxy(_on_plus))
 
     lbl = document.createElement("label")
-    lbl.textContent = "Reps"
+    lbl.textContent = t("reps_label")
     lbl.style.fontSize = "0.75rem"
     lbl.style.color = "rgba(255,255,255,0.75)"
     lbl.style.textAlign = "center"
@@ -502,7 +503,7 @@ def _make_distance_stepper(initial_value: str = ""):
     unit_btn.addEventListener("click", create_proxy(_on_unit_toggle))
 
     lbl = document.createElement("label")
-    lbl.textContent = "Distance"
+    lbl.textContent = t("distance_label")
     lbl.style.fontSize = "0.75rem"
     lbl.style.color = "rgba(255,255,255,0.75)"
     lbl.style.textAlign = "center"
@@ -633,7 +634,7 @@ def _make_per_set_group(sets: int, reps_list=None, time_list=None, dist_list=Non
 
     def _show(idx):
         current_set[0] = idx
-        set_label.textContent = f"Set {idx + 1} / {sets}"
+        set_label.textContent = t("set_of", current=idx + 1, total=sets)
         prev_btn.disabled = idx == 0
         next_btn.disabled = idx == sets - 1
         for k, panel in enumerate(set_panels):
@@ -749,7 +750,7 @@ def _show_break_popup(anchor_el, workout, ex_below) -> None:
 
     title_el = document.createElement("p")
     title_el.className = "confirm-popup-message"
-    title_el.textContent = f"Rest before {ex_below.name}"
+    title_el.textContent = t("rest_before", name=ex_below.name)
     popup.appendChild(title_el)
 
     input_row = document.createElement("div")
@@ -764,7 +765,7 @@ def _show_break_popup(anchor_el, workout, ex_below) -> None:
     inp.max = "3600"
     current = workout.breaks.get(ex_below.internal_id, 0)
     inp.value = str(current) if current else ""
-    inp.placeholder = "sec"
+    inp.placeholder = t("sec_placeholder")
     inp.style.width = "64px"
     inp.style.fontSize = "0.8rem"
     inp.style.padding = "2px 6px"
@@ -774,7 +775,7 @@ def _show_break_popup(anchor_el, workout, ex_below) -> None:
     inp.style.color = "#fff"
 
     unit_label = document.createElement("span")
-    unit_label.textContent = "sec"
+    unit_label.textContent = t("sec_unit")
     unit_label.style.fontSize = "0.8rem"
     unit_label.style.color = "rgba(255,255,255,0.7)"
 
@@ -786,15 +787,15 @@ def _show_break_popup(anchor_el, workout, ex_below) -> None:
     btn_row.className = "confirm-popup-actions"
 
     save_btn = document.createElement("button")
-    save_btn.textContent = "Set"
+    save_btn.textContent = t("set_btn")
     save_btn.className = "confirm-popup-confirm"
 
     clear_btn = document.createElement("button")
-    clear_btn.textContent = "Clear"
+    clear_btn.textContent = t("clear_btn")
     clear_btn.className = "confirm-popup-cancel"
 
     cancel_btn = document.createElement("button")
-    cancel_btn.textContent = "Cancel"
+    cancel_btn.textContent = t("cancel_btn")
     cancel_btn.className = "confirm-popup-cancel"
 
     def _save(evt):
@@ -844,20 +845,20 @@ def _show_break_popup(anchor_el, workout, ex_below) -> None:
 
 def _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el) -> bool:
     if not sets_val:
-        _show_warning(warning_el, "Number of sets is required.")
+        _show_warning(warning_el, t("sets_required"))
         return False
     if reps_val:
         reps = [v for r in reps_val.split(",") if (v := r.strip()) and v.isdigit()]
         if len(reps) != sets:
-            _show_warning(warning_el, f"Reps count ({len(reps)}) must match number of sets ({sets}).")
+            _show_warning(warning_el, t("reps_mismatch", count=len(reps), sets=sets))
             return False
     if time_val:
         time_parts = time_val.split(":")
         if len(time_parts) != 3 or not all(part.isdigit() for part in time_parts):
-            _show_warning(warning_el, "Time must be in hh:mm:ss format.")
+            _show_warning(warning_el, t("time_format_error"))
             return False
         if any(int(part) < 0 for part in time_parts):
-            _show_warning(warning_el, "Time values cannot be negative.")
+            _show_warning(warning_el, t("time_negative_error"))
             return False
     return True
 
@@ -869,7 +870,7 @@ def show_sidebar() -> None:
     icon = pydom["#toggle-workout-sidebar"][0]._js.querySelector("i")
     if icon:
         icon.className = "bi bi-x-lg"
-    pydom["#toggle-workout-sidebar"][0]._js.title = "Hide Workouts"
+    pydom["#toggle-workout-sidebar"][0]._js.title = t("hide_workouts")
 
 
 def hide_sidebar() -> None:
@@ -877,7 +878,7 @@ def hide_sidebar() -> None:
     icon = pydom["#toggle-workout-sidebar"][0]._js.querySelector("i")
     if icon:
         icon.className = "bi bi-list"
-    pydom["#toggle-workout-sidebar"][0]._js.title = "Show Workouts"
+    pydom["#toggle-workout-sidebar"][0]._js.title = t("show_workouts")
     update_workout_badge()
 
 
@@ -905,7 +906,7 @@ def _make_superset_connector(workout, idx_above, idx_below):
     el.className = "superset-connector " + ("superset-connector--linked" if is_linked else "superset-connector--unlinked")
     el.setAttribute("data-workout-exercise-id", ex_below.internal_id)
     el.setAttribute("data-workout-id", str(workout.id))
-    el.title = "Split superset here" if is_linked else "Add to superset"
+    el.title = t("split_superset") if is_linked else t("add_to_superset")
 
     icon = document.createElement("i")
     icon.className = "bi bi-scissors" if is_linked else "bi bi-link-45deg"
@@ -946,7 +947,7 @@ def _make_break_row(workout, ex_below):
     row.appendChild(clock)
 
     lbl = document.createElement("span")
-    lbl.textContent = f"{_format_break(break_mins)} rest" if break_mins else "add rest"
+    lbl.textContent = f"{_format_break(break_mins)} {t('rest_unit')}" if break_mins else t("add_rest")
     row.appendChild(lbl)
 
     def _make_break_handler(w, ex_b):
@@ -1058,7 +1059,7 @@ def render_workouts(workouts: list) -> None:
                 def _mismatch_count(raw):
                     return len([v for v in raw.split(",") if v.strip()]) if raw else 0
                 ex_count = max(_mismatch_count(exercise.reps), _mismatch_count(exercise.time), _mismatch_count(exercise.distance))
-                warn.textContent = f"⚠ Exercise configured with {ex_count} executions but the superset has {rounds} rounds — edit either the exercise's configuration or the superset's number of rounds so that they match"
+                warn.textContent = t("mismatch_warning", count=ex_count, rounds=rounds)
                 details_el.appendChild(warn)
 
             item_name_span = w_li.find("#workout-item-name")[0]._js
@@ -1116,7 +1117,7 @@ def render_workouts(workouts: list) -> None:
                     header.className = "superset-group-header"
 
                     ss_label = document.createElement("span")
-                    ss_label.textContent = "Superset"
+                    ss_label.textContent = t("superset_label")
                     header.appendChild(ss_label)
 
                     rounds = w.superset_rounds.get(sid, 1)
@@ -1128,7 +1129,7 @@ def render_workouts(workouts: list) -> None:
                     rounds_input.title = "Superset rounds"
 
                     rounds_label = document.createElement("span")
-                    rounds_label.textContent = "× rounds"
+                    rounds_label.textContent = t("rounds_label")
 
                     header.appendChild(rounds_input)
                     header.appendChild(rounds_label)
@@ -1158,7 +1159,7 @@ def render_workouts(workouts: list) -> None:
 
         count_badge = w_div._js.querySelector(".workout-exercise-count")
         count = len(w.exercises)
-        count_badge.textContent = f"{count} ex" if count > 0 else ""
+        count_badge.textContent = t("ex_count", count=count) if count > 0 else ""
 
         hint = w_div._js.querySelector(".add-exes-hint")
         if w.exercises:
@@ -1171,7 +1172,7 @@ def render_workouts(workouts: list) -> None:
         describe_btn = document.createElement("button")
         describe_btn.className = "describe-workout-btn" + ("" if w.exercises else " d-none")
         describe_btn.setAttribute("data-workout-id", str(w.id))
-        describe_btn.innerHTML = '<i class="bi bi-stars"></i><span>Describe workout</span>'
+        describe_btn.innerHTML = f'<i class="bi bi-stars"></i><span>{t("describe_workout")}</span>'
 
         def _make_describe_handler(wid):
             def _on_click(evt):
@@ -1180,10 +1181,10 @@ def render_workouts(workouts: list) -> None:
                     anchor = evt.target.closest("button") or evt.target
                     _show_confirm_popup(
                         anchor,
-                        "Regenerate description?",
+                        t("regenerate_confirm"),
                         lambda: asyncio.ensure_future(_fetch_description(wid)),
-                        confirm_label="Yes",
-                        cancel_label="No",
+                        confirm_label=t("yes_btn"),
+                        cancel_label=t("no_btn"),
                     )
                 else:
                     asyncio.ensure_future(_fetch_description(wid))
@@ -1199,7 +1200,7 @@ def render_workouts(workouts: list) -> None:
         for w in workouts
         for ex in w.exercises
     )
-    mismatch_title = "Fix reps/rounds mismatches before downloading" if has_mismatch else ""
+    mismatch_title = t("fix_mismatch") if has_mismatch else ""
     for btn_id in ("download-workouts", "download-ics"):
         btn = document.getElementById(btn_id)
         if btn:
@@ -1263,7 +1264,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     rest_group.style.display = "none"  # hidden when sets == 1
 
     input_notes = document.createElement("textarea")
-    input_notes.placeholder = "Notes…"
+    input_notes.placeholder = t("notes_placeholder")
     input_notes.rows = "3"
     input_notes.style.resize = "vertical"
 
@@ -1286,7 +1287,7 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     inputs_container.appendChild(sets_stepper)
     inputs_container.appendChild(per_set_wrapper)
     inputs_container.appendChild(rest_group)
-    inputs_container.appendChild(_make_input_group("Notes", input_notes))
+    inputs_container.appendChild(_make_input_group(t("notes_label"), input_notes))
 
     def _on_sets_change(evt):
         val = input_sets.value.strip()
@@ -1306,13 +1307,13 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     buttons_container.style.marginTop = "4px"
 
     confirm_btn = document.createElement("button")
-    confirm_btn.textContent = "Add"
+    confirm_btn.textContent = t("add_btn")
     confirm_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
     confirm_btn.style.flex = "1"
     confirm_btn.style.fontSize = "0.8rem"
 
     close_btn = document.createElement("button")
-    close_btn.textContent = "Cancel"
+    close_btn.textContent = t("cancel_btn")
     close_btn.classList.add("btn", "btn-outline-secondary", "btn-sm")
     close_btn.style.flex = "1"
     close_btn.style.fontSize = "0.8rem"
@@ -1510,7 +1511,7 @@ def edit_exercise_in_workout(event) -> None:
     modal.style.color = "white"
 
     title = document.createElement("div")
-    title.textContent = f"Edit: {target_ex.name}"
+    title.textContent = t("edit_exercise_title", name=target_ex.name)
     title.style.fontWeight = "bold"
     title.style.fontSize = "0.95rem"
     title.style.color = "#ba945e"
@@ -1525,7 +1526,7 @@ def edit_exercise_in_workout(event) -> None:
     edit_rest_group.style.display = "flex" if initial_sets_val > 1 else "none"
 
     input_notes = document.createElement("textarea")
-    input_notes.placeholder = "Notes…"
+    input_notes.placeholder = t("notes_placeholder")
     input_notes.rows = "3"
     input_notes.style.resize = "vertical"
     input_notes.value = target_ex.notes or ""
@@ -1563,7 +1564,7 @@ def edit_exercise_in_workout(event) -> None:
     modal.appendChild(sets_stepper)
     modal.appendChild(per_set_wrapper)
     modal.appendChild(edit_rest_group)
-    modal.appendChild(_make_input_group("Notes", input_notes))
+    modal.appendChild(_make_input_group(t("notes_label"), input_notes))
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
@@ -1571,13 +1572,13 @@ def edit_exercise_in_workout(event) -> None:
     buttons_container.style.marginTop = "4px"
 
     confirm_btn = document.createElement("button")
-    confirm_btn.textContent = "Save"
+    confirm_btn.textContent = t("save_btn")
     confirm_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
     confirm_btn.style.flex = "1"
     confirm_btn.style.fontSize = "0.8rem"
 
     cancel_btn = document.createElement("button")
-    cancel_btn.textContent = "Cancel"
+    cancel_btn.textContent = t("cancel_btn")
     cancel_btn.classList.add("btn", "btn-outline-secondary", "btn-sm")
     cancel_btn.style.flex = "1"
     cancel_btn.style.fontSize = "0.8rem"
@@ -1633,7 +1634,7 @@ def remove_exercise_from_workout(event) -> None:
             state.active_workout = None
             hide_sidebar()
 
-    _show_confirm_popup(anchor, f"Remove {ex.name}?", _do, confirm_label="Yes", cancel_label="No")
+    _show_confirm_popup(anchor, t("remove_exercise_confirm", name=ex.name), _do, confirm_label=t("yes_btn"), cancel_label=t("no_btn"))
 
 
 def remove_workout(event) -> None:
@@ -1655,7 +1656,7 @@ def remove_workout(event) -> None:
 
     target = next((w for w in state.workouts if str(w.id) == workout_id), None)
     if target and target.exercises:
-        _show_confirm_popup(anchor, "Remove this workout?", _do)
+        _show_confirm_popup(anchor, t("remove_workout_confirm"), _do, confirm_label=t("remove_btn"), cancel_label=t("cancel_btn"))
     else:
         _do()
 
@@ -1675,7 +1676,7 @@ def remove_workouts(event) -> None:
         hide_sidebar()
 
     if any(w.exercises for w in state.workouts):
-        _show_confirm_popup(anchor, "Remove all workouts?", _do)
+        _show_confirm_popup(anchor, t("remove_all_confirm"), _do, confirm_label=t("remove_btn"), cancel_label=t("cancel_btn"))
     else:
         _do()
 
@@ -1728,9 +1729,9 @@ async def _fetch_description(workout_id) -> None:
             )
             modal_body.innerHTML = paragraphs
         else:
-            modal_body.innerHTML = f'<p style="color:#e05252;">Error: {html_escape(data.get("error", "Unknown error"))}</p>'
+            modal_body.innerHTML = f'<p style="color:#e05252;">{html_escape(t("error_prefix", msg=data.get("error", "Unknown error")))}</p>'
     except Exception as e:
-        modal_body.innerHTML = f'<p style="color:#e05252;">Request failed: {html_escape(str(e))}</p>'
+        modal_body.innerHTML = f'<p style="color:#e05252;">{html_escape(t("request_failed", msg=str(e)))}</p>'
     finally:
         if btn:
             btn.disabled = False

@@ -5,6 +5,10 @@ packages = ["fpdf2==2.8.3", "pillow==10.0.0", "qrcode==7.4.2"]
 
 [files]
 "./data/exercises_library.csv" = "exercises.csv"
+"./locales/en.json" = "en.json"
+"./locales/es.json" = "es.json"
+"./locales/de.json" = "de.json"
+"./src/py/i18n.py" = "i18n.py"
 "./src/py/common.py" = "common.py"
 "./src/py/models.py" = "models.py"
 "./src/py/state.py" = "state.py"

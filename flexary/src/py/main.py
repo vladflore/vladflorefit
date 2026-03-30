@@ -7,6 +7,7 @@ from pyweb import pydom
 
 from common import copyright, current_version, csv_to_json
 from js import window
+from i18n import apply_html_translations
 import state
 from filters import (
     attach_body_part_filter_listeners,
@@ -26,6 +27,9 @@ from custom_exercises import open_add_custom_modal
 def show_info(event) -> None:
     document.getElementById("info-modal").showModal()
 
+
+# ── Apply translations to static HTML ─────────────────────────────────────────
+apply_html_translations()
 
 # ── Initialise exercise library ────────────────────────────────────────────────
 state.base_data = sorted(csv_to_json("exercises.csv"), key=lambda x: x["name"])

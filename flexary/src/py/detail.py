@@ -5,6 +5,7 @@ from pyscript import window
 from common import csv_to_json
 from pyweb import pydom
 from common import copyright, current_version
+from i18n import t, apply_html_translations
 
 category_to_badge = {
     "strength": "bg-dark",
@@ -71,7 +72,7 @@ else:
     icon = window.document.createElement("i")
     icon.className = "bi bi-camera-video-off"
     label = window.document.createElement("span")
-    label.textContent = "No video available"
+    label.textContent = t("no_video")
     placeholder.appendChild(icon)
     placeholder.appendChild(label)
     ratio_div.replaceWith(placeholder)
@@ -87,9 +88,9 @@ else:
 primary_muscles = data.get("primary_muscles", "")
 secondary_muscles = data.get("secondary_muscles", "")
 if primary_muscles:
-    pydom["#primary-muscles"][0]._js.textContent = f"Primary: {primary_muscles}"
+    pydom["#primary-muscles"][0]._js.textContent = t("primary_label", muscles=primary_muscles)
 if secondary_muscles:
-    pydom["#secondary-muscles"][0]._js.textContent = f"Secondary: {secondary_muscles}"
+    pydom["#secondary-muscles"][0]._js.textContent = t("secondary_label", muscles=secondary_muscles)
 if not primary_muscles and not secondary_muscles:
     pydom["#muscles-not-available"][0]._js.classList.remove("d-none")
 
@@ -117,6 +118,9 @@ if alternatives:
     pydom["#alt-ex-container"][0]._js.classList.remove("d-none")
 else:
     pydom["#alt-not-available"][0]._js.classList.remove("d-none")
+
+# ── Translations ───────────────────────────────────────────────────────────────
+apply_html_translations()
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 pydom["#copyright"][0]._js.innerHTML = copyright()

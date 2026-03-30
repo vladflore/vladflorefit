@@ -4,6 +4,7 @@ from pyweb import pydom
 
 import state
 from filters import update as update_filters
+from i18n import t
 from workouts import render_workouts
 
 
@@ -119,14 +120,14 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     header.style.justifyContent = "space-between"
 
     title_el = document.createElement("span")
-    title_el.textContent = "Edit Exercise" if is_edit else "New Exercise"
+    title_el.textContent = t("edit_exercise_modal") if is_edit else t("new_exercise_modal")
     title_el.style.fontWeight = "700"
     title_el.style.fontSize = "0.95rem"
     title_el.style.color = "#ba945e"
     title_el.style.letterSpacing = "0.03em"
 
     step_el = document.createElement("span")
-    step_el.textContent = "Step 1 of 2"
+    step_el.textContent = t("step_indicator", step=1, total=2)
     step_el.style.fontSize = "0.75rem"
     step_el.style.color = "rgba(255,255,255,0.4)"
 
@@ -156,7 +157,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
         notice_icon.style.flexShrink = "0"
         notice_icon.style.marginTop = "1px"
         notice_text = document.createElement("span")
-        notice_text.textContent = "Custom exercises are stored in this browser only. Clearing browser data will remove them."
+        notice_text.textContent = t("local_storage_notice")
         notice_text.style.fontSize = "0.74rem"
         notice_text.style.color = "rgba(255,255,255,0.55)"
         notice_text.style.lineHeight = "1.4"
@@ -166,10 +167,10 @@ def _open_custom_modal(ex: dict | None = None) -> None:
 
     name_input = document.createElement("input")
     name_input.type = "text"
-    name_input.placeholder = "e.g. Resistance Band Row"
+    name_input.placeholder = t("name_placeholder")
     if is_edit:
         name_input.value = ex["name"]
-    step1.appendChild(_make_input_group("Name *", name_input))
+    step1.appendChild(_make_input_group(t("name_label"), name_input))
 
     category_select = document.createElement("select")
     category_select.style.height = "30px"
@@ -180,28 +181,28 @@ def _open_custom_modal(ex: dict | None = None) -> None:
         if is_edit and value == ex["category"]:
             opt.selected = True
         category_select.appendChild(opt)
-    step1.appendChild(_make_input_group("Category *", category_select))
+    step1.appendChild(_make_input_group(t("category_label"), category_select))
 
     body_parts_input = document.createElement("input")
     body_parts_input.type = "text"
-    body_parts_input.placeholder = "e.g. Legs, Core"
+    body_parts_input.placeholder = t("body_parts_placeholder")
     if is_edit:
         body_parts_input.value = ex.get("body_parts", "")
-    step1.appendChild(_make_input_group("Body Parts * (comma-separated)", body_parts_input))
+    step1.appendChild(_make_input_group(t("body_parts_label"), body_parts_input))
 
     image_input = document.createElement("input")
     image_input.type = "url"
-    image_input.placeholder = "https://..."
+    image_input.placeholder = t("image_url_placeholder")
     if is_edit:
         image_input.value = ex.get("thumbnail_url", "")
-    step1.appendChild(_make_input_group("Image URL (optional)", image_input))
+    step1.appendChild(_make_input_group(t("image_url_label"), image_input))
 
     video_input = document.createElement("input")
     video_input.type = "text"
-    video_input.placeholder = "YouTube URL or video ID"
+    video_input.placeholder = t("video_placeholder")
     if is_edit:
         video_input.value = ex.get("yt_video_id", "")
-    step1.appendChild(_make_input_group("Video (optional)", video_input))
+    step1.appendChild(_make_input_group(t("video_label"), video_input))
 
     warning1 = _make_warning_el()
     step1.appendChild(warning1)
@@ -214,7 +215,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
 
     cancel_btn = document.createElement("button")
     cancel_btn.type = "button"
-    cancel_btn.textContent = "Cancel"
+    cancel_btn.textContent = t("cancel_btn")
     cancel_btn.style.borderRadius = "4px"
     cancel_btn.style.fontSize = "0.8rem"
     cancel_btn.style.border = "1px solid #555"
@@ -225,7 +226,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
 
     next_btn = document.createElement("button")
     next_btn.type = "button"
-    next_btn.textContent = "Next →"
+    next_btn.textContent = t("next_btn")
     next_btn.className = "btn btn-outline-gold btn-sm"
     next_btn.style.padding = "4px 14px"
 
@@ -242,38 +243,38 @@ def _open_custom_modal(ex: dict | None = None) -> None:
 
     instructions_input = document.createElement("textarea")
     instructions_input.rows = 3
-    instructions_input.placeholder = "Step-by-step instructions..."
+    instructions_input.placeholder = t("instructions_placeholder")
     if is_edit:
         instructions_input.value = ex.get("instructions", "")
-    step2.appendChild(_make_input_group("Instructions (optional)", instructions_input, is_textarea=True))
+    step2.appendChild(_make_input_group(t("instructions_label"), instructions_input, is_textarea=True))
 
     primary_muscles_input = document.createElement("input")
     primary_muscles_input.type = "text"
-    primary_muscles_input.placeholder = "e.g. Glutes, Hamstrings"
+    primary_muscles_input.placeholder = t("primary_muscles_placeholder")
     if is_edit:
         primary_muscles_input.value = ex.get("primary_muscles", "")
-    step2.appendChild(_make_input_group("Primary Muscles (optional, comma-separated)", primary_muscles_input))
+    step2.appendChild(_make_input_group(t("primary_muscles_label"), primary_muscles_input))
 
     secondary_muscles_input = document.createElement("input")
     secondary_muscles_input.type = "text"
-    secondary_muscles_input.placeholder = "e.g. Core, Lower Back"
+    secondary_muscles_input.placeholder = t("secondary_muscles_placeholder")
     if is_edit:
         secondary_muscles_input.value = ex.get("secondary_muscles", "")
-    step2.appendChild(_make_input_group("Secondary Muscles (optional, comma-separated)", secondary_muscles_input))
+    step2.appendChild(_make_input_group(t("secondary_muscles_label"), secondary_muscles_input))
 
     key_cues_input = document.createElement("input")
     key_cues_input.type = "text"
-    key_cues_input.placeholder = "e.g. Brace core, Drive through heels"
+    key_cues_input.placeholder = t("key_cues_placeholder")
     if is_edit:
         key_cues_input.value = ex.get("key_cues", "")
-    step2.appendChild(_make_input_group("Key Cues (optional, comma-separated)", key_cues_input))
+    step2.appendChild(_make_input_group(t("key_cues_label"), key_cues_input))
 
     alternatives_input = document.createElement("input")
     alternatives_input.type = "text"
-    alternatives_input.placeholder = "Comma-separated exercise IDs"
+    alternatives_input.placeholder = t("alternatives_placeholder")
     if is_edit:
         alternatives_input.value = ex.get("alternatives", "")
-    step2.appendChild(_make_input_group("Alternative Exercise IDs (optional, comma-separated)", alternatives_input))
+    step2.appendChild(_make_input_group(t("alternatives_label"), alternatives_input))
 
     footer2 = document.createElement("div")
     footer2.style.display = "flex"
@@ -283,7 +284,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
 
     back_btn = document.createElement("button")
     back_btn.type = "button"
-    back_btn.textContent = "← Back"
+    back_btn.textContent = t("back_btn")
     back_btn.style.borderRadius = "4px"
     back_btn.style.fontSize = "0.8rem"
     back_btn.style.border = "1px solid #555"
@@ -294,7 +295,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
 
     confirm_btn = document.createElement("button")
     confirm_btn.type = "button"
-    confirm_btn.textContent = "Save" if is_edit else "Add"
+    confirm_btn.textContent = t("save_btn") if is_edit else t("add_btn")
     confirm_btn.className = "btn btn-outline-gold btn-sm"
     confirm_btn.style.padding = "4px 14px"
 
@@ -319,23 +320,23 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     def on_next(evt):
         name = name_input.value.strip()
         if not name:
-            _show_warning(warning1, "Name is required.")
+            _show_warning(warning1, t("name_required"))
             name_input.focus()
             return
         body_parts = body_parts_input.value.strip()
         if not body_parts:
-            _show_warning(warning1, "Body Parts is required.")
+            _show_warning(warning1, t("body_parts_required"))
             body_parts_input.focus()
             return
         warning1.style.display = "none"
         step1.style.display = "none"
         step2.style.display = "flex"
-        step_el.textContent = "Step 2 of 2"
+        step_el.textContent = t("step_indicator", step=2, total=2)
 
     def on_back(evt):
         step2.style.display = "none"
         step1.style.display = "flex"
-        step_el.textContent = "Step 1 of 2"
+        step_el.textContent = t("step_indicator", step=1, total=2)
 
     def on_confirm(evt):
         name = name_input.value.strip()

@@ -65,10 +65,16 @@
             class="site-nav-search"
             type="search"
             placeholder="Search by name, category or body part"
+            data-i18n-ph="search_placeholder"
             aria-label="Search"
             id="search-input"
           />
         </form>
+        <select id="lang-select" class="lang-select" title="Language" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="de">DE</option>
+        </select>
       </div>
     </nav>
 
@@ -76,13 +82,13 @@
       <main>
         <section>
           <div id="container" class="container py-3 d-none">
-            <h2 class="mb-0 text-center page-title">Welcome to Flexary</h2>
-            <p class="mb-1 text-center page-subtitle">Your Fitness Exercises Library</p>
+            <h2 class="mb-0 text-center page-title" data-i18n="page_title">Welcome to Flexary</h2>
+            <p class="mb-1 text-center page-subtitle" data-i18n="page_subtitle">Your Fitness Exercises Library</p>
             <div id="sticky-filters">
               <button id="filter-toggle-btn" class="filter-toggle-btn d-lg-none" type="button" aria-expanded="false">
                 <span class="d-flex align-items-center gap-2">
                   <i class="bi bi-sliders2"></i>
-                  <span>Filters</span>
+                  <span data-i18n="filters">Filters</span>
                   <span id="filter-active-count" class="filter-active-badge d-none"></span>
                 </span>
                 <i class="bi bi-chevron-down filter-toggle-chevron"></i>
@@ -92,14 +98,14 @@
                   <div class="filter-panel">
                     <div class="filter-panel-row">
                       <span class="filter-label">
-                        <i class="bi bi-tag me-1"></i>Category
+                        <i class="bi bi-tag me-1"></i><span data-i18n="filter_category">Category</span>
                       </span>
                       <div id="exercises-per-category-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
                     </div>
                     <div class="filter-panel-divider"></div>
                     <div class="filter-panel-row">
                       <span class="filter-label">
-                        <i class="bi bi-person me-1"></i>Body part
+                        <i class="bi bi-person me-1"></i><span data-i18n="filter_body_part">Body part</span>
                       </span>
                       <div id="exercises-per-body-part-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
                     </div>
@@ -108,8 +114,9 @@
                         id="clear-filters"
                         py-click="clear_filters"
                         class="clear-filters-btn"
+                        data-i18n-title="clear_filters"
                         title="Clear all filters"
-                      ><i class="bi bi-x-circle me-1"></i>Clear filters</button>
+                      ><i class="bi bi-x-circle me-1"></i><span data-i18n="clear_filters">Clear filters</span></button>
                     </div>
                   </div>
                 </div>
@@ -120,8 +127,9 @@
                   id="add-custom-exercise"
                   py-click="open_add_custom_modal"
                   class="clear-filters-btn"
+                  data-i18n-title="add_exercise"
                   title="Add a custom exercise"
-                ><i class="bi bi-plus-circle me-1"></i>Add exercise</button>
+                ><i class="bi bi-plus-circle me-1"></i><span data-i18n="add_exercise">Add exercise</span></button>
               </div>
               <div class="section-divider"></div>
             </div>
@@ -133,8 +141,8 @@
             <div id="exercises-row" class="row g-4"></div>
             <div id="empty-state" class="d-none text-center py-5">
               <i class="bi bi-search" style="font-size: 2.5rem; color: #dee2e6;"></i>
-              <p class="mt-3 mb-1 fw-semibold" style="color: #6c757d;">No exercises found</p>
-              <p style="font-size: 0.85rem; color: #adb5bd;">Try adjusting your search or filters.</p>
+              <p class="mt-3 mb-1 fw-semibold" style="color: #6c757d;" data-i18n="no_exercises_found">No exercises found</p>
+              <p style="font-size: 0.85rem; color: #adb5bd;" data-i18n="no_exercises_hint">Try adjusting your search or filters.</p>
             </div>
             <!-- start exercise template -->
             <template id="exercise-card-template">
@@ -200,7 +208,7 @@
     <aside id="workout-sidebar" class="workout-sidebar d-none">
       <div class="sidebar-sheet-handle d-lg-none"></div>
       <div class="p-3 d-flex flex-column" style="flex: 1; min-height: 0;">
-        <h5 class="text-center" style="color: #ba945e; font-weight: 600; letter-spacing: 0.5px;">Your Workouts</h5>
+        <h5 class="text-center" style="color: #ba945e; font-weight: 600; letter-spacing: 0.5px;" data-i18n="your_workouts">Your Workouts</h5>
         <div class="d-flex justify-content-center align-items-center mb-3">
           <button
             id="add-workout"
@@ -208,7 +216,7 @@
             class="btn btn-outline-gold w-100"
             py-click="add_workout"
           >
-            <i class="bi bi-plus-circle me-1"></i>Add Workout
+            <i class="bi bi-plus-circle me-1"></i><span data-i18n="add_workout">Add Workout</span>
           </button>
         </div>
         <div id="workout-list-container" class="flex-grow-1 overflow-auto">
@@ -227,7 +235,7 @@
                   class="btn btn-outline-gold btn-sm"
                   title="Activate workout"
                 >
-                  <i id="workout-edit-icon" class="bi bi-check2-circle me-1"></i>Activate
+                  <i id="workout-edit-icon" class="bi bi-check2-circle me-1"></i><span data-i18n="activate">Activate</span>
                 </button>
               </div>
 
@@ -236,12 +244,14 @@
                 type="text"
                 class="form-control form-control-sm mb-2"
                 placeholder="Name (optional)"
+                data-i18n-ph="workout_name_placeholder"
                 style="background-color: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); color: #e0e0e0;"
               />
               <label
                 for="workout-date"
                 class="mb-1 text-nowrap"
                 style="font-size: 0.9rem"
+                data-i18n="scheduled_for"
                 >Scheduled for:</label
               >
               <div
@@ -266,7 +276,7 @@
               <div class="mb-2">
                 <span class="workout-exercise-count"></span>
               </div>
-              <span class="add-exes-hint">
+              <span class="add-exes-hint" data-i18n-html="add_exes_hint">
                 Add exercises by clicking the
                 <i class="bi bi-plus-circle"></i> icon on the exercise cards.
               </span>
@@ -281,21 +291,25 @@
                     <i
                       id="workout-item-move-up"
                       class="bi bi-arrow-up workout-item-move"
+                      data-i18n-title="move_up"
                       title="Move up"
                     ></i>
                     <i
                       id="workout-item-move-down"
                       class="bi bi-arrow-down workout-item-move"
+                      data-i18n-title="move_down"
                       title="Move down"
                     ></i>
                     <i
                       id="workout-item-edit"
                       class="bi bi-pencil workout-item-edit"
+                      data-i18n-title="edit_exercise"
                       title="Edit exercise"
                     ></i>
                     <i
                       id="workout-item-remove"
                       class="bi bi-dash-circle workout-item-remove"
+                      data-i18n-title="remove_from_workout"
                       title="Remove from workout"
                     ></i>
                   </div>
@@ -307,16 +321,16 @@
         <div class="workout-sidebar-footer">
           <button id="download-workouts" type="button" class="sidebar-action-btn">
             <i class="bi bi-file-earmark-arrow-down"></i>
-            <span>PDF</span>
+            <span data-i18n="pdf_label">PDF</span>
           </button>
           <button id="download-ics" type="button" class="sidebar-action-btn">
             <i class="bi bi-calendar-event"></i>
-            <span>ICS</span>
+            <span data-i18n="ics_label">ICS</span>
           </button>
 
           <button id="clear-workouts" type="button" class="sidebar-action-btn sidebar-action-btn--danger" py-click="remove_workouts">
             <i class="bi bi-trash"></i>
-            <span>Clear</span>
+            <span data-i18n="clear_label">Clear</span>
           </button>
         </div>
       </div>
@@ -326,6 +340,7 @@
       type="button"
       class="btn btn-outline-gold position-fixed"
       style="top: 80px; left: 20px; z-index: 1100"
+      data-i18n-title="show_hide_workouts"
       title="Show/Hide Workouts Sidebar"
     >
       <i class="bi bi-list"></i>
@@ -349,31 +364,31 @@
       class="position-fixed bottom-0 start-0 w-100 bg-light border-top shadow p-3 d-flex align-items-center gap-2 d-none"
       style="z-index: 2000"
     >
-      <span>
+      <span data-i18n="gdpr_text">
         This website uses cookies to enhance your experience. By continuing to
         browse, you agree to the use of cookies.
       </span>
-      <button id="gdpr-accept" class="btn btn-outline-gold flex-shrink-0">OK</button>
+      <button id="gdpr-accept" class="btn btn-outline-gold flex-shrink-0" data-i18n="gdpr_ok">OK</button>
     </div>
     <dialog id="pdf-color-modal">
       <div class="info-modal-header">
-        <span class="info-modal-title">Download PDF</span>
+        <span class="info-modal-title" data-i18n="download_pdf_title">Download PDF</span>
         <button class="info-modal-close" id="pdf-color-modal-close" aria-label="Close">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
       <div class="pdf-modal-body">
         <div class="pdf-modal-option">
-          <span class="pdf-modal-option-label">Format</span>
+          <span class="pdf-modal-option-label" data-i18n="format_label">Format</span>
           <div class="pdf-toggle-group">
-            <button class="pdf-toggle-btn pdf-toggle-btn--active" id="pdf-color-btn">Color</button>
-            <button class="pdf-toggle-btn" id="pdf-bw-btn">B&amp;W</button>
+            <button class="pdf-toggle-btn pdf-toggle-btn--active" id="pdf-color-btn" data-i18n="color_btn">Color</button>
+            <button class="pdf-toggle-btn" id="pdf-bw-btn" data-i18n="bw_btn">B&amp;W</button>
           </div>
         </div>
       </div>
       <div class="pdf-color-modal-footer">
         <button class="btn btn-outline-gold" id="pdf-download-btn">
-          <i class="bi bi-file-earmark-arrow-down me-1"></i>Download
+          <i class="bi bi-file-earmark-arrow-down me-1"></i><span data-i18n="download_btn">Download</span>
         </button>
       </div>
     </dialog>
@@ -381,7 +396,7 @@
     <dialog id="describe-modal">
       <div class="describe-modal-header">
         <span class="describe-modal-title">
-          <i class="bi bi-stars"></i>Workout Description
+          <i class="bi bi-stars"></i><span data-i18n="workout_description_title">Workout Description</span>
         </span>
         <button class="describe-modal-close" id="describe-modal-close" aria-label="Close">
           <i class="bi bi-x-lg"></i>
@@ -389,62 +404,62 @@
       </div>
       <div id="describe-modal-body" class="describe-modal-body"></div>
       <div class="describe-modal-footer">
-        <span class="describe-modal-badge">✦ AI generated</span>
-        <button class="btn btn-outline-gold btn-sm" id="describe-modal-close-btn">Close</button>
+        <span class="describe-modal-badge" data-i18n="ai_generated">✦ AI generated</span>
+        <button class="btn btn-outline-gold btn-sm" id="describe-modal-close-btn" data-i18n="close_btn">Close</button>
       </div>
     </dialog>
 
     <dialog id="info-modal">
       <div class="info-modal-header">
-        <span class="info-modal-title">About Flexary</span>
+        <span class="info-modal-title" data-i18n="about_flexary">About Flexary</span>
         <button class="info-modal-close" id="info-modal-close" aria-label="Close">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
       <div id="info-modal-body" class="info-modal-body">
         <div class="info-content">
-          <p class="info-tagline">A growing resource to support your training with clear guidance and flexible workout tools.</p>
+          <p class="info-tagline" data-i18n="info_tagline">A growing resource to support your training with clear guidance and flexible workout tools.</p>
           <ul class="info-features">
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-collection"></i></span>
               <div class="info-feature-body">
-                <strong class="info-feature-title">Expanding Exercise Collection</strong>
-                <span class="info-feature-desc">Instructions, tips, and muscle focus for each movement.</span>
+                <strong class="info-feature-title" data-i18n="info_feature_collection_title">Expanding Exercise Collection</strong>
+                <span class="info-feature-desc" data-i18n="info_feature_collection_desc">Instructions, tips, and muscle focus for each movement.</span>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-journal-plus"></i></span>
               <div class="info-feature-body">
-                <strong class="info-feature-title">Create and Customize Workouts</strong>
-                <span class="info-feature-desc">Combine your favourite exercises into routines that fit your goals.</span>
+                <strong class="info-feature-title" data-i18n="info_feature_workouts_title">Create and Customize Workouts</strong>
+                <span class="info-feature-desc" data-i18n="info_feature_workouts_desc">Combine your favourite exercises into routines that fit your goals.</span>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-file-earmark-arrow-down"></i></span>
               <div class="info-feature-body">
-                <strong class="info-feature-title">Export to PDF</strong>
-                <span class="info-feature-desc">Print your workout and take it with you wherever you train.</span>
+                <strong class="info-feature-title" data-i18n="info_feature_pdf_title">Export to PDF</strong>
+                <span class="info-feature-desc" data-i18n="info_feature_pdf_desc">Print your workout and take it with you wherever you train.</span>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-search"></i></span>
               <div class="info-feature-body">
-                <strong class="info-feature-title">Search and Filtering</strong>
-                <span class="info-feature-desc">Quickly find exercises by name, category, or body part.</span>
+                <strong class="info-feature-title" data-i18n="info_feature_search_title">Search and Filtering</strong>
+                <span class="info-feature-desc" data-i18n="info_feature_search_desc">Quickly find exercises by name, category, or body part.</span>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-calendar-event"></i></span>
               <div class="info-feature-body">
-                <strong class="info-feature-title">Export to Calendar</strong>
-                <span class="info-feature-desc">Add your workouts to your calendar with a simple ICS export.</span>
+                <strong class="info-feature-title" data-i18n="info_feature_calendar_title">Export to Calendar</strong>
+                <span class="info-feature-desc" data-i18n="info_feature_calendar_desc">Add your workouts to your calendar with a simple ICS export.</span>
               </div>
             </li>
           </ul>
         </div>
       </div>
       <div class="info-modal-footer">
-        <button class="btn btn-outline-gold" id="info-modal-close-btn">Close</button>
+        <button class="btn btn-outline-gold" id="info-modal-close-btn" data-i18n="close_btn">Close</button>
       </div>
     </dialog>
 
@@ -473,7 +488,10 @@
           const hidden = sidebar.classList.contains("d-none");
           const icon = toggleBtn.querySelector("i");
           if (icon) icon.className = hidden ? "bi bi-list" : "bi bi-x-lg";
-          toggleBtn.title = hidden ? "Show Workouts" : "Hide Workouts";
+          const i18n = window.flexaryI18n || {};
+          toggleBtn.title = hidden
+            ? (i18n.show_workouts || "Show Workouts")
+            : (i18n.hide_workouts || "Hide Workouts");
         }
 
         function closeSidebar() {
@@ -520,6 +538,20 @@
           }
         });
 
+        // Language selector
+        const langSelect = document.getElementById("lang-select");
+        if (langSelect) {
+          const SUPPORTED = ["en", "es", "de"];
+          const stored = localStorage.getItem("flexary_lang");
+          const nav = (navigator.language || "en").split("-")[0].toLowerCase();
+          langSelect.value = (stored && SUPPORTED.includes(stored))
+            ? stored
+            : (SUPPORTED.includes(nav) ? nav : "en");
+          langSelect.addEventListener("change", function () {
+            localStorage.setItem("flexary_lang", langSelect.value);
+            location.reload();
+          });
+        }
       });
     </script>
 
@@ -541,6 +573,7 @@
           align-items: center;
           justify-content: center;
         "
+        data-i18n-title="scroll_to_top"
         title="Scroll to top"
         onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
       >
@@ -558,6 +591,7 @@
           align-items: center;
           justify-content: center;
         "
+        data-i18n-title="about"
         title="About"
         py-click="show_info"
       >
@@ -576,6 +610,7 @@
           align-items: center;
           justify-content: center;
         "
+        data-i18n-title="contact_whatsapp"
         title="Contact via WhatsApp"
         onclick="window.open('https://wa.me/+34613429288', '_blank')"
       >

@@ -6,6 +6,7 @@ from pyscript import document, when
 from pyweb import pydom
 
 import state
+from i18n import t
 from models import category_to_badge
 from exercises import create_card_exercise
 
@@ -98,7 +99,7 @@ def update_exercise_stats(display_count: int, total: int) -> None:
         dims.append(" or ".join(sorted(state.active_category_filters)))
     if state.active_body_part_filters:
         dims.append(" or ".join(sorted(state.active_body_part_filters)))
-    stats = f"{display_count} · {' & '.join(dims)}" if dims else f"{total} exercises"
+    stats = f"{display_count} · {' & '.join(dims)}" if dims else t("exercises_count", count=total)
     pydom["#exercise-stats"][0]._js.textContent = stats
 
 
