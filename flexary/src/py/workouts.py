@@ -47,6 +47,30 @@ def _find_exercise(workout_id: str, workout_ex_id: str):
     return None, None, -1
 
 
+def _event_attr(event, attr_name: str):
+    current_target = getattr(event, "currentTarget", None)
+    if current_target:
+        value = current_target.getAttribute(attr_name)
+        if value:
+            return value
+
+    target = getattr(event, "target", None)
+    if target:
+        value = target.getAttribute(attr_name)
+        if value:
+            return value
+
+        closest = getattr(target, "closest", None)
+        if closest:
+            container = closest(f"[{attr_name}]")
+            if container:
+                value = container.getAttribute(attr_name)
+                if value:
+                    return value
+
+    return None
+
+
 def _make_warning_el():
     el = document.createElement("div")
     el.style.display = "none"
@@ -950,7 +974,10 @@ def _make_break_row(workout, ex_below):
     return row
 
 def workout_edit(event) -> None:
-    state.active_workout = UUID(event.target.getAttribute("data-workout-id"))
+    workout_id = _event_attr(event, "data-workout-id")
+    if not workout_id:
+        return
+    state.active_workout = UUID(workout_id)
     for w in state.workouts:
         layover = pydom[f"#workout-layover-{w.id}"][0]
         if w.id == state.active_workout:
@@ -991,7 +1018,10 @@ def render_workouts(workouts: list) -> None:
         w_name._js.setAttribute("data-workout-id", str(w.id))
 
         def on_name_change(evt):
-            w_id = UUID(evt.target.getAttribute("data-workout-id"))
+            workout_id = _event_attr(evt, "data-workout-id")
+            if not workout_id:
+                return
+            w_id = UUID(workout_id)
             for workout in state.workouts:
                 if workout.id == w_id:
                     workout.name = evt.target.value.strip()
@@ -1009,7 +1039,10 @@ def render_workouts(workouts: list) -> None:
             if not evt.target.value:
                 return
             new_date = datetime.datetime.strptime(evt.target.value, "%Y-%m-%d").date()
-            w_id = UUID(evt.target.getAttribute("data-workout-id"))
+            workout_id = _event_attr(evt, "data-workout-id")
+            if not workout_id:
+                return
+            w_id = UUID(workout_id)
             for w in state.workouts:
                 if w.id == w_id:
                     w.execution_date = new_date
@@ -1343,8 +1376,10 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
 
 
 def toggle_superset(event) -> None:
-    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
-    workout_id = event.target.getAttribute("data-workout-id")
+    workout_ex_id = _event_attr(event, "data-workout-exercise-id")
+    workout_id = _event_attr(event, "data-workout-id")
+    if not workout_ex_id or not workout_id:
+        return
     w, ex, j = _find_exercise(workout_id, workout_ex_id)
     if w is None or j == 0:
         return
@@ -1432,8 +1467,10 @@ def _do_move(exercises, j, delta) -> None:
 
 
 def move_exercise_up(event) -> None:
-    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
-    workout_id = event.target.getAttribute("data-workout-id")
+    workout_ex_id = _event_attr(event, "data-workout-exercise-id")
+    workout_id = _event_attr(event, "data-workout-id")
+    if not workout_ex_id or not workout_id:
+        return
     w, _, j = _find_exercise(workout_id, workout_ex_id)
     if w and _can_move(w.exercises, j, -1):
         _do_move(w.exercises, j, -1)
@@ -1442,8 +1479,10 @@ def move_exercise_up(event) -> None:
 
 
 def move_exercise_down(event) -> None:
-    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
-    workout_id = event.target.getAttribute("data-workout-id")
+    workout_ex_id = _event_attr(event, "data-workout-exercise-id")
+    workout_id = _event_attr(event, "data-workout-id")
+    if not workout_ex_id or not workout_id:
+        return
     w, _, j = _find_exercise(workout_id, workout_ex_id)
     if w and _can_move(w.exercises, j, +1):
         _do_move(w.exercises, j, +1)
@@ -1452,8 +1491,10 @@ def move_exercise_down(event) -> None:
 
 
 def edit_exercise_in_workout(event) -> None:
-    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
-    workout_id = event.target.getAttribute("data-workout-id")
+    workout_ex_id = _event_attr(event, "data-workout-exercise-id")
+    workout_id = _event_attr(event, "data-workout-id")
+    if not workout_ex_id or not workout_id:
+        return
 
     target_workout, target_ex, _ = _find_exercise(workout_id, workout_ex_id)
     if target_ex is None:
@@ -1586,8 +1627,10 @@ def edit_exercise_in_workout(event) -> None:
 
 
 def remove_exercise_from_workout(event) -> None:
-    workout_ex_id = event.target.getAttribute("data-workout-exercise-id")
-    workout_id = event.target.getAttribute("data-workout-id")
+    workout_ex_id = _event_attr(event, "data-workout-exercise-id")
+    workout_id = _event_attr(event, "data-workout-id")
+    if not workout_ex_id or not workout_id:
+        return
     w, ex, j = _find_exercise(workout_id, workout_ex_id)
     if not w or j < 0:
         return
@@ -1612,7 +1655,9 @@ def remove_exercise_from_workout(event) -> None:
 def remove_workout(event) -> None:
     event.stopPropagation()
     anchor = event.target.closest("button") or event.target
-    workout_id = event.target.getAttribute("data-workout-id")
+    workout_id = _event_attr(event, "data-workout-id")
+    if not workout_id:
+        return
 
     def _do():
         for i, w in enumerate(state.workouts):
