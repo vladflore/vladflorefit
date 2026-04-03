@@ -65,11 +65,48 @@
             id="search-input"
           />
         </form>
-        <select id="lang-select" class="lang-select" data-i18n-title="language" title="Language" aria-label="Language">
-          <option value="en">EN</option>
-          <option value="es">ES</option>
-          <option value="de">DE</option>
-        </select>
+        <div class="lang-select-wrap">
+          <select id="lang-select" class="lang-select-native visually-hidden" data-i18n-title="language" title="Language" aria-label="Language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ca">Català</option>
+            <option value="de">Deutsch</option>
+          </select>
+          <button
+            id="lang-select-trigger"
+            class="lang-select"
+            type="button"
+            data-i18n-title="language"
+            title="Language"
+            aria-label="Language"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+          >
+            <span class="lang-select-current">
+              <span class="lang-flag lang-flag-emoji" id="lang-select-current-flag" aria-hidden="true"></span>
+              <span id="lang-select-current-label">English</span>
+            </span>
+            <i class="bi bi-chevron-down lang-select-caret" aria-hidden="true"></i>
+          </button>
+          <div id="lang-select-menu" class="lang-select-menu d-none" role="listbox" aria-label="Language options">
+            <button class="lang-select-option" type="button" data-lang-value="en" role="option">
+              <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇬🇧</span>
+              <span>English</span>
+            </button>
+            <button class="lang-select-option" type="button" data-lang-value="es" role="option">
+              <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇪🇸</span>
+              <span>Español</span>
+            </button>
+            <button class="lang-select-option" type="button" data-lang-value="ca" role="option">
+              <img class="lang-flag lang-flag-svg" src="./assets/flags/catalonia.svg" alt="" aria-hidden="true" />
+              <span>Català</span>
+            </button>
+            <button class="lang-select-option" type="button" data-lang-value="de" role="option">
+              <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇩🇪</span>
+              <span>Deutsch</span>
+            </button>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -574,17 +611,73 @@
 
         // Language selector
         const langSelect = document.getElementById("lang-select");
+        const langSelectTrigger = document.getElementById("lang-select-trigger");
+        const langSelectMenu = document.getElementById("lang-select-menu");
+        const langSelectCurrentFlag = document.getElementById("lang-select-current-flag");
+        const langSelectCurrentLabel = document.getElementById("lang-select-current-label");
         if (langSelect) {
-          const SUPPORTED = ["en", "es", "de"];
+          const SUPPORTED = ["en", "es", "ca", "de"];
+          const LANG_META = {
+            en: { label: "English", flag: "🇬🇧", isSvg: false },
+            es: { label: "Español", flag: "🇪🇸", isSvg: false },
+            ca: { label: "Català", flag: "./assets/flags/catalonia.svg", isSvg: true },
+            de: { label: "Deutsch", flag: "🇩🇪", isSvg: false }
+          };
           const stored = localStorage.getItem("flexary_lang");
           const nav = (navigator.language || "en").split("-")[0].toLowerCase();
           langSelect.value = (stored && SUPPORTED.includes(stored))
             ? stored
             : (SUPPORTED.includes(nav) ? nav : "en");
+          function renderSelectedLang(value) {
+            const meta = LANG_META[value] || LANG_META.en;
+            langSelectCurrentLabel.textContent = meta.label;
+            if (meta.isSvg) {
+              langSelectCurrentFlag.className = "lang-flag lang-flag-svg";
+              langSelectCurrentFlag.innerHTML = `<img src="${meta.flag}" alt="" aria-hidden="true" />`;
+            } else {
+              langSelectCurrentFlag.className = "lang-flag lang-flag-emoji";
+              langSelectCurrentFlag.textContent = meta.flag;
+            }
+            const options = document.querySelectorAll(".lang-select-option");
+            options.forEach((option) => {
+              option.classList.toggle("is-selected", option.dataset.langValue === value);
+              option.setAttribute("aria-selected", String(option.dataset.langValue === value));
+            });
+          }
+          function setLangMenuOpen(isOpen) {
+            if (!langSelectTrigger || !langSelectMenu) return;
+            langSelectTrigger.setAttribute("aria-expanded", String(isOpen));
+            langSelectMenu.classList.toggle("d-none", !isOpen);
+          }
+          renderSelectedLang(langSelect.value);
           langSelect.addEventListener("change", function () {
             localStorage.setItem("flexary_lang", langSelect.value);
             location.reload();
           });
+          if (langSelectTrigger && langSelectMenu) {
+            langSelectTrigger.addEventListener("click", function (e) {
+              e.stopPropagation();
+              setLangMenuOpen(langSelectMenu.classList.contains("d-none"));
+            });
+            document.querySelectorAll(".lang-select-option").forEach((option) => {
+              option.addEventListener("click", function () {
+                const value = option.dataset.langValue;
+                if (!value || value === langSelect.value) {
+                  setLangMenuOpen(false);
+                  return;
+                }
+                langSelect.value = value;
+                renderSelectedLang(value);
+                setLangMenuOpen(false);
+                langSelect.dispatchEvent(new Event("change", { bubbles: true }));
+              });
+            });
+            document.addEventListener("click", function (e) {
+              if (!langSelectTrigger.parentElement.contains(e.target)) {
+                setLangMenuOpen(false);
+              }
+            });
+          }
         }
       });
     </script>

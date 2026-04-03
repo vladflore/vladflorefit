@@ -24,16 +24,26 @@ body {
   padding-bottom: 0.25rem;
 }
 
+.lang-select-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .lang-select {
   background-color: #2a2a2a;
   border: 1px solid rgba(186, 148, 94, 0.4);
   border-radius: 6px;
   color: #ba945e;
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  padding: 4px 6px;
+  min-width: 8.4rem;
+  padding: 5px 10px;
   cursor: pointer;
-  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  line-height: 1;
 }
 
 .lang-select:focus {
@@ -41,9 +51,82 @@ body {
   border-color: #ba945e;
 }
 
-.lang-select option {
+.lang-select-current {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.lang-select-caret {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  transition: transform 0.18s ease;
+}
+
+.lang-select[aria-expanded="true"] .lang-select-caret {
+  transform: rotate(180deg);
+}
+
+.lang-select-menu {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  min-width: 100%;
   background-color: #1a1a1a;
+  border: 1px solid rgba(186, 148, 94, 0.35);
+  border-radius: 10px;
+  padding: 0.35rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  z-index: 2100;
+}
+
+.lang-select-option {
+  width: 100%;
+  background: transparent;
+  border: none;
   color: #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.lang-select-option:hover {
+  background-color: rgba(186, 148, 94, 0.12);
+  color: #f1d6ad;
+}
+
+.lang-select-option.is-selected {
+  background-color: rgba(186, 148, 94, 0.18);
+  color: #f5dfbd;
+}
+
+.lang-flag {
+  width: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lang-flag-emoji {
+  font-size: 0.95rem;
+}
+
+.lang-flag-svg img,
+.lang-flag-svg {
+  width: 1.1rem;
+  height: 0.82rem;
+  display: block;
+  border-radius: 2px;
+}
+
+.lang-select-native {
+  pointer-events: none;
 }
 
 .site-nav-search {

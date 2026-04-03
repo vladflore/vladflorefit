@@ -4,7 +4,7 @@ from js import localStorage, window, Object
 from pyodide.ffi import to_js
 from pyscript import document
 
-SUPPORTED = frozenset(["en", "es", "de"])
+SUPPORTED = frozenset(["en", "es", "de", "ca"])
 
 
 def _detect_lang() -> str:
