@@ -1,5 +1,6 @@
 import csv
 import json
+from pathlib import Path
 
 
 _base_exercises: list[dict] | None = None
@@ -10,9 +11,17 @@ _body_parts_list: list[str] = []
 
 
 def _load_base_exercises(csv_file_path: str = "exercises.csv") -> list[dict]:
-    with open(csv_file_path, mode="r", encoding="utf-8") as csv_file:
-        reader = csv.DictReader(csv_file)
-        return sorted(list(reader), key=lambda ex: ex["name"])
+    candidates = [
+        Path(csv_file_path),
+        Path("data/exercises_library.csv"),
+        Path(__file__).resolve().parents[2] / "data" / "exercises_library.csv",
+    ]
+    for path in candidates:
+        if path.exists():
+            with path.open(mode="r", encoding="utf-8") as csv_file:
+                reader = csv.DictReader(csv_file)
+                return sorted(list(reader), key=lambda ex: ex["name"])
+    raise FileNotFoundError(csv_file_path)
 
 
 def _split_csv_field(value: str) -> list[str]:
@@ -66,6 +75,17 @@ def refresh(custom_exercises: list[dict] | None = None) -> None:
     _exercise_by_id = exercise_by_id
     _category_count = category_count
     _body_parts_list = body_parts_list
+
+    try:
+        import state
+
+        state.base_data = list(_base_exercises)
+        state.data = merged
+        state.category_count.clear()
+        state.category_count.update(category_count)
+        state.body_parts_list[:] = body_parts_list
+    except Exception:
+        pass
 
 
 def all_exercises() -> list[dict]:
