@@ -1,4 +1,5 @@
 import asyncio
+import importlib
 
 from pyodide.ffi.wrappers import add_event_listener
 from pyodide.http import pyfetch
@@ -14,10 +15,26 @@ from filters import (
     clear_filters,
     update as update_filters,
 )
-from pdf import download_file, download_pdf_with_options
 from ics import download_ics
 from workouts import add_workout, hide_sidebar, render_workouts, remove_workouts, update_workout_badge
 from custom_exercises import open_add_custom_modal
+
+_pdf_module = None
+
+
+def _pdf():
+    global _pdf_module
+    if _pdf_module is None:
+        _pdf_module = importlib.import_module("pdf")
+    return _pdf_module
+
+
+def open_pdf_modal(*args) -> None:
+    _pdf().download_file(*args)
+
+
+def download_pdf_with_options(*args) -> None:
+    _pdf().download_pdf_with_options(*args)
 
 
 def show_info(event) -> None:
@@ -37,7 +54,7 @@ pydom[state.copyright_el_id][0]._js.innerHTML = copyright()
 pydom[state.version_el_id][0]._js.innerHTML = current_version()
 pydom[state.footer_el_id][0]._js.classList.remove("d-none")
 
-add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", download_file)
+add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", open_pdf_modal)
 add_event_listener(document.getElementById("download-ics"), "click", download_ics)
 add_event_listener(document.getElementById("pdf-download-btn"), "click", download_pdf_with_options)
 

@@ -1,8 +1,6 @@
 name = "Flexary"
 description = "Your Fitness Exercises Library with tools to help your training."
 
-packages = ["fpdf2==2.8.3", "pillow==10.0.0", "qrcode==7.4.2"]
-
 [files]
 "./data/exercises_library.csv" = "exercises.csv"
 "./locales/en.json" = "en.json"
@@ -25,8 +23,3 @@ packages = ["fpdf2==2.8.3", "pillow==10.0.0", "qrcode==7.4.2"]
 "./src/py/filters.py" = "filters.py"
 "./src/py/ics.py" = "ics.py"
 "./data/info.txt" = "info.txt"
-"./assets/logo-nobg.png" = "logo-nobg.png"
-"./assets/fonts/OpenSans-Regular.ttf" = "OpenSans-Regular.ttf"
-"./assets/fonts/OpenSans-Bold.ttf" = "OpenSans-Bold.ttf"
-"./assets/fonts/OpenSans-Italic.ttf" = "OpenSans-Italic.ttf"
-"./assets/fonts/OpenSans-BoldItalic.ttf" = "OpenSans-BoldItalic.ttf"

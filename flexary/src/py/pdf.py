@@ -1,14 +1,74 @@
+import asyncio
 import datetime
 import io
+import importlib
 import math
+from pathlib import Path
 
 import catalog
-import qrcode
-from fpdf import FPDF
 from js import Uint8Array, File, URL, document, localStorage
+from pyodide_js import loadPackage
+from pyodide.http import pyfetch
 
 import state
 from models import category_to_rgb, workouts_from_json, _reps_display, _time_display, _dist_display
+
+_PDF_ASSET_DIR = Path(".pdf-assets")
+_PDF_FONT_SOURCES = {
+    "OpenSans-Regular.ttf": "./assets/fonts/OpenSans-Regular.ttf",
+    "OpenSans-Bold.ttf": "./assets/fonts/OpenSans-Bold.ttf",
+    "OpenSans-Italic.ttf": "./assets/fonts/OpenSans-Italic.ttf",
+    "OpenSans-BoldItalic.ttf": "./assets/fonts/OpenSans-BoldItalic.ttf",
+}
+_PDF_IMAGE_SOURCES = {
+    "logo-nobg.png": "./assets/logo-nobg.png",
+}
+_PDF_PACKAGES = ["fpdf2==2.8.3", "pillow==10.0.0", "qrcode==7.4.2"]
+_pdf_runtime_ready = False
+_pdf_runtime_loading = None
+FPDF = None
+qrcode = None
+
+
+async def _ensure_pdf_runtime() -> None:
+    global _pdf_runtime_ready
+    global _pdf_runtime_loading
+    global FPDF
+    global qrcode
+
+    if _pdf_runtime_ready:
+        return
+
+    if _pdf_runtime_loading is None:
+        async def _load() -> None:
+            await loadPackage("micropip")
+            micropip = importlib.import_module("micropip")
+            await micropip.install(_PDF_PACKAGES)
+
+            from fpdf import FPDF as _FPDF
+            import qrcode as _qrcode
+
+            FPDF = _FPDF
+            qrcode = _qrcode
+            globals()["FPDF"] = FPDF
+            globals()["qrcode"] = qrcode
+
+        _pdf_runtime_loading = asyncio.ensure_future(_load())
+
+    await _pdf_runtime_loading
+    _pdf_runtime_ready = True
+
+
+async def _ensure_pdf_assets() -> None:
+    _PDF_ASSET_DIR.mkdir(exist_ok=True)
+
+    for filename, source in {**_PDF_FONT_SOURCES, **_PDF_IMAGE_SOURCES}.items():
+        target = _PDF_ASSET_DIR / filename
+        if target.exists():
+            continue
+        response = await pyfetch(source)
+        data = await response.bytes()
+        target.write_bytes(data)
 
 
 def create_pdf(black_and_white: bool = False, include_description: bool = True):
@@ -23,7 +83,7 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
     class PDF(FPDF):
         def header(self):
             logo_size = 14
-            self.image("logo-nobg.png", x=self.w - self.r_margin - logo_size, y=3, w=logo_size, h=logo_size)
+            self.image(str(_PDF_ASSET_DIR / "logo-nobg.png"), x=self.w - self.r_margin - logo_size, y=3, w=logo_size, h=logo_size)
             self.ln(logo_size - 4)
 
         def footer(self):
@@ -42,10 +102,10 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
 
     pdf = PDF()
     pdf.set_top_margin(5)
-    pdf.add_font("opensans", style="", fname="OpenSans-Regular.ttf")
-    pdf.add_font("opensans", style="B", fname="OpenSans-Bold.ttf")
-    pdf.add_font("opensans", style="I", fname="OpenSans-Italic.ttf")
-    pdf.add_font("opensans", style="BI", fname="OpenSans-BoldItalic.ttf")
+    pdf.add_font("opensans", style="", fname=str(_PDF_ASSET_DIR / "OpenSans-Regular.ttf"))
+    pdf.add_font("opensans", style="B", fname=str(_PDF_ASSET_DIR / "OpenSans-Bold.ttf"))
+    pdf.add_font("opensans", style="I", fname=str(_PDF_ASSET_DIR / "OpenSans-Italic.ttf"))
+    pdf.add_font("opensans", style="BI", fname=str(_PDF_ASSET_DIR / "OpenSans-BoldItalic.ttf"))
     pdf.set_font("opensans", style="", size=10)
 
     exercise_name_column_width = 80
@@ -490,7 +550,9 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
     return pdf
 
 
-def _perform_download(black_and_white: bool = False, include_description: bool = True) -> None:
+async def _perform_download(black_and_white: bool = False, include_description: bool = True) -> None:
+    await _ensure_pdf_runtime()
+    await _ensure_pdf_assets()
     pdf = create_pdf(black_and_white=black_and_white, include_description=include_description)
     encoded_data = pdf.output()
     my_stream = io.BytesIO(encoded_data)
@@ -519,4 +581,4 @@ def download_file(*args) -> None:
 def download_pdf_with_options(*args) -> None:
     bw = document.getElementById("pdf-bw-btn").classList.contains("pdf-toggle-btn--active")
     document.getElementById(state.pdf_color_modal_id).close()
-    _perform_download(black_and_white=bw)
+    asyncio.ensure_future(_perform_download(black_and_white=bw))
