@@ -1,5 +1,6 @@
 import json
 
+import catalog
 from js import localStorage
 from pyodide.ffi import create_proxy
 from pyscript import document, when
@@ -36,7 +37,7 @@ def _update_filter_badge() -> None:
 
 def build_category_badges(counts: dict) -> str:
     html = ""
-    for category in state.category_count:
+    for category in catalog.category_count():
         badge_class = category_to_badge.get(category.lower())
         active_class = " category-filter-active" if category in state.active_category_filters else ""
         count = counts.get(category, 0)
@@ -49,7 +50,7 @@ def build_category_badges(counts: dict) -> str:
 
 def build_body_part_badges(counts: dict) -> str:
     html = ""
-    for bp in state.body_parts_list:
+    for bp in catalog.body_parts_list():
         active_class = " body-part-filter-active" if bp in state.active_body_part_filters else ""
         count = counts.get(bp, 0)
         html += (
@@ -106,7 +107,7 @@ def update_exercise_stats(display_count: int, total: int) -> None:
 def update(search_str: str) -> None:
     search_str = search_str.strip().lower()
     search_filtered = [
-        ex for ex in state.data
+        ex for ex in catalog.all_exercises()
         if search_str in ex["name"].lower()
         or search_str in ex["category"].lower()
         or search_str in ex["body_parts"].lower()

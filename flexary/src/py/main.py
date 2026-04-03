@@ -5,18 +5,14 @@ from pyodide.http import pyfetch
 from pyscript import document
 from pyweb import pydom
 
-from common import copyright, current_version, csv_to_json
+import catalog
+from common import copyright, current_version
 from js import window
 from i18n import apply_html_translations
 import state
 from filters import (
-    attach_body_part_filter_listeners,
-    attach_category_filter_listeners,
-    build_body_part_badges,
-    build_category_badges,
     clear_filters,
     update as update_filters,
-    update_exercise_stats,
 )
 from pdf import download_file, download_pdf_with_options
 from ics import download_ics
@@ -30,20 +26,7 @@ def show_info(event) -> None:
 
 apply_html_translations()
 
-state.base_data = sorted(csv_to_json("exercises.csv"), key=lambda x: x["name"])
-state.data = sorted(state.custom_exercises, key=lambda x: x["name"]) + state.base_data
-
-body_parts_seen: set[str] = set()
-for exercise_data in state.data:
-    for category in exercise_data["category"].split(","):
-        category = category.strip()
-        state.category_count[category] = state.category_count.get(category, 0) + 1
-    for bp in exercise_data["body_parts"].split(","):
-        bp = bp.strip()
-        if bp and bp not in body_parts_seen:
-            body_parts_seen.add(bp)
-            state.body_parts_list.append(bp)
-state.body_parts_list.sort()
+catalog.initialize(state.custom_exercises)
 
 update_filters("")
 

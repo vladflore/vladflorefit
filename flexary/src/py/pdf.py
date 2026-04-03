@@ -2,6 +2,7 @@ import datetime
 import io
 import math
 
+import catalog
 import qrcode
 from fpdf import FPDF
 from js import Uint8Array, File, URL, document, localStorage
@@ -252,18 +253,14 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
                 is_custom_ex = exercise.id < 0
-                ex_data = next((d for d in state.data if int(d["id"]) == exercise.id), None)
+                ex_data = catalog.get_exercise(exercise.id)
                 if is_custom_ex:
                     _yt_id = ex_data.get("yt_video_id", "") if ex_data else ""
                     detailed_page_link = f"https://www.youtube.com/watch?v={_yt_id}" if _yt_id else ""
                 else:
-                    detailed_page_link = next(
-                        (
-                            f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
-                            for d in state.data
-                            if int(d["id"]) == exercise.id
-                        ),
-                        "",
+                    detailed_page_link = (
+                        f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
+                        if ex_data else ""
                     )
                 try:
                     sets = int(exercise.sets)

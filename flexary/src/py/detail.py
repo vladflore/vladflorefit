@@ -1,8 +1,6 @@
-import json
-
-from js import localStorage
+import catalog
+from js import URLSearchParams, localStorage
 from pyscript import window
-from common import csv_to_json
 from pyweb import pydom
 from common import copyright, current_version
 from i18n import t, apply_html_translations
@@ -13,19 +11,12 @@ category_to_badge = {
     "mobility": "bg-info",
 }
 
-current_link = window.location.href
-exercise_id = current_link.split("?")[1].split("=")[1]
+query = URLSearchParams.new(window.location.search)
+exercise_id = query.get("exercise_id") or ""
 
-data = csv_to_json("exercises.csv", exercise_id=exercise_id)
-
-if not data:
-    try:
-        raw = localStorage.getItem("custom_exercises")
-        if raw:
-            customs = json.loads(raw)
-            data = next((ex for ex in customs if str(ex["id"]) == exercise_id), {})
-    except Exception:
-        pass
+customs = catalog.parse_custom_exercises(localStorage.getItem("custom_exercises"))
+catalog.initialize(customs)
+data = catalog.get_exercise(exercise_id)
 
 pydom["#exercise-name"][0]._js.textContent = data.get("name", "")
 pydom["#breadcrumb-exercise-name"][0]._js.textContent = data.get("name", "")
@@ -103,7 +94,9 @@ else:
 alternatives = data.get("alternatives", "")
 if alternatives:
     for i, alternative_id in enumerate(alternatives.split(",")):
-        alt_data = csv_to_json("exercises.csv", exercise_id=alternative_id)
+        alt_data = catalog.get_exercise(alternative_id.strip())
+        if not alt_data:
+            continue
         new_alternative = pydom["#alt-ex"][0].clone() if i > 0 else pydom["#alt-ex"][0]
         new_alternative._js.setAttribute("data-id", alt_data["id"])
         new_alternative._js.textContent = alt_data["name"]

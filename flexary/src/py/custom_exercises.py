@@ -1,3 +1,4 @@
+import catalog
 from pyodide.ffi import create_proxy
 from pyscript import document
 from pyweb import pydom
@@ -77,21 +78,7 @@ def _extract_yt_id(value: str) -> str:
 
 
 def _rebuild_data() -> None:
-    state.data = sorted(state.custom_exercises, key=lambda x: x["name"]) + state.base_data
-    state.category_count.clear()
-    state.body_parts_list.clear()
-    seen_bp: set[str] = set()
-    for ex in state.data:
-        for cat in ex["category"].split(","):
-            cat = cat.strip()
-            if cat:
-                state.category_count[cat] = state.category_count.get(cat, 0) + 1
-        for bp in ex["body_parts"].split(","):
-            bp = bp.strip()
-            if bp and bp not in seen_bp:
-                seen_bp.add(bp)
-                state.body_parts_list.append(bp)
-    state.body_parts_list.sort()
+    catalog.refresh(state.custom_exercises)
     search_val = pydom["#search-input"][0]._js.value
     update_filters(search_val)
 
