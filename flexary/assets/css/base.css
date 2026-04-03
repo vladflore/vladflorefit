@@ -129,6 +129,20 @@ body {
   pointer-events: none;
 }
 
+.site-nav .container-fluid {
+  flex-wrap: nowrap !important;
+}
+
+.site-nav .container-fluid > a,
+.site-nav .lang-select-wrap {
+  flex-shrink: 0;
+}
+
+.site-nav .container-fluid > form[role="search"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .site-nav-search {
   max-width: 360px;
   min-width: 0;
@@ -310,6 +324,34 @@ nav {
 }
 
 @media (max-width: 576px) {
+  .site-nav .container-fluid {
+    gap: 0.45rem !important;
+  }
+
+  .logo-header {
+    height: 46px;
+  }
+
+  .site-nav .container-fluid > form[role="search"] {
+    max-width: 150px;
+  }
+
+  .site-nav-search {
+    max-width: 150px;
+    font-size: 0.8rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+
+  .lang-select {
+    min-width: 4.1rem;
+    padding: 5px 8px;
+  }
+
+  .lang-select-current-label {
+    display: none;
+  }
+
   .app-header {
     flex-direction: column;
     align-items: flex-start;
