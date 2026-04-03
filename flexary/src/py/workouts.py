@@ -861,19 +861,17 @@ def _validate_exercise_inputs(sets_val, reps_val, time_val, sets, warning_el) ->
 
 
 def show_sidebar() -> None:
+    if hasattr(window, "flexarySidebar") and window.flexarySidebar:
+        window.flexarySidebar.setHidden(False)
+        return
     pydom[state.workout_sidebar_el_id][0]._js.classList.remove("d-none")
-    icon = pydom["#toggle-workout-sidebar"][0]._js.querySelector("i")
-    if icon:
-        icon.className = "bi bi-x-lg"
-    pydom["#toggle-workout-sidebar"][0]._js.title = t("hide_workouts")
 
 
 def hide_sidebar() -> None:
-    pydom[state.workout_sidebar_el_id][0]._js.classList.add("d-none")
-    icon = pydom["#toggle-workout-sidebar"][0]._js.querySelector("i")
-    if icon:
-        icon.className = "bi bi-list"
-    pydom["#toggle-workout-sidebar"][0]._js.title = t("show_workouts")
+    if hasattr(window, "flexarySidebar") and window.flexarySidebar:
+        window.flexarySidebar.setHidden(True)
+    else:
+        pydom[state.workout_sidebar_el_id][0]._js.classList.add("d-none")
     update_workout_badge()
 
 

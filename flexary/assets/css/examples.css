@@ -454,28 +454,28 @@ nav {
 .side-actions {
   position: fixed;
   right: 0;
-  top: 50%;
+  top: var(--edge-actions-midpoint, 50%);
   transform: translateY(-50%) translateX(60px);
   z-index: 2000;
   display: flex;
   align-items: stretch;
   transition: transform 0.3s ease;
-  background-color: #fff;
-  border: 1px solid rgba(186, 148, 94, 0.5);
+  background: linear-gradient(180deg, rgba(255, 250, 243, 0.98), rgba(248, 240, 229, 0.98));
+  border: 1px solid rgba(186, 148, 94, 0.42);
   border-right: none;
-  border-radius: 10px 0 0 10px;
+  border-radius: 16px 0 0 16px;
   overflow: hidden;
-  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.1);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
 }
 
-.side-actions:hover,
 .side-actions.is-open {
   transform: translateY(-50%) translateX(0);
 }
 
 .side-actions-handle {
   background-color: #ba945e;
-  width: 22px;
+  width: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -483,6 +483,18 @@ nav {
   color: #fff;
   flex-shrink: 0;
   user-select: none;
+  border: none;
+  padding: 0;
+  transition: filter 0.15s ease;
+}
+
+.side-actions-handle:hover {
+  filter: brightness(1.08);
+}
+
+.side-actions-handle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.95);
+  outline-offset: -2px;
 }
 
 .side-actions-chevron {
@@ -495,10 +507,10 @@ nav {
 }
 
 .side-actions-panel {
-  padding: 10px 8px;
+  padding: 12px 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -513,17 +525,26 @@ nav {
   justify-content: center;
   padding: 0;
   flex-shrink: 0;
-  transition: filter 0.15s;
-  border: none;
+  transition: transform 0.18s ease, filter 0.15s ease, box-shadow 0.18s ease;
+  border: 1px solid rgba(255, 255, 255, 0.42);
   cursor: pointer;
+  box-shadow: 0 8px 18px rgba(186, 148, 94, 0.3);
 }
 
 .side-fab-btn:hover {
   filter: brightness(1.15);
+  transform: none;
+  box-shadow: 0 8px 18px rgba(186, 148, 94, 0.3);
 }
 
 .side-fab-btn:active {
   filter: brightness(0.88);
+  transform: none;
+}
+
+.side-fab-btn:focus-visible {
+  outline: 2px solid rgba(186, 148, 94, 0.5);
+  outline-offset: 3px;
 }
 
 .workout-layover {
@@ -727,12 +748,49 @@ nav {
 
 
 #toggle-workout-sidebar {
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s ease,
+    filter 0.15s ease;
   z-index: 1100;
 }
 
+.workout-sidebar-toggle {
+  position: fixed;
+  top: var(--edge-actions-midpoint, 50%);
+  left: 0;
+  width: 30px;
+  height: 60px;
+  border-radius: 0 12px 12px 0;
+  background-color: #ba945e;
+  border: 1px solid #ba945e;
+  border-left: none;
+  color: #fff;
+  transform: translateY(-50%);
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.workout-sidebar-toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.95);
+  outline-offset: 3px;
+}
+
+.workout-sidebar-toggle:hover {
+  transform: translateY(-50%);
+  filter: none;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.workout-sidebar-toggle .workout-count-badge {
+  top: -4px;
+  right: -4px;
+  left: auto;
+}
+
 body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
-  left: 380px !important;
+  left: 360px;
 }
 
 main {
@@ -741,10 +799,6 @@ main {
 
 body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   margin-left: 360px;
-}
-
-#workout-sidebar.d-none ~ #toggle-workout-sidebar {
-  left: 20px !important;
 }
 
 /* ── Sidebar backdrop ────────────────────────────────────────────────────── */
@@ -778,7 +832,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   }
 
   body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
-    left: 20px !important;
+    left: 0 !important;
   }
 }
 
@@ -1182,22 +1236,11 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
     display: none !important;
   }
 
-  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #side-actions {
-    display: none !important;
-  }
-
   body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
-    top: auto !important;
-    bottom: calc(41dvh + 10px);
-    left: 20px !important;
-    transform: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
+    left: 0 !important;
+    top: var(--edge-actions-midpoint, 50%) !important;
+    bottom: auto !important;
+    transform: translateY(-50%);
   }
 }
 
@@ -1740,4 +1783,3 @@ body.feature-describe .describe-workout-btn.d-none {
   font-size: 0.82rem;
   font-style: italic;
 }
-

@@ -202,7 +202,6 @@
     <div id="sidebar-backdrop" class="sidebar-backdrop d-none"></div>
 
     <aside id="workout-sidebar" class="workout-sidebar d-none">
-      <div class="sidebar-sheet-handle d-lg-none"></div>
       <div class="p-3 d-flex flex-column" style="flex: 1; min-height: 0;">
         <h5 class="text-center" style="color: #ba945e; font-weight: 600; letter-spacing: 0.5px;" data-i18n="your_workouts">Your Workouts</h5>
         <div class="d-flex justify-content-center align-items-center mb-3">
@@ -337,12 +336,13 @@
     <button
       id="toggle-workout-sidebar"
       type="button"
-      class="btn btn-outline-gold position-fixed"
-      style="top: 80px; left: 20px; z-index: 1100"
+      class="side-fab-btn workout-sidebar-toggle"
       data-i18n-title="show_hide_workouts"
       title="Show/Hide Workouts Sidebar"
+      aria-label="Show/Hide Workouts Sidebar"
+      aria-expanded="false"
     >
-      <i class="bi bi-list"></i>
+      <i class="bi bi-layout-sidebar-inset" style="font-size: 1.15rem"></i>
     </button>
 
     <footer id="footer" class="site-footer d-none">
@@ -482,31 +482,48 @@
         const sidebar = document.getElementById("workout-sidebar");
         const toggleBtn = document.getElementById("toggle-workout-sidebar");
         const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+        const mobileSidebarQuery = window.matchMedia("(max-width: 991px)");
 
         function updateButtonIcon() {
           const hidden = sidebar.classList.contains("d-none");
           const icon = toggleBtn.querySelector("i");
-          if (icon) icon.className = hidden ? "bi bi-list" : "bi bi-x-lg";
+          if (icon) icon.className = hidden ? "bi bi-layout-sidebar-inset" : "bi bi-x-lg";
           const i18n = window.flexaryI18n || {};
           toggleBtn.title = hidden
             ? (i18n.show_workouts || "Show Workouts")
             : (i18n.hide_workouts || "Hide Workouts");
+          toggleBtn.setAttribute("aria-label", toggleBtn.title);
+          toggleBtn.setAttribute("aria-expanded", String(!hidden));
         }
 
-        function closeSidebar() {
-          sidebar.classList.add("d-none");
+        function setSidebarVisibility(hidden) {
+          sidebar.classList.toggle("d-none", hidden);
           sidebarBackdrop.classList.add("d-none");
           updateButtonIcon();
         }
 
+        function closeSidebar() {
+          setSidebarVisibility(true);
+        }
+
         toggleBtn.addEventListener("click", function () {
-          sidebar.classList.toggle("d-none");
-          updateButtonIcon();
+          setSidebarVisibility(!sidebar.classList.contains("d-none"));
         });
 
         sidebarBackdrop.addEventListener("click", closeSidebar);
+        mobileSidebarQuery.addEventListener("change", () => {
+          setSidebarVisibility(sidebar.classList.contains("d-none"));
+        });
 
-        updateButtonIcon();
+        window.flexarySidebar = {
+          setHidden: setSidebarVisibility,
+          toggle() {
+            setSidebarVisibility(!sidebar.classList.contains("d-none"));
+          },
+          refreshButton: updateButtonIcon,
+        };
+
+        setSidebarVisibility(sidebar.classList.contains("d-none"));
 
         const filterToggleBtn = document.getElementById("filter-toggle-btn");
         const filterRow = document.getElementById("filter-row");
@@ -540,13 +557,17 @@
         // Side actions slide-in toggle (for click/tap)
         const sideActions = document.getElementById("side-actions");
         const sideActionsHandle = document.getElementById("side-actions-handle");
+        function setSideActionsOpen(isOpen) {
+          sideActions.classList.toggle("is-open", isOpen);
+          sideActionsHandle.setAttribute("aria-expanded", String(isOpen));
+        }
         sideActionsHandle.addEventListener("click", function (e) {
           e.stopPropagation();
-          sideActions.classList.toggle("is-open");
+          setSideActionsOpen(!sideActions.classList.contains("is-open"));
         });
         document.addEventListener("click", function (e) {
           if (!sideActions.contains(e.target)) {
-            sideActions.classList.remove("is-open");
+            setSideActionsOpen(false);
           }
         });
 
@@ -594,10 +615,17 @@
     </div>
 
     <div id="side-actions" class="side-actions">
-      <div class="side-actions-handle" id="side-actions-handle" aria-label="Toggle actions">
+      <button
+        type="button"
+        class="side-actions-handle"
+        id="side-actions-handle"
+        aria-label="Toggle actions"
+        aria-controls="side-actions-panel"
+        aria-expanded="false"
+      >
         <i class="bi bi-chevron-left side-actions-chevron"></i>
-      </div>
-      <div class="side-actions-panel">
+      </button>
+      <div class="side-actions-panel" id="side-actions-panel">
         <button
           class="side-fab-btn"
           data-i18n-title="about"
