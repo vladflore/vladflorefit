@@ -2,15 +2,16 @@ import csv
 import json
 from pathlib import Path
 
+from exercise_records import ExerciseRecord, normalize_exercise_records
 
-_base_exercises: list[dict] | None = None
-_all_exercises: list[dict] = []
-_exercise_by_id: dict[str, dict] = {}
+_base_exercises: list[ExerciseRecord] | None = None
+_all_exercises: list[ExerciseRecord] = []
+_exercise_by_id: dict[str, ExerciseRecord] = {}
 _category_count: dict[str, int] = {}
 _body_parts_list: list[str] = []
 
 
-def _load_base_exercises(csv_file_path: str = "exercises.csv") -> list[dict]:
+def _load_base_exercises(csv_file_path: str = "exercises.csv") -> list[ExerciseRecord]:
     candidates = [
         Path(csv_file_path),
         Path("data/exercises_library.csv"),
@@ -20,7 +21,10 @@ def _load_base_exercises(csv_file_path: str = "exercises.csv") -> list[dict]:
         if path.exists():
             with path.open(mode="r", encoding="utf-8") as csv_file:
                 reader = csv.DictReader(csv_file)
-                return sorted(list(reader), key=lambda ex: ex["name"])
+                return sorted(
+                    normalize_exercise_records(list(reader), is_custom=False),
+                    key=lambda ex: ex["name"],
+                )
     raise FileNotFoundError(csv_file_path)
 
 
@@ -28,14 +32,16 @@ def _split_csv_field(value: str) -> list[str]:
     return [item.strip() for item in str(value).split(",") if item.strip()]
 
 
-def parse_custom_exercises(raw: str | None) -> list[dict]:
+def parse_custom_exercises(raw: str | None) -> list[ExerciseRecord]:
     if not raw:
         return []
     try:
         parsed = json.loads(raw)
     except Exception:
         return []
-    return parsed if isinstance(parsed, list) else []
+    if not isinstance(parsed, list):
+        return []
+    return normalize_exercise_records(parsed, is_custom=True)
 
 
 def initialize(custom_exercises: list[dict] | None = None) -> None:
@@ -52,8 +58,9 @@ def refresh(custom_exercises: list[dict] | None = None) -> None:
         initialize(custom_exercises)
         return
 
-    merged = sorted(custom_exercises or [], key=lambda ex: ex["name"]) + _base_exercises
-    exercise_by_id: dict[str, dict] = {}
+    normalized_customs = normalize_exercise_records(custom_exercises or [], is_custom=True)
+    merged = sorted(normalized_customs, key=lambda ex: ex["name"]) + _base_exercises
+    exercise_by_id: dict[str, ExerciseRecord] = {}
     category_count: dict[str, int] = {}
     body_parts_seen: set[str] = set()
     body_parts_list: list[str] = []
@@ -88,11 +95,11 @@ def refresh(custom_exercises: list[dict] | None = None) -> None:
         pass
 
 
-def all_exercises() -> list[dict]:
+def all_exercises() -> list[ExerciseRecord]:
     return _all_exercises
 
 
-def get_exercise(exercise_id) -> dict:
+def get_exercise(exercise_id) -> ExerciseRecord | dict:
     return _exercise_by_id.get(str(exercise_id), {})
 
 

@@ -1,6 +1,7 @@
 import csv
-import json
 import datetime
+
+from exercise_records import normalize_exercise_record, normalize_exercise_records
 
 
 def csv_to_json(csv_file_path, exercise_id=None):
@@ -9,11 +10,10 @@ def csv_to_json(csv_file_path, exercise_id=None):
         if exercise_id:
             for row in reader:
                 if row.get("id") == exercise_id:
-                    return json.loads(json.dumps(row))
+                    return normalize_exercise_record(row, is_custom=False)
             return {}
         else:
-            data = [row for row in reader]
-            return json.loads(json.dumps(data))
+            return normalize_exercise_records([row for row in reader], is_custom=False)
 
 
 def copyright():

@@ -1,5 +1,6 @@
 import json
 
+import catalog
 from js import localStorage
 from pyscript import document
 from pyweb import pydom
@@ -64,7 +65,7 @@ custom_exercises: list[dict] = []
 _custom_raw = localStorage.getItem(ls_custom_exercises_key)
 if _custom_raw:
     try:
-        custom_exercises = json.loads(_custom_raw)
+        custom_exercises = catalog.parse_custom_exercises(_custom_raw)
     except Exception:
         pass
 

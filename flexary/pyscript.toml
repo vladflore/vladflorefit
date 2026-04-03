@@ -13,6 +13,7 @@ packages = ["fpdf2==2.8.3", "pillow==10.0.0", "qrcode==7.4.2"]
 "./src/py/models.py" = "models.py"
 "./src/py/state.py" = "state.py"
 "./src/py/catalog.py" = "catalog.py"
+"./src/py/exercise_records.py" = "exercise_records.py"
 "./src/py/pdf.py" = "pdf.py"
 "./src/py/workout_domain.py" = "workout_domain.py"
 "./src/py/workout_modal.py" = "workout_modal.py"

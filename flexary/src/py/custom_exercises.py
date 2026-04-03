@@ -4,6 +4,7 @@ from pyscript import document
 from pyweb import pydom
 
 import state
+from exercise_records import normalize_exercise_record
 from filters import update as update_filters
 from i18n import t
 from workouts import render_workouts
@@ -319,29 +320,9 @@ def _open_custom_modal(ex: dict | None = None) -> None:
         name = name_input.value.strip()
         category = category_select.value
         body_parts = body_parts_input.value.strip()
-
-        if is_edit:
-            ex["name"] = name
-            ex["category"] = category
-            ex["body_parts"] = body_parts
-            ex["thumbnail_url"] = image_input.value.strip()
-            ex["yt_video_id"] = _extract_yt_id(video_input.value)
-            ex["instructions"] = instructions_input.value.strip()
-            ex["primary_muscles"] = primary_muscles_input.value.strip()
-            ex["secondary_muscles"] = secondary_muscles_input.value.strip()
-            ex["key_cues"] = key_cues_input.value.strip()
-            ex["alternatives"] = alternatives_input.value.strip()
-            state.save_custom_exercises()
-            for w in state.workouts:
-                for wex in w.exercises:
-                    if str(wex.id) == exercise_id:
-                        wex.name = name
-            state.save_workouts()
-            render_workouts(state.workouts)
-        else:
-            new_id = state.next_custom_id()
-            new_ex = {
-                "id": str(new_id),
+        normalized_payload = normalize_exercise_record(
+            {
+                "id": exercise_id if is_edit else str(state.next_custom_id()),
                 "name": name,
                 "category": category,
                 "body_parts": body_parts,
@@ -353,8 +334,22 @@ def _open_custom_modal(ex: dict | None = None) -> None:
                 "key_cues": key_cues_input.value.strip(),
                 "alternatives": alternatives_input.value.strip(),
                 "is_custom": "true",
-            }
-            state.custom_exercises.append(new_ex)
+            },
+            is_custom=True,
+        )
+
+        if is_edit:
+            ex.clear()
+            ex.update(normalized_payload)
+            state.save_custom_exercises()
+            for w in state.workouts:
+                for wex in w.exercises:
+                    if str(wex.id) == exercise_id:
+                        wex.name = name
+            state.save_workouts()
+            render_workouts(state.workouts)
+        else:
+            state.custom_exercises.append(normalized_payload)
             state.save_custom_exercises()
 
         _rebuild_data()
