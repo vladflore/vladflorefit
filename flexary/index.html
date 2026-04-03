@@ -537,6 +537,19 @@
           }
         });
 
+        // Side actions slide-in toggle (for click/tap)
+        const sideActions = document.getElementById("side-actions");
+        const sideActionsHandle = document.getElementById("side-actions-handle");
+        sideActionsHandle.addEventListener("click", function (e) {
+          e.stopPropagation();
+          sideActions.classList.toggle("is-open");
+        });
+        document.addEventListener("click", function (e) {
+          if (!sideActions.contains(e.target)) {
+            sideActions.classList.remove("is-open");
+          }
+        });
+
         // Language selector
         const langSelect = document.getElementById("lang-select");
         if (langSelect) {
@@ -578,43 +591,31 @@
       >
         <i class="bi bi-arrow-up" style="font-size: 1.1rem; color: #fff"></i>
       </button>
-      <button
-        class="btn"
-        style="
-          background-color: #ba945e;
-          color: #fff;
-          border-radius: 50%;
-          width: 44px;
-          height: 44px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-        data-i18n-title="about"
-        title="About"
-        py-click="show_info"
-      >
-        <i class="bi bi-info-lg" style="font-size: 1.3rem; color: #fff"></i>
-      </button>
-      <button
-        id="whatsapp-button"
-        class="btn"
-        style="
-          background-color: #ba945e;
-          color: #fff;
-          border-radius: 50%;
-          width: 44px;
-          height: 44px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-        data-i18n-title="contact_whatsapp"
-        title="Contact via WhatsApp"
-        onclick="window.open('https://wa.me/+34613429288', '_blank')"
-      >
-        <i class="bi bi-whatsapp" style="font-size: 1.3rem; color: #fff"></i>
-      </button>
+    </div>
+
+    <div id="side-actions" class="side-actions">
+      <div class="side-actions-handle" id="side-actions-handle" aria-label="Toggle actions">
+        <i class="bi bi-chevron-left side-actions-chevron"></i>
+      </div>
+      <div class="side-actions-panel">
+        <button
+          class="side-fab-btn"
+          data-i18n-title="about"
+          title="About"
+          py-click="show_info"
+        >
+          <i class="bi bi-info-lg" style="font-size: 1.3rem"></i>
+        </button>
+        <button
+          id="whatsapp-button"
+          class="side-fab-btn"
+          data-i18n-title="contact_whatsapp"
+          title="Contact via WhatsApp"
+          onclick="window.open('https://wa.me/+34613429288', '_blank')"
+        >
+          <i class="bi bi-whatsapp" style="font-size: 1.3rem"></i>
+        </button>
+      </div>
     </div>
   </body>
 </html>

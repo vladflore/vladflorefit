@@ -450,6 +450,82 @@ nav {
   filter: brightness(0.88);
 }
 
+/* ── Side actions (slide-in from right) ───────────────────────────────────── */
+.side-actions {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) translateX(60px);
+  z-index: 2000;
+  display: flex;
+  align-items: stretch;
+  transition: transform 0.3s ease;
+  background-color: #fff;
+  border: 1px solid rgba(186, 148, 94, 0.5);
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+  overflow: hidden;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.side-actions:hover,
+.side-actions.is-open {
+  transform: translateY(-50%) translateX(0);
+}
+
+.side-actions-handle {
+  background-color: #ba945e;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.side-actions-chevron {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.side-actions.is-open .side-actions-chevron {
+  transform: rotate(180deg);
+}
+
+.side-actions-panel {
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.side-fab-btn {
+  background-color: #ba945e;
+  color: #fff;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  transition: filter 0.15s;
+  border: none;
+  cursor: pointer;
+}
+
+.side-fab-btn:hover {
+  filter: brightness(1.15);
+}
+
+.side-fab-btn:active {
+  filter: brightness(0.88);
+}
+
 .workout-layover {
   position: absolute !important;
   background-color: rgba(0, 0, 0, 0.6);
@@ -1101,8 +1177,12 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
     margin-bottom: 0.5rem !important;
   }
 
-  /* When the bottom sheet is open: hide FABs and float the close button above the sheet */
+  /* When the bottom sheet is open: hide FABs and side actions, and float the close button above the sheet */
   body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #fab-buttons {
+    display: none !important;
+  }
+
+  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #side-actions {
     display: none !important;
   }
 
