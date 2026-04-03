@@ -1,3 +1,4 @@
+import ast
 import datetime
 import json
 from dataclasses import dataclass, field
@@ -135,35 +136,95 @@ def workouts_to_json(workouts: list) -> str:
     return json.dumps([_w(w) for w in workouts])
 
 
+def _coerce_str(value, default: str = "") -> str:
+    if value is None:
+        return default
+    return str(value)
+
+
+def _coerce_int(value, default: int = 0) -> int:
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped:
+            return int(stripped)
+    return default
+
+
+def _parse_exercise(ex_data) -> Exercise:
+    if not isinstance(ex_data, dict):
+        raise ValueError("Exercise must be an object")
+
+    return Exercise(
+        id=_coerce_int(ex_data["id"]),
+        internal_id=_coerce_str(ex_data["internal_id"]),
+        name=_coerce_str(ex_data["name"]),
+        sets=_coerce_int(ex_data.get("sets", 1), default=1),
+        reps=_coerce_str(ex_data.get("reps", "")),
+        time=_coerce_str(ex_data.get("time", "")),
+        distance=_coerce_str(ex_data.get("distance", "")),
+        notes=_coerce_str(ex_data.get("notes", "")),
+        superset_id=_coerce_str(ex_data.get("superset_id", "")),
+        rest_between_sets=_coerce_int(ex_data.get("rest_between_sets", 0)),
+    )
+
+
+def _parse_int_mapping(raw_mapping) -> dict[str, int]:
+    if not raw_mapping:
+        return {}
+    if not isinstance(raw_mapping, dict):
+        raise ValueError("Expected an object mapping")
+    parsed: dict[str, int] = {}
+    for key, value in raw_mapping.items():
+        parsed[_coerce_str(key)] = _coerce_int(value)
+    return parsed
+
+
+def _parse_workout(w_data) -> Workout:
+    if not isinstance(w_data, dict):
+        raise ValueError("Workout must be an object")
+
+    exercises_raw = w_data.get("exercises", [])
+    if not isinstance(exercises_raw, list):
+        raise ValueError("Workout exercises must be a list")
+
+    return Workout(
+        id=UUID(_coerce_str(w_data["id"])),
+        execution_date=datetime.date.fromisoformat(_coerce_str(w_data["execution_date"])),
+        exercises=[_parse_exercise(ex_data) for ex_data in exercises_raw],
+        superset_rounds=_parse_int_mapping(w_data.get("superset_rounds", {})),
+        name=_coerce_str(w_data.get("name", "")),
+        breaks=_parse_int_mapping(w_data.get("breaks", {})),
+        description=_coerce_str(w_data.get("description", "")),
+    )
+
+
+def _parse_workouts_payload(raw: str):
+    try:
+        return json.loads(raw)
+    except Exception:
+        return ast.literal_eval(raw)
+
+
 def workouts_from_json(raw: str) -> list:
     try:
-        data = json.loads(raw)
-        result = []
-        for w_data in data:
-            exercises = [Exercise(
-                id=ex_data["id"],
-                internal_id=ex_data["internal_id"],
-                name=ex_data["name"],
-                sets=ex_data["sets"],
-                reps=ex_data["reps"],
-                time=ex_data.get("time", ""),
-                distance=ex_data.get("distance", ""),
-                notes=ex_data.get("notes", ""),
-                superset_id=ex_data.get("superset_id", ""),
-                rest_between_sets=int(ex_data.get("rest_between_sets", 0)),
-            ) for ex_data in w_data["exercises"]]
-            result.append(Workout(
-                id=UUID(w_data["id"]),
-                execution_date=datetime.date.fromisoformat(w_data["execution_date"]),
-                exercises=exercises,
-                superset_rounds=w_data.get("superset_rounds", {}),
-                name=w_data.get("name", ""),
-                breaks={k: int(v) for k, v in w_data.get("breaks", {}).items()},
-                description=w_data.get("description", ""),
-            ))
-        return result
-    except Exception:
-        try:
-            return eval(raw)
-        except Exception:
+        payload = _parse_workouts_payload(raw)
+        if isinstance(payload, dict):
+            version = payload.get("version", 1)
+            if version != 1:
+                return []
+            data = payload.get("workouts", [])
+        else:
+            data = payload
+
+        if not isinstance(data, list):
             return []
+
+        return [_parse_workout(w_data) for w_data in data]
+    except Exception:
+        return []
