@@ -6,7 +6,7 @@ body {
 /* ── Site nav ────────────────────────────────────────────────────────────── */
 
 .page-title {
-  color: #ba945e;
+  color: #8a6530;
   font-weight: 700;
   letter-spacing: 0.03em;
 }
@@ -505,6 +505,11 @@ nav {
 .exercise-card .badge {
   font-size: 0.75rem;
   padding: 0.3em 0.5em;
+}
+
+/* Bootstrap bg-info (#0dcaf0) has insufficient contrast with white text — use dark text instead */
+.badge.bg-info {
+  color: #212529;
 }
 
 .badge-group {

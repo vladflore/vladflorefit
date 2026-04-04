@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -17,13 +17,14 @@
       gtag("config", "G-1Q5PTQ3F7Y");
     </script>
     <meta charset="UTF-8" />
+    <meta name="description" content="Exercise details, step-by-step instructions, and video guide — Flexary exercise library." />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link
       rel="stylesheet"
       href="https://pyscript.net/releases/2024.1.1/core.css"
     />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      href="./assets/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link
@@ -43,7 +44,7 @@
 
   <body>
     <dialog id="loading">
-      <img src="./assets/logo-nobg.png" class="logo pulsate" alt="Loading..." />
+      <img src="./assets/logo-nobg.webp" class="logo pulsate" alt="Loading..." />
     </dialog>
 
     <nav class="navbar sticky-top site-nav">
@@ -51,7 +52,7 @@
         class="container-fluid d-flex align-items-center justify-content-between"
       >
         <a href="index.html">
-          <img src="./assets/logo-nobg.png" class="logo-header" alt="Logo" />
+          <img src="./assets/logo-nobg.webp" class="logo-header" alt="Logo" />
         </a>
       </div>
     </nav>
@@ -97,9 +98,9 @@
               </div>
               <div class="col-md-4">
                 <div class="detail-card h-100">
-                  <h5 class="detail-card-title">
+                  <h3 class="detail-card-title">
                     <i class="bi bi-list-ul me-2"></i><span data-i18n="instructions_title">Instructions</span>
-                  </h5>
+                  </h3>
                   <p id="exercise-instructions" class="mb-0"></p>
                   <span id="instructions-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
                 </div>
@@ -108,9 +109,9 @@
             <div class="row g-4 mt-1">
               <div class="col-md-4">
                 <div class="detail-card h-100">
-                  <h5 class="detail-card-title">
+                  <h3 class="detail-card-title">
                     <i class="bi bi-person-arms-up me-2"></i><span data-i18n="targeted_muscles_title">Targeted Muscles</span>
-                  </h5>
+                  </h3>
                   <p id="primary-muscles" class="mb-1 text-sm-start"></p>
                   <p id="secondary-muscles" class="mb-0 text-sm-start" style="opacity: 0.7"></p>
                   <span id="muscles-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
@@ -118,9 +119,9 @@
               </div>
               <div class="col-md-4">
                 <div class="detail-card h-100">
-                  <h5 class="detail-card-title">
+                  <h3 class="detail-card-title">
                     <i class="bi bi-lightbulb me-2"></i><span data-i18n="key_cues_title">Key Cues</span>
-                  </h5>
+                  </h3>
                   <ul id="key-cues-container" class="detail-list d-none">
                     <li id="key-cue"></li>
                   </ul>
@@ -129,9 +130,9 @@
               </div>
               <div class="col-md-4">
                 <div class="detail-card h-100">
-                  <h5 class="detail-card-title">
+                  <h3 class="detail-card-title">
                     <i class="bi bi-arrow-left-right me-2"></i><span data-i18n="alternatives_title">Alternative Exercises</span>
-                  </h5>
+                  </h3>
                   <ul id="alt-ex-container" class="detail-list d-none">
                     <li id="alt-ex" class="alt-ex-link" style="cursor: pointer"></li>
                   </ul>

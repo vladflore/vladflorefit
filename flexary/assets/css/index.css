@@ -1172,7 +1172,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
 .filter-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #ba945e;
+  color: #8a6530;
   white-space: nowrap;
   min-width: 78px;
   letter-spacing: 0.03em;

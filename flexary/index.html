@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <!-- Google tag (gtag.js) -->
     <script
@@ -17,13 +17,14 @@
       gtag("config", "G-1Q5PTQ3F7Y");
     </script>
     <meta charset="UTF-8" />
+    <meta name="description" content="Flexary — a free exercise library with workout planning, step-by-step guides, and video references." />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
     <link
       rel="stylesheet"
       href="https://pyscript.net/releases/2024.1.1/core.css"
     />
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      href="./assets/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <link
@@ -44,14 +45,14 @@
 
   <body>
     <dialog id="loading">
-      <img src="./assets/logo-nobg.png" class="logo pulsate" alt="Loading..." />
+      <img src="./assets/logo-nobg.webp" class="logo pulsate" alt="Loading..." />
     </dialog>
 
     <nav class="navbar sticky-top site-nav flex-wrap">
       <div class="site-nav-inner">
         <div class="site-nav-brand">
           <a href="index.html">
-            <img src="./assets/logo-nobg.png" class="logo-header" alt="Logo" />
+            <img src="./assets/logo-nobg.webp" class="logo-header" alt="Logo" />
           </a>
           <span class="site-nav-title">Flexary</span>
           <button
@@ -236,10 +237,10 @@
                     />
                   </div>
                   <div class="card-body d-flex flex-column">
-                    <h5
+                    <h3
                       id="card-title"
                       class="card-title text-center text-sm-start card-title-link"
-                    ></h5>
+                    ></h3>
                     <div
                       id="badges"
                       class="badge-group mb-2 d-flex justify-content-center justify-content-sm-start"
@@ -287,7 +288,7 @@
 
     <aside id="workout-sidebar" class="workout-sidebar d-none">
       <div class="p-3 d-flex flex-column" style="flex: 1; min-height: 0;">
-        <h5 class="text-center" style="color: #ba945e; font-weight: 600; letter-spacing: 0.5px;" data-i18n="your_workouts">Your Workouts</h5>
+        <h3 class="text-center" style="color: #ba945e; font-weight: 600; letter-spacing: 0.5px;" data-i18n="your_workouts">Your Workouts</h3>
         <div class="d-flex justify-content-center align-items-center mb-3">
           <button
             id="add-workout"

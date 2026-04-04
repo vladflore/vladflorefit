@@ -29,7 +29,7 @@ def create_card_exercise(template, exercise_data: dict):
     card_img = exercise_html.find("#card-img")[0]
     if is_custom:
         thumbnail = exercise_data.get("thumbnail_url", "")
-        card_img._js.src = thumbnail if thumbnail else "./assets/exercises/placeholder.png"
+        card_img._js.src = thumbnail if thumbnail else "./assets/exercises/placeholder.webp"
         card_img._js.alt = exercise_data["name"]
     else:
         card_img._js.src = f"./assets/exercises/{exercise_data['thumbnail_url']}"
