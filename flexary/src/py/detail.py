@@ -75,15 +75,24 @@ else:
 primary_muscles = data.get("primary_muscles", "")
 secondary_muscles = data.get("secondary_muscles", "")
 if primary_muscles:
-    pydom["#primary-muscles"][0]._js.textContent = t("primary_label", muscles=primary_muscles)
+    pydom["#primary-muscles"][0]._js.textContent = t(
+        "primary_label", muscles=primary_muscles
+    )
 if secondary_muscles:
-    pydom["#secondary-muscles"][0]._js.textContent = t("secondary_label", muscles=secondary_muscles)
+    pydom["#secondary-muscles"][0]._js.textContent = t(
+        "secondary_label", muscles=secondary_muscles
+    )
 if not primary_muscles and not secondary_muscles:
     pydom["#muscles-not-available"][0]._js.classList.remove("d-none")
 
 cues = data.get("key_cues", "")
 if cues:
-    for i, cue in enumerate(cues.split(",")):
+    if "\\," in cues:
+        cues = cues.replace("\\,", "|")
+    all_cues = cues.split(",")
+    for i, cue in enumerate(all_cues):
+        if "|" in cue:
+            cue = cue.replace("|", ", ")
         new_cue = pydom["#key-cue"][0].clone() if i > 0 else pydom["#key-cue"][0]
         new_cue._js.textContent = cue.strip()
         pydom["#key-cues-container"][0]._js.append(new_cue._js)
