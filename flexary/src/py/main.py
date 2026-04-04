@@ -11,6 +11,15 @@ from common import copyright, current_version
 from js import window
 from i18n import apply_html_translations
 import state
+from auth import (
+    close_account_modal,
+    close_auth_modal,
+    initialize_auth_ui,
+    open_account_modal,
+    open_auth_modal,
+    send_magic_link,
+    sign_out,
+)
 from filters import (
     clear_filters,
     update as update_filters,
@@ -76,6 +85,7 @@ async def _apply_feature_flags() -> None:
 
 
 asyncio.ensure_future(_apply_feature_flags())
+asyncio.ensure_future(initialize_auth_ui())
 
 document.getElementById("loading").close()
 document.getElementById("container").classList.remove("d-none")

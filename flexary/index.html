@@ -36,6 +36,7 @@
       type="module"
       src="https://pyscript.net/releases/2024.1.1/core.js"
     ></script>
+    <script type="module" src="./assets/js/auth.js?v=20260404a"></script>
     <script type="module">
       document.getElementById("loading").showModal();
     </script>
@@ -104,6 +105,43 @@
             <button class="lang-select-option" type="button" data-lang-value="de" role="option">
               <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇩🇪</span>
               <span>Deutsch</span>
+            </button>
+          </div>
+        </div>
+        <div class="auth-nav" id="auth-nav">
+          <span id="auth-status-badge" class="auth-status-badge d-none"></span>
+          <div id="auth-guest-actions" class="auth-nav-group">
+            <button
+              id="auth-signin-trigger"
+              type="button"
+              class="btn btn-outline-gold btn-sm auth-nav-btn"
+              py-click="open_auth_modal"
+              data-i18n-title="sign_in"
+              title="Sign in"
+            >
+              <span data-i18n="sign_in">Sign in</span>
+            </button>
+          </div>
+          <div id="auth-user-actions" class="auth-nav-group d-none">
+            <button
+              id="auth-account-trigger"
+              type="button"
+              class="btn btn-outline-gold btn-sm auth-nav-btn"
+              py-click="open_account_modal"
+              data-i18n-title="account"
+              title="Account"
+            >
+              <span data-i18n="account">Account</span>
+            </button>
+            <button
+              id="auth-logout-trigger"
+              type="button"
+              class="btn btn-outline-gold btn-sm auth-nav-btn"
+              py-click="sign_out"
+              data-i18n-title="log_out"
+              title="Log out"
+            >
+              <span data-i18n="log_out">Log out</span>
             </button>
           </div>
         </div>
@@ -426,6 +464,101 @@
       <div class="pdf-color-modal-footer">
         <button class="btn btn-outline-gold" id="pdf-download-btn" data-i18n-title="download_btn" title="Download">
           <i class="bi bi-file-earmark-arrow-down me-1"></i><span data-i18n="download_btn">Download</span>
+        </button>
+      </div>
+    </dialog>
+
+    <dialog id="auth-modal" class="auth-modal">
+      <div class="auth-modal-header">
+        <span class="auth-modal-title" data-i18n="auth_magic_title">Sign in with magic link</span>
+        <button
+          class="auth-modal-close"
+          type="button"
+          py-click="close_auth_modal"
+          aria-label="Close"
+          data-i18n-title="close_btn"
+          title="Close"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="auth-modal-body">
+        <div class="auth-modal-copy">
+          <p class="auth-modal-subtitle" data-i18n="auth_magic_subtitle">
+            Enter your email and we’ll send a secure link to finish signing in.
+          </p>
+          <div id="auth-config-warning" class="auth-feedback auth-feedback--warning d-none" data-i18n="auth_missing_config">
+            Auth is not configured yet. Add your Supabase URL and publishable key to enable sign in.
+          </div>
+        </div>
+        <div class="auth-field-group">
+          <label for="auth-email" data-i18n="email_label">Email</label>
+          <input
+            id="auth-email"
+            class="auth-input"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            data-i18n-ph="email_placeholder"
+          />
+        </div>
+        <div id="auth-feedback" class="auth-feedback d-none"></div>
+      </div>
+      <div class="auth-modal-actions">
+        <button
+          id="auth-magic-link-btn"
+          type="button"
+          class="btn btn-outline-gold"
+          py-click="send_magic_link"
+          data-i18n="send_magic_link"
+          data-i18n-title="send_magic_link"
+          title="Send magic link"
+        >
+          Send magic link
+        </button>
+      </div>
+    </dialog>
+
+    <dialog id="account-modal" class="auth-modal">
+      <div class="auth-modal-header">
+        <span class="auth-modal-title" data-i18n="account">Account</span>
+        <button
+          class="auth-modal-close"
+          type="button"
+          py-click="close_account_modal"
+          aria-label="Close"
+          data-i18n-title="close_btn"
+          title="Close"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="auth-modal-body">
+        <div class="account-card">
+          <div class="account-card-row">
+            <span class="account-card-label" data-i18n="email_label">Email</span>
+            <strong id="account-email">-</strong>
+          </div>
+          <div class="account-card-row">
+            <span class="account-card-label" data-i18n="account_user_id">User ID</span>
+            <code id="account-user-id">-</code>
+          </div>
+          <div class="account-card-row">
+            <span class="account-card-label" data-i18n="account_session_status">Session</span>
+            <span id="account-session-status">-</span>
+          </div>
+        </div>
+      </div>
+      <div class="auth-modal-actions">
+        <button
+          type="button"
+          class="btn btn-outline-gold"
+          py-click="close_account_modal"
+          data-i18n="close_btn"
+          data-i18n-title="close_btn"
+          title="Close"
+        >
+          Close
         </button>
       </div>
     </dialog>
