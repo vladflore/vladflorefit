@@ -263,6 +263,11 @@
     <link rel="icon" type="image/png" href="favicon.jpeg" />
   </head>
   <body>
+    <script>
+      if (window.location.hash.includes("access_token")) {
+        window.location.replace('/flexary/index.html' + window.location.search + window.location.hash);
+      }
+    </script>
     <div class="center-container">
       <div class="tiles-container">
         <a
