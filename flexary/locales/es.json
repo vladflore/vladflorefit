@@ -71,8 +71,6 @@
   "mismatch_warning": "\u26a0 Ejercicio configurado con {count} ejecuciones pero la superserie tiene {rounds} rondas \u2014 edita la configuraci\u00f3n del ejercicio o el n\u00famero de rondas de la superserie",
   "fix_mismatch": "Corrige las discrepancias de series/rondas antes de descargar",
 
-  "describe_workout": "Describir entrenamiento",
-  "regenerate_confirm": "\u00bfRegenererar descripci\u00f3n?",
   "yes_btn": "S\u00ed",
   "no_btn": "No",
   "remove_exercise_confirm": "\u00bfEliminar {name}?",
@@ -82,8 +80,6 @@
   "error_prefix": "Error: {msg}",
   "request_failed": "Solicitud fallida: {msg}",
 
-  "workout_description_title": "Descripci\u00f3n del Entrenamiento",
-  "ai_generated": "\u2746 Generado por IA",
   "close_btn": "Cerrar",
 
   "download_pdf_title": "Descargar PDF",

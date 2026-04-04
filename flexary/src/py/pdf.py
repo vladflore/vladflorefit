@@ -71,7 +71,7 @@ async def _ensure_pdf_assets() -> None:
         target.write_bytes(data)
 
 
-def create_pdf(black_and_white: bool = False, include_description: bool = True):
+def create_pdf(black_and_white: bool = False):
     gold = (80, 80, 80) if black_and_white else (186, 148, 94)
     header_fill = (220, 220, 220) if black_and_white else (240, 228, 208)
     cat_colors = {
@@ -197,41 +197,6 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
             pdf.set_font("opensans", style="", size=10)
             pdf.set_x(x_start)
             row_height = 8
-
-            describe_enabled = document.body.classList.contains("feature-describe")
-            if i == 0 and workout.description and include_description and describe_enabled:
-                line_h = 4.5
-                pad = 3.5
-                text_w = table_width - pad * 2 - 1.5
-                pdf.set_font("opensans", style="I", size=8.5)
-                _lines = 0
-                for _para in workout.description.split("\n"):
-                    if not _para.strip():
-                        _lines += 1
-                        continue
-                    _line_w, _para_lines = 0, 1
-                    for _word in _para.split():
-                        _word_w = pdf.get_string_width(_word + " ")
-                        if _line_w + _word_w > text_w:
-                            _para_lines += 1
-                            _line_w = _word_w
-                        else:
-                            _line_w += _word_w
-                    _lines += _para_lines
-                desc_h = _lines * line_h + pad * 2 + 2
-                desc_y = pdf.get_y()
-                pdf.set_fill_color(252, 249, 244)
-                pdf.set_draw_color(*gold)
-                pdf.set_line_width(0.3)
-                pdf.rect(x_start, desc_y, table_width, desc_h, style="FD", round_corners=True, corner_radius=2)
-                pdf.set_fill_color(*gold)
-                pdf.rect(x_start, desc_y, 1.5, desc_h, style="F", round_corners=True, corner_radius=1)
-                pdf.set_text_color(80, 80, 80)
-                pdf.set_xy(x_start + pad + 1.5, desc_y + pad)
-                pdf.multi_cell(text_w, line_h, workout.description, border=0, align="L")
-                pdf.set_text_color(0, 0, 0)
-                pdf.set_font("opensans", style="", size=10)
-                pdf.ln(8)
 
             def render_table_header():
                 pdf.set_fill_color(*header_fill)
@@ -550,10 +515,10 @@ def create_pdf(black_and_white: bool = False, include_description: bool = True):
     return pdf
 
 
-async def _perform_download(black_and_white: bool = False, include_description: bool = True) -> None:
+async def _perform_download(black_and_white: bool = False) -> None:
     await _ensure_pdf_runtime()
     await _ensure_pdf_assets()
-    pdf = create_pdf(black_and_white=black_and_white, include_description=include_description)
+    pdf = create_pdf(black_and_white=black_and_white)
     encoded_data = pdf.output()
     my_stream = io.BytesIO(encoded_data)
 

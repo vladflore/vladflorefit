@@ -55,36 +55,6 @@ def close_auth_modal(event=None) -> None:
     _el("auth-modal").close()
 
 
-def close_account_modal(event=None) -> None:
-    _el("account-modal").close()
-
-
-async def _refresh_account_modal() -> None:
-    user = None
-    token = None
-    if _has_auth_bridge():
-        user = await window.flexaryAuth.getCurrentUser()
-        token = await window.flexaryAuth.getAccessToken()
-
-    _el("account-email").textContent = (
-        str(user.email) if user and getattr(user, "email", None) else t("not_available")
-    )
-    _el("account-user-id").textContent = (
-        str(user.id) if user and getattr(user, "id", None) else "-"
-    )
-    _el("account-session-status").textContent = (
-        t("account_session_ready") if token else t("account_session_missing")
-    )
-
-
-def open_account_modal(event=None) -> None:
-    async def _open():
-        await _refresh_account_modal()
-        _el("account-modal").showModal()
-
-    asyncio.ensure_future(_open())
-
-
 def _close_user_menu() -> None:
     dropdown = _el("auth-user-dropdown")
     if dropdown:
@@ -151,8 +121,6 @@ async def refresh_auth_ui() -> None:
 
     user = await window.flexaryAuth.getCurrentUser()
     _set_nav_state(user)
-    if _el("account-modal").open:
-        await _refresh_account_modal()
 
 
 async def _send_magic_link() -> None:

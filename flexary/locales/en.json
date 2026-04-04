@@ -71,8 +71,6 @@
   "mismatch_warning": "\u26a0 Exercise configured with {count} executions but the superset has {rounds} rounds \u2014 edit either the exercise\u2019s configuration or the superset\u2019s number of rounds so that they match",
   "fix_mismatch": "Fix reps/rounds mismatches before downloading",
 
-  "describe_workout": "Describe workout",
-  "regenerate_confirm": "Regenerate description?",
   "yes_btn": "Yes",
   "no_btn": "No",
   "remove_exercise_confirm": "Remove {name}?",
@@ -82,8 +80,6 @@
   "error_prefix": "Error: {msg}",
   "request_failed": "Request failed: {msg}",
 
-  "workout_description_title": "Workout Description",
-  "ai_generated": "\u2746 AI generated",
   "close_btn": "Close",
 
   "download_pdf_title": "Download PDF",

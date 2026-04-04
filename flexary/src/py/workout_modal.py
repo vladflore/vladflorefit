@@ -1,18 +1,16 @@
 import asyncio
 import datetime
 import json
-from html import escape as html_escape
 from uuid import uuid4
 
 from js import window
 from pyodide.ffi import create_proxy
-from pyodide.http import pyfetch
 from pyscript import document
 
 import state
 from i18n import t
-from models import Exercise, Workout, workouts_to_json
-from workout_domain import _cleanup_supersets, _event_attr, _find_exercise, _invalidate_description
+from models import Exercise, Workout
+from workout_domain import _cleanup_supersets, _event_attr, _find_exercise
 
 
 def _make_input_group(label_text: str, input_el):
@@ -945,7 +943,6 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
             for w in state.workouts:
                 if w.id == state.active_workout:
                     w.exercises.append(ex)
-                    _invalidate_description(w)
                     break
 
         state.save_workouts()
@@ -1083,7 +1080,6 @@ def edit_exercise_in_workout(event) -> None:
         target_ex.rest_between_sets = rest_val
         target_ex.notes = notes_val
 
-        _invalidate_description(target_workout)
         state.save_workouts()
         render_workouts(state.workouts)
         overlay.remove()
@@ -1110,7 +1106,6 @@ def remove_exercise_from_workout(event) -> None:
         del w.exercises[j]
         w.breaks.pop(ex_id, None)
         _cleanup_supersets(w)
-        _invalidate_description(w)
         state.save_workouts()
         render_workouts(state.workouts)
         if not state.workouts:
@@ -1118,46 +1113,3 @@ def remove_exercise_from_workout(event) -> None:
             hide_sidebar()
 
     _show_confirm_popup(anchor, t("remove_exercise_confirm", name=ex.name), _do, confirm_label=t("yes_btn"), cancel_label=t("no_btn"))
-
-
-async def _fetch_description(workout_id) -> None:
-    modal = document.getElementById("describe-modal")
-    modal_body = document.getElementById("describe-modal-body")
-    btn = document.querySelector(f'.describe-workout-btn[data-workout-id="{workout_id}"]')
-
-    workout = next((w for w in state.workouts if w.id == workout_id), None)
-    if not workout:
-        return
-
-    if btn:
-        btn.disabled = True
-        btn.classList.add("describe-workout-btn--loading")
-
-    try:
-        body = json.loads(workouts_to_json([workout]))[0]
-        resp = await pyfetch(
-            f"{window.API_BASE}/api/describe_workout",
-            method="POST",
-            body=json.dumps(body),
-            headers={"Content-Type": "application/json"},
-        )
-        data = await resp.json()
-        if "description" in data:
-            workout.description = data["description"]
-            state.save_workouts()
-            paragraphs = "".join(
-                f"<p>{html_escape(p.strip())}</p>"
-                for p in data["description"].split("\n\n")
-                if p.strip()
-            )
-            modal_body.innerHTML = paragraphs
-        else:
-            modal_body.innerHTML = f'<p style="color:#e05252;">{html_escape(t("error_prefix", msg=data.get("error", "Unknown error")))}</p>'
-    except Exception as e:
-        modal_body.innerHTML = f'<p style="color:#e05252;">{html_escape(t("request_failed", msg=str(e)))}</p>'
-    finally:
-        if btn:
-            btn.disabled = False
-            btn.classList.remove("describe-workout-btn--loading")
-
-    modal.showModal()

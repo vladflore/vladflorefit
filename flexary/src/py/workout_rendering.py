@@ -9,7 +9,7 @@ from pyweb import pydom
 import state
 from i18n import t
 from workout_domain import _can_move, _event_attr, toggle_superset
-from workout_modal import _fetch_description, _format_break, _show_break_popup, _show_confirm_popup
+from workout_modal import _format_break, _show_break_popup, _show_confirm_popup
 from workout_persistence import remove_workout
 
 
@@ -299,30 +299,6 @@ def render_workouts(workouts: list) -> None:
         else:
             w_ul._js.classList.add("d-none")
             hint.classList.remove("d-none")
-
-        describe_btn = document.createElement("button")
-        describe_btn.className = "describe-workout-btn" + ("" if w.exercises else " d-none")
-        describe_btn.setAttribute("data-workout-id", str(w.id))
-        describe_btn.innerHTML = f'<i class="bi bi-stars"></i><span>{t("describe_workout")}</span>'
-
-        def _make_describe_handler(wid):
-            def _on_click(evt):
-                target = next((x for x in state.workouts if x.id == wid), None)
-                if target and target.description:
-                    anchor = evt.target.closest("button") or evt.target
-                    _show_confirm_popup(
-                        anchor,
-                        t("regenerate_confirm"),
-                        lambda: asyncio.ensure_future(_fetch_description(wid)),
-                        confirm_label=t("yes_btn"),
-                        cancel_label=t("no_btn"),
-                    )
-                else:
-                    asyncio.ensure_future(_fetch_description(wid))
-            return _on_click
-
-        describe_btn.addEventListener("click", create_proxy(_make_describe_handler(w.id)))
-        w_div._js.appendChild(describe_btn)
 
         ws_container.append(w_div)
 

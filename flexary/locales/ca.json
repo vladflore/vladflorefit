@@ -71,8 +71,6 @@
   "mismatch_warning": "⚠ Exercici configurat amb {count} execucions però la supersèrie té {rounds} rondes — edita la configuració de l'exercici o el nombre de rondes de la supersèrie",
   "fix_mismatch": "Corregeix les discrepàncies de sèries/rondes abans de descarregar",
 
-  "describe_workout": "Descriu entrenament",
-  "regenerate_confirm": "Regenerar la descripció?",
   "yes_btn": "Sí",
   "no_btn": "No",
   "remove_exercise_confirm": "Eliminar {name}?",
@@ -82,8 +80,6 @@
   "error_prefix": "Error: {msg}",
   "request_failed": "Sol·licitud fallida: {msg}",
 
-  "workout_description_title": "Descripció de l'Entrenament",
-  "ai_generated": "✦ Generat per IA",
   "close_btn": "Tanca",
 
   "download_pdf_title": "Descarrega PDF",

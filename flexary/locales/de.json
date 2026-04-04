@@ -71,8 +71,6 @@
   "mismatch_warning": "\u26a0 \u00dcbung mit {count} Ausf\u00fchrungen konfiguriert, aber der Supersatz hat {rounds} Runden \u2014 bearbeite die Konfiguration der \u00dcbung oder die Rundenzahl des Supersatzes",
   "fix_mismatch": "Korrigiere Satz/Runden-Diskrepanzen vor dem Download",
 
-  "describe_workout": "Training beschreiben",
-  "regenerate_confirm": "Beschreibung neu generieren?",
   "yes_btn": "Ja",
   "no_btn": "Nein",
   "remove_exercise_confirm": "{name} entfernen?",
@@ -82,8 +80,6 @@
   "error_prefix": "Fehler: {msg}",
   "request_failed": "Anfrage fehlgeschlagen: {msg}",
 
-  "workout_description_title": "Trainingsbeschreibung",
-  "ai_generated": "\u2746 KI-generiert",
   "close_btn": "Schlie\u00dfen",
 
   "download_pdf_title": "PDF herunterladen",

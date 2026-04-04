@@ -2,7 +2,6 @@ import asyncio
 import importlib
 
 from pyodide.ffi.wrappers import add_event_listener
-from pyodide.http import pyfetch
 from pyscript import document
 from pyweb import pydom
 
@@ -12,10 +11,8 @@ from js import window
 from i18n import apply_html_translations
 import state
 from auth import (
-    close_account_modal,
     close_auth_modal,
     initialize_auth_ui,
-    open_account_modal,
     open_auth_modal,
     send_magic_link,
     sign_out,
@@ -75,17 +72,6 @@ else:
     hide_sidebar()
 
 
-async def _apply_feature_flags() -> None:
-    try:
-        resp = await pyfetch(f"{window.API_BASE}/api/feature_flags")
-        flags = await resp.json()
-        if flags.get("describe_workout", False):
-            document.body.classList.add("feature-describe")
-    except Exception:
-        pass
-
-
-asyncio.ensure_future(_apply_feature_flags())
 asyncio.ensure_future(initialize_auth_ui())
 
 document.getElementById("loading").close()

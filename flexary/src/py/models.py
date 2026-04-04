@@ -104,7 +104,6 @@ class Workout:
     superset_rounds: dict = field(default_factory=dict)
     name: str = ""
     breaks: dict = field(default_factory=dict)
-    description: str = ""
 
 
 def workouts_to_json(workouts: list) -> str:
@@ -130,7 +129,6 @@ def workouts_to_json(workouts: list) -> str:
             "superset_rounds": w.superset_rounds,
             "name": w.name,
             "breaks": w.breaks,
-            "description": w.description,
         }
 
     return json.dumps([_w(w) for w in workouts])
@@ -200,7 +198,6 @@ def _parse_workout(w_data) -> Workout:
         superset_rounds=_parse_int_mapping(w_data.get("superset_rounds", {})),
         name=_coerce_str(w_data.get("name", "")),
         breaks=_parse_int_mapping(w_data.get("breaks", {})),
-        description=_coerce_str(w_data.get("description", "")),
     )
 
 

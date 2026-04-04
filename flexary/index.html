@@ -439,9 +439,6 @@
       </div>
     </footer>
 
-    <script>
-      window.API_BASE = location.port === "5500" ? "http://localhost:3000" : "";
-    </script>
     <script type="py" src="./src/py/main.py?v=20260403b" config="./pyscript.toml?v=20260403b"></script>
 
     <div
@@ -529,66 +526,6 @@
       </div>
     </dialog>
 
-    <dialog id="account-modal" class="auth-modal">
-      <div class="auth-modal-header">
-        <span class="auth-modal-title" data-i18n="account">Account</span>
-        <button
-          class="auth-modal-close"
-          type="button"
-          py-click="close_account_modal"
-          aria-label="Close"
-          data-i18n-title="close_btn"
-          title="Close"
-        >
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-      <div class="auth-modal-body">
-        <div class="account-card">
-          <div class="account-card-row">
-            <span class="account-card-label" data-i18n="email_label">Email</span>
-            <strong id="account-email">-</strong>
-          </div>
-          <div class="account-card-row">
-            <span class="account-card-label" data-i18n="account_user_id">User ID</span>
-            <code id="account-user-id">-</code>
-          </div>
-          <div class="account-card-row">
-            <span class="account-card-label" data-i18n="account_session_status">Session</span>
-            <span id="account-session-status">-</span>
-          </div>
-        </div>
-      </div>
-      <div class="auth-modal-actions">
-        <button
-          type="button"
-          class="btn btn-outline-gold"
-          py-click="close_account_modal"
-          data-i18n="close_btn"
-          data-i18n-title="close_btn"
-          title="Close"
-        >
-          Close
-        </button>
-      </div>
-    </dialog>
-
-    <dialog id="describe-modal">
-      <div class="describe-modal-header">
-        <span class="describe-modal-title">
-          <i class="bi bi-stars"></i><span data-i18n="workout_description_title">Workout Description</span>
-        </span>
-        <button class="describe-modal-close" id="describe-modal-close" aria-label="Close" data-i18n-title="close_btn" title="Close">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-      <div id="describe-modal-body" class="describe-modal-body"></div>
-      <div class="describe-modal-footer">
-        <span class="describe-modal-badge" data-i18n="ai_generated">✦ AI generated</span>
-        <button class="btn btn-outline-gold btn-sm" id="describe-modal-close-btn" data-i18n="close_btn" data-i18n-title="close_btn" title="Close">Close</button>
-      </div>
-    </dialog>
-
     <dialog id="info-modal">
       <div class="info-modal-header">
         <span class="info-modal-title" data-i18n="about_flexary">About Flexary</span>
@@ -652,10 +589,6 @@
         const pdfBwBtn = document.getElementById("pdf-bw-btn");
         pdfColorBtn.addEventListener("click", () => { pdfColorBtn.classList.add("pdf-toggle-btn--active"); pdfBwBtn.classList.remove("pdf-toggle-btn--active"); });
         pdfBwBtn.addEventListener("click", () => { pdfBwBtn.classList.add("pdf-toggle-btn--active"); pdfColorBtn.classList.remove("pdf-toggle-btn--active"); });
-        const describeModal = document.getElementById("describe-modal");
-        document.getElementById("describe-modal-close").addEventListener("click", () => describeModal.close());
-        document.getElementById("describe-modal-close-btn").addEventListener("click", () => describeModal.close());
-        describeModal.addEventListener("click", (e) => { if (e.target === describeModal) describeModal.close(); });
         const infoModal = document.getElementById("info-modal");
         document.getElementById("info-modal-close").addEventListener("click", () => infoModal.close());
         document.getElementById("info-modal-close-btn").addEventListener("click", () => infoModal.close());

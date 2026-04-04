@@ -84,11 +84,6 @@ def _do_move(exercises, j, delta) -> None:
             exercises.insert(start, exercises.pop(j))
 
 
-def _invalidate_description(workout) -> None:
-    if workout and workout.description:
-        workout.description = ""
-
-
 def toggle_superset(event) -> None:
     from workout_rendering import render_workouts
 
