@@ -1,4 +1,5 @@
 {
   "supabaseUrl": "https://your-project-id.supabase.co",
-  "supabasePublishableKey": "sb_publishable_your_publishable_key"
+  "supabasePublishableKey": "sb_publishable_your_publishable_key",
+  "enableSignIn": true
 }

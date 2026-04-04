@@ -107,10 +107,22 @@ def _set_nav_state(user) -> None:
     _close_user_menu()
 
 
+def _set_sign_in_visibility(enabled: bool) -> None:
+    nav = _el("auth-nav")
+    if nav:
+        nav.style.visibility = "" if enabled else "hidden"
+
+
 async def refresh_auth_ui() -> None:
     if not await _wait_for_bridge():
+        _set_sign_in_visibility(False)
         _set_nav_state(None)
         _set_config_warning(True)
+        return
+
+    sign_in_enabled = bool(window.flexaryAuth.isSignInEnabled())
+    _set_sign_in_visibility(sign_in_enabled)
+    if not sign_in_enabled:
         return
 
     available = bool(window.flexaryAuth.isAvailable())

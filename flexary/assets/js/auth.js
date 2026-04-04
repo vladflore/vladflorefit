@@ -4,6 +4,7 @@ const config = {
   supabaseUrl: "",
   supabasePublishableKey: "",
   available: false,
+  signInEnabled: true,
 };
 
 const state = {
@@ -21,6 +22,7 @@ function normalizeConfig(raw) {
     supabaseUrl,
     supabasePublishableKey,
     available: Boolean(supabaseUrl && supabasePublishableKey),
+    signInEnabled: source.enableSignIn !== false,
   };
 }
 
@@ -57,6 +59,7 @@ function applyConfig(nextConfig) {
   config.supabaseUrl = nextConfig.supabaseUrl;
   config.supabasePublishableKey = nextConfig.supabasePublishableKey;
   config.available = nextConfig.available;
+  config.signInEnabled = nextConfig.signInEnabled;
   state.available = nextConfig.available;
 }
 
@@ -325,6 +328,9 @@ window.flexaryAuth = {
   state,
   isAvailable() {
     return config.available;
+  },
+  isSignInEnabled() {
+    return config.signInEnabled;
   },
   getCurrentUser,
   signUp,
