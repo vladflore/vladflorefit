@@ -481,7 +481,6 @@
   transform: none;
 }
 
-/* ── Side actions (slide-in from right) ───────────────────────────────────── */
 .side-actions {
   position: fixed;
   right: 0;
@@ -777,7 +776,6 @@
   transition: border-left 0.1s;
 }
 
-
 #toggle-workout-sidebar {
   transition:
     left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -832,8 +830,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   margin-left: 360px;
 }
 
-/* ── Sidebar backdrop ────────────────────────────────────────────────────── */
-
 .sidebar-backdrop {
   position: fixed;
   inset: 0;
@@ -841,8 +837,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   backdrop-filter: blur(2px);
   z-index: 1040;
 }
-
-/* ── Mobile: bottom sheet ────────────────────────────────────────────────── */
 
 @media (max-width: 991px) {
   .workout-sidebar {
@@ -1138,8 +1132,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   color: #8a6530;
 }
 
-/* ── Custom exercise card ─────────────────────────────────────────────────── */
-
 .card-action-icon--disabled {
   opacity: 0.25;
   cursor: default !important;
@@ -1178,8 +1170,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   letter-spacing: 0.03em;
   text-transform: none;
 }
-
-/* ── Mobile filter toggle ────────────────────────────────────────────────── */
 
 .filter-toggle-btn {
   display: flex;
@@ -1251,7 +1241,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   line-height: 1;
 }
 
-/* On mobile: collapse the filter row unless toggled open */
 @media (max-width: 991px) {
   #filter-row:not(.filter-panel-open) {
     display: none !important;
@@ -1262,7 +1251,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
     margin-bottom: 0.5rem !important;
   }
 
-  /* When the bottom sheet is open: hide FABs and side actions, and float the close button above the sheet */
   body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #fab-buttons {
     display: none !important;
   }
@@ -1310,7 +1298,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   border-bottom: 2px solid #ba945e !important;
 }
 
-/* Info modal */
 #pdf-color-modal {
   background-color: #1a1a1a;
   color: #fff;
@@ -1584,8 +1571,6 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
     width: 100%;
   }
 }
-
-/* ── Navbar responsiveness ───────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
   .site-nav-inner {

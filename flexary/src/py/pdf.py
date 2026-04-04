@@ -29,7 +29,6 @@ _pdf_runtime_loading = None
 FPDF = None
 qrcode = None
 
-
 async def _ensure_pdf_runtime() -> None:
     global _pdf_runtime_ready
     global _pdf_runtime_loading
@@ -58,7 +57,6 @@ async def _ensure_pdf_runtime() -> None:
     await _pdf_runtime_loading
     _pdf_runtime_ready = True
 
-
 async def _ensure_pdf_assets() -> None:
     _PDF_ASSET_DIR.mkdir(exist_ok=True)
 
@@ -69,7 +67,6 @@ async def _ensure_pdf_assets() -> None:
         response = await pyfetch(source)
         data = await response.bytes()
         target.write_bytes(data)
-
 
 def create_pdf(black_and_white: bool = False):
     gold = (80, 80, 80) if black_and_white else (186, 148, 94)
@@ -128,14 +125,14 @@ def create_pdf(black_and_white: bool = False):
         (145, 145, 145),
         (115, 115, 115),
     ] if black_and_white else [
-        (186, 148, 94),  # gold
-        (70, 130, 180),  # steel blue
-        (80, 170, 100),  # green
-        (160, 90, 200),  # purple
-        (210, 110, 40),  # orange
-        (30, 170, 170),  # teal
-        (200, 75, 75),   # red
-        (190, 80, 145),  # pink
+        (186, 148, 94),
+        (70, 130, 180),
+        (80, 170, 100),
+        (160, 90, 200),
+        (210, 110, 40),
+        (30, 170, 170),
+        (200, 75, 75),
+        (190, 80, 145),
     ]
 
     for workout in workouts:
@@ -514,7 +511,6 @@ def create_pdf(black_and_white: bool = False):
 
     return pdf
 
-
 async def _perform_download(black_and_white: bool = False) -> None:
     await _ensure_pdf_runtime()
     await _ensure_pdf_assets()
@@ -536,12 +532,10 @@ async def _perform_download(black_and_white: bool = False) -> None:
     hidden_link.setAttribute("href", url)
     hidden_link.click()
 
-
 def download_file(*args) -> None:
     if not any(w.exercises for w in state.workouts):
         return
     document.getElementById(state.pdf_color_modal_id).showModal()
-
 
 def download_pdf_with_options(*args) -> None:
     bw = document.getElementById("pdf-bw-btn").classList.contains("pdf-toggle-btn--active")

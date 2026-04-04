@@ -3,8 +3,6 @@ body {
   min-width: 300px;
 }
 
-/* ── Site nav ────────────────────────────────────────────────────────────── */
-
 .page-title {
   color: #8a6530;
   font-weight: 700;
@@ -229,8 +227,6 @@ body {
   background-color: #a07840;
 }
 
-/* ── Site footer ─────────────────────────────────────────────────────────── */
-
 .site-footer {
   background-color: #1a1a1a;
   border-top: 1px solid #ba945e;
@@ -286,7 +282,6 @@ body {
   opacity: 0.5;
 }
 
-
 .pyscript {
   margin: 0.5rem;
 }
@@ -341,12 +336,9 @@ nav {
   }
 }
 
-
 .title {
   text-decoration: none;
-  /* text-decoration-line: none;
-  text-decoration-style: initial;
-  text-decoration-color: initial; */
+  
   font-weight: 400;
   font-size: 1.5em;
   line-height: 2em;
@@ -487,7 +479,6 @@ nav {
   min-height: 28px;
 }
 
-
 .card-action-icon:hover {
   transform: scale(1.2);
   opacity: 0.8;
@@ -507,7 +498,6 @@ nav {
   padding: 0.3em 0.5em;
 }
 
-/* Bootstrap bg-info (#0dcaf0) has insufficient contrast with white text — use dark text instead */
 .badge.bg-info {
   color: #212529;
 }
