@@ -436,6 +436,16 @@
   transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
 
+.nav-help-btn {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn-outline-gold:hover {
   background-color: #ba945e;
   color: #fff;
