@@ -209,7 +209,7 @@ async function signUp(email, password) {
     body: {
       email,
       password,
-      email_redirect_to: `${window.location.origin}${window.location.pathname}`,
+      email_redirect_to: "https://vladflore.fit/flexary/index.html",
     },
   });
 
@@ -253,7 +253,7 @@ async function signInWithMagicLink(email) {
     body: {
       email,
       create_user: true,
-      email_redirect_to: `${window.location.origin}${window.location.pathname}`,
+      email_redirect_to: "https://vladflore.fit/flexary/index.html",
     },
   });
   state.lastError = "";
