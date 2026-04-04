@@ -38,14 +38,7 @@ def _set_feedback(message: str, kind: str = "info") -> None:
     box.textContent = message
 
 
-def _set_config_warning(is_visible: bool) -> None:
-    warning = _el("auth-config-warning")
-    if warning:
-        warning.classList.toggle("d-none", not is_visible)
-
-
 def open_auth_modal(event=None) -> None:
-    _set_config_warning(not (_has_auth_bridge() and window.flexaryAuth.isAvailable()))
     _set_feedback("")
     _el("auth-modal").showModal()
 
@@ -117,7 +110,6 @@ async def refresh_auth_ui() -> None:
     if not await _wait_for_bridge():
         _set_sign_in_visibility(False)
         _set_nav_state(None)
-        _set_config_warning(True)
         return
 
     sign_in_enabled = bool(window.flexaryAuth.isSignInEnabled())
@@ -125,18 +117,12 @@ async def refresh_auth_ui() -> None:
     if not sign_in_enabled:
         return
 
-    available = bool(window.flexaryAuth.isAvailable())
-    _set_config_warning(not available)
-    if not available:
-        _set_nav_state(None)
-        return
-
     user = await window.flexaryAuth.getCurrentUser()
     _set_nav_state(user)
 
 
 async def _send_magic_link() -> None:
-    if not await _wait_for_bridge() or not window.flexaryAuth.isAvailable():
+    if not await _wait_for_bridge():
         _set_feedback(t("auth_missing_config"), "warning")
         return
 
@@ -158,7 +144,7 @@ def send_magic_link(event=None) -> None:
 
 
 async def _sign_out() -> None:
-    if not await _wait_for_bridge() or not window.flexaryAuth.isAvailable():
+    if not await _wait_for_bridge():
         return
     await window.flexaryAuth.signOut()
     await refresh_auth_ui()

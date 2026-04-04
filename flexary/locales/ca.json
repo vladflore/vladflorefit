@@ -163,7 +163,6 @@
   "auth_signup_subtitle": "Crea un compte per desar els teus entrenaments i tenir-los disponibles a tot arreu.",
   "auth_need_account": "Necessites un compte?",
   "auth_have_account": "Ja tens un compte?",
-  "auth_missing_config": "L'autenticació encara no està configurada. Afegeix l'URL i la clau publicable de Supabase.",
   "sign_in": "Inicia sessió",
   "auth_magic_title": "Inicia sessió amb enllaç màgic",
   "auth_magic_subtitle": "Introdueix el teu correu i t'enviarem un enllaç segur per completar l'accés.",
@@ -177,8 +176,5 @@
   "auth_magic_link_sent": "Enllaç màgic enviat. Revisa el correu.",
   "auth_guest_badge": "Mode convidat",
   "account": "Compte",
-  "account_user_id": "ID d'usuari",
-  "account_session_status": "Sessió",
-  "account_session_ready": "Preparada",
-  "account_session_missing": "No disponible"
+  "account_user_id": "ID d'usuari"
 }

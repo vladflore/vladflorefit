@@ -163,7 +163,6 @@
   "auth_signup_subtitle": "Erstelle ein Konto, um deine Workouts zu sichern und überall verfügbar zu haben.",
   "auth_need_account": "Noch kein Konto?",
   "auth_have_account": "Du hast bereits ein Konto?",
-  "auth_missing_config": "Authentifizierung ist noch nicht konfiguriert. Füge deine Supabase-URL und den Publishable Key hinzu.",
   "sign_in": "Anmelden",
   "auth_magic_title": "Mit Magic Link anmelden",
   "auth_magic_subtitle": "Gib deine E-Mail ein, wir senden dir einen sicheren Link zum Abschluss der Anmeldung.",
@@ -177,8 +176,5 @@
   "auth_magic_link_sent": "Magic Link gesendet. Prüfe deine E-Mails.",
   "auth_guest_badge": "Gastmodus",
   "account": "Konto",
-  "account_user_id": "Benutzer-ID",
-  "account_session_status": "Sitzung",
-  "account_session_ready": "Bereit",
-  "account_session_missing": "Nicht verfügbar"
+  "account_user_id": "Benutzer-ID"
 }

@@ -163,7 +163,6 @@
   "auth_signup_subtitle": "Create an account to keep your workouts backed up and ready anywhere.",
   "auth_need_account": "Need an account?",
   "auth_have_account": "Already have an account?",
-  "auth_missing_config": "Auth is not configured yet. Add your Supabase URL and publishable key to enable sign in.",
   "sign_in": "Sign in",
   "auth_magic_title": "Sign in with magic link",
   "auth_magic_subtitle": "Enter your email and we'll send a secure link to finish signing in.",
@@ -177,8 +176,5 @@
   "auth_magic_link_sent": "Magic link sent. Check your email.",
   "auth_guest_badge": "Guest mode",
   "account": "Account",
-  "account_user_id": "User ID",
-  "account_session_status": "Session",
-  "account_session_ready": "Ready",
-  "account_session_missing": "Not available"
+  "account_user_id": "User ID"
 }

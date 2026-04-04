@@ -1,14 +1,14 @@
-const storageKey = "flexary_auth_session";
+const SUPABASE_PROJECT_ID = "lxcggvaedovegkopdlpf";
+const SUPABASE_URL = `https://${SUPABASE_PROJECT_ID}.supabase.co`;
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_dVsyQbt6dTYT2g7L8rCa4Q_E9ux9snD";
+
+const STORAGE_KEY = "flexary_auth_session";
 
 const config = {
-  supabaseUrl: "",
-  supabasePublishableKey: "",
-  available: false,
-  signInEnabled: true,
+  signInEnabled: false,
 };
 
 const state = {
-  available: false,
   session: null,
   user: null,
   lastError: "",
@@ -16,12 +16,7 @@ const state = {
 
 function normalizeConfig(raw) {
   const source = raw && typeof raw === "object" ? raw : {};
-  const supabaseUrl = String(source.supabaseUrl || "").trim().replace(/\/+$/, "");
-  const supabasePublishableKey = String(source.supabasePublishableKey || "").trim();
   return {
-    supabaseUrl,
-    supabasePublishableKey,
-    available: Boolean(supabaseUrl && supabasePublishableKey),
     signInEnabled: source.enableSignIn !== false,
   };
 }
@@ -37,20 +32,17 @@ async function tryLoadJson(url) {
 }
 
 async function loadConfig() {
-  return normalizeConfig(await tryLoadJson("https://lxcggvaedovegkopdlpf.supabase.co/functions/v1/public-config"));
+  return normalizeConfig(
+    await tryLoadJson(`${SUPABASE_URL}/functions/v1/config`),
+  );
 }
 
 function applyConfig(nextConfig) {
-  config.supabaseUrl = nextConfig.supabaseUrl;
-  config.supabasePublishableKey = nextConfig.supabasePublishableKey;
-  config.available = nextConfig.available;
   config.signInEnabled = nextConfig.signInEnabled;
-  state.available = nextConfig.available;
 }
 
 function cloneAuthState() {
   return {
-    available: state.available,
     session: state.session ? { ...state.session } : null,
     user: state.user ? { ...state.user } : null,
     lastError: state.lastError,
@@ -68,9 +60,9 @@ function emitAuthChange() {
 function saveSession(session) {
   state.session = session || null;
   if (state.session) {
-    localStorage.setItem(storageKey, JSON.stringify(state.session));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.session));
   } else {
-    localStorage.removeItem(storageKey);
+    localStorage.removeItem(STORAGE_KEY);
   }
 }
 
@@ -81,7 +73,7 @@ function clearSession() {
 
 function loadSession() {
   try {
-    const raw = localStorage.getItem(storageKey);
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return parsed && typeof parsed === "object" ? parsed : null;
@@ -92,7 +84,7 @@ function loadSession() {
 
 function authHeaders(token) {
   const headers = {
-    apikey: config.supabasePublishableKey,
+    apikey: SUPABASE_PUBLISHABLE_KEY,
     "Content-Type": "application/json",
   };
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -100,10 +92,8 @@ function authHeaders(token) {
 }
 
 async function authRequest(path, options = {}) {
-  if (!config.available) throw new Error("Auth is not configured");
-
   const { method = "GET", body, token } = options;
-  const response = await fetch(`${config.supabaseUrl}/auth/v1${path}`, {
+  const response = await fetch(`${SUPABASE_URL}/auth/v1${path}`, {
     method,
     headers: authHeaders(token),
     body: body ? JSON.stringify(body) : undefined,
@@ -195,13 +185,12 @@ async function init() {
     };
     if (fragmentSession.access_token) {
       saveSession(fragmentSession);
-      window.history.replaceState({}, "", window.location.pathname + window.location.search);
+      window.history.replaceState(
+        {},
+        "",
+        window.location.pathname + window.location.search,
+      );
     }
-  }
-
-  if (!config.available) {
-    emitAuthChange();
-    return cloneAuthState();
   }
 
   state.session = loadSession();
@@ -211,7 +200,6 @@ async function init() {
 
 async function ensureReady() {
   await window.flexaryAuth.ready;
-  return config.available;
 }
 
 async function signUp(email, password) {
@@ -293,7 +281,6 @@ async function signOut() {
 
 async function getCurrentUser() {
   await ensureReady();
-  if (!config.available) return null;
   await refreshSessionIfNeeded();
   if (!state.user && state.session?.access_token) {
     await getUserFromToken(state.session.access_token);
@@ -303,7 +290,6 @@ async function getCurrentUser() {
 
 async function getAccessToken() {
   await ensureReady();
-  if (!config.available) return null;
   await refreshSessionIfNeeded();
   return state.session?.access_token || null;
 }
@@ -311,9 +297,6 @@ async function getAccessToken() {
 window.flexaryAuth = {
   ready: Promise.resolve().then(init),
   state,
-  isAvailable() {
-    return config.available;
-  },
   isSignInEnabled() {
     return config.signInEnabled;
   },

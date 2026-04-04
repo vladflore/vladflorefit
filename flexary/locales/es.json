@@ -163,7 +163,6 @@
   "auth_signup_subtitle": "Crea una cuenta para guardar tus entrenamientos y tenerlos disponibles en cualquier lugar.",
   "auth_need_account": "¿Necesitas una cuenta?",
   "auth_have_account": "¿Ya tienes una cuenta?",
-  "auth_missing_config": "La autenticación aún no está configurada. Añade tu URL y clave publicable de Supabase para activarla.",
   "sign_in": "Iniciar sesión",
   "auth_magic_title": "Inicia sesión con enlace mágico",
   "auth_magic_subtitle": "Introduce tu correo y te enviaremos un enlace seguro para completar el acceso.",
@@ -177,8 +176,5 @@
   "auth_magic_link_sent": "Enlace mágico enviado. Revisa tu correo.",
   "auth_guest_badge": "Modo invitado",
   "account": "Cuenta",
-  "account_user_id": "ID de usuario",
-  "account_session_status": "Sesión",
-  "account_session_ready": "Lista",
-  "account_session_missing": "No disponible"
+  "account_user_id": "ID de usuario"
 }

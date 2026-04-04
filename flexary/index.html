@@ -36,7 +36,7 @@
       type="module"
       src="https://pyscript.net/releases/2024.1.1/core.js"
     ></script>
-    <script type="module" src="./assets/js/auth.js?v=20260404a"></script>
+    <script type="module" src="./assets/js/auth.js"></script>
     <script type="module">
       document.getElementById("loading").showModal();
     </script>
@@ -430,7 +430,7 @@
     >
       <i class="bi bi-layout-sidebar-inset" style="font-size: 1.15rem"></i>
     </button>
-
+    
     <footer id="footer" class="site-footer d-none">
       <div class="site-footer-inner">
         <span class="site-footer-divider">✦</span>
@@ -439,7 +439,7 @@
       </div>
     </footer>
 
-    <script type="py" src="./src/py/main.py?v=20260403b" config="./pyscript.toml?v=20260403b"></script>
+    <script type="py" src="./src/py/main.py" config="./pyscript.toml"></script>
 
     <div
       id="gdpr-banner"
@@ -494,9 +494,6 @@
           <p class="auth-modal-subtitle" data-i18n="auth_magic_subtitle">
             Enter your email and we’ll send a secure link to finish signing in.
           </p>
-          <div id="auth-config-warning" class="auth-feedback auth-feedback--warning d-none" data-i18n="auth_missing_config">
-            Auth is not configured yet. Add your Supabase URL and publishable key to enable sign in.
-          </div>
         </div>
         <div class="auth-field-group">
           <label for="auth-email" data-i18n="email_label">Email</label>
