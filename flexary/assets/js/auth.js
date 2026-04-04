@@ -37,22 +37,7 @@ async function tryLoadJson(url) {
 }
 
 async function loadConfig() {
-  const inlineConfig = normalizeConfig(window.FLEXARY_AUTH_CONFIG);
-  if (inlineConfig.available) {
-    return inlineConfig;
-  }
-
-  const staticConfig = normalizeConfig(await tryLoadJson("./public-config.json"));
-  if (staticConfig.available) {
-    return staticConfig;
-  }
-
-  const apiConfig = normalizeConfig(await tryLoadJson("./api/public_config"));
-  if (apiConfig.available) {
-    return apiConfig;
-  }
-
-  return inlineConfig;
+  return normalizeConfig(await tryLoadJson("https://lxcggvaedovegkopdlpf.supabase.co/functions/v1/public-config"));
 }
 
 function applyConfig(nextConfig) {
