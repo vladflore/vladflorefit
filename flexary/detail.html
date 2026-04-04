@@ -36,15 +36,7 @@
       type="module"
       src="https://pyscript.net/releases/2024.1.1/core.js"
     ></script>
-    <script type="module">
-      const loading = document.getElementById("loading");
-      const container = document.getElementById("container");
-      addEventListener("py:ready", () => {
-        loading.close();
-        container.classList.remove("d-none");
-      });
-      loading.showModal();
-    </script>
+    <script type="module" src="./src/js/detail.js"></script>
     <title>Fitness Exercises Library</title>
     <link rel="icon" type="image/png" href="./assets/favicon.jpeg" />
   </head>
