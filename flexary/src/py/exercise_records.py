@@ -13,6 +13,7 @@ class ExerciseRecord(TypedDict):
     instructions: str
     key_cues: str
     alternatives: str
+    equipment: str
     is_custom: NotRequired[str]
 
 
@@ -40,6 +41,7 @@ def normalize_exercise_record(raw: dict, *, is_custom: bool | None = None) -> Ex
         "instructions": _coerce_str(raw.get("instructions")),
         "key_cues": _normalize_csv_list(raw.get("key_cues")),
         "alternatives": _normalize_csv_list(raw.get("alternatives")),
+        "equipment": _coerce_str(raw.get("equipment")),
     }
     custom_flag = _coerce_str(raw.get("is_custom")).lower()
     if is_custom is True or custom_flag == "true":

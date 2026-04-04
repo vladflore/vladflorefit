@@ -49,6 +49,17 @@ def open_exercise(event):
     window.open(f"detail.html?exercise_id={exercise_id}", "_blank")
 
 
+equipment = data.get("equipment", "").strip()
+if equipment:
+    all_equipment = equipment.split(",")
+    for i, item in enumerate(all_equipment):
+        new_item = pydom["#equipment-item"][0].clone() if i > 0 else pydom["#equipment-item"][0]
+        new_item._js.textContent = item.strip()
+        pydom["#equipment-container"][0]._js.append(new_item._js)
+    pydom["#equipment-container"][0]._js.classList.remove("d-none")
+else:
+    pydom["#equipment-not-available"][0]._js.classList.remove("d-none")
+
 yt_id = data.get("yt_video_id", "")
 iframe = pydom["#exercise-video"][0]._js
 ratio_div = iframe.closest(".ratio")
@@ -75,13 +86,21 @@ else:
 primary_muscles = data.get("primary_muscles", "")
 secondary_muscles = data.get("secondary_muscles", "")
 if primary_muscles:
-    pydom["#primary-muscles"][0]._js.textContent = t(
-        "primary_label", muscles=primary_muscles
-    )
+    pydom["#primary-muscles-section"][0]._js.classList.remove("d-none")
+    chips = pydom["#primary-muscles-chips"][0]._js
+    for muscle in primary_muscles.split(","):
+        chip = window.document.createElement("span")
+        chip.className = "muscle-chip"
+        chip.textContent = muscle.strip()
+        chips.appendChild(chip)
 if secondary_muscles:
-    pydom["#secondary-muscles"][0]._js.textContent = t(
-        "secondary_label", muscles=secondary_muscles
-    )
+    pydom["#secondary-muscles-section"][0]._js.classList.remove("d-none")
+    chips = pydom["#secondary-muscles-chips"][0]._js
+    for muscle in secondary_muscles.split(","):
+        chip = window.document.createElement("span")
+        chip.className = "muscle-chip muscle-chip--secondary"
+        chip.textContent = muscle.strip()
+        chips.appendChild(chip)
 if not primary_muscles and not secondary_muscles:
     pydom["#muscles-not-available"][0]._js.classList.remove("d-none")
 

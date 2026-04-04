@@ -46,13 +46,14 @@
       <img src="./assets/logo-nobg.webp" class="logo pulsate" alt="Loading..." />
     </dialog>
 
-    <nav class="navbar sticky-top site-nav">
-      <div
-        class="container-fluid d-flex align-items-center justify-content-between"
-      >
-        <a href="index.html">
-          <img src="./assets/logo-nobg.webp" class="logo-header" alt="Logo" />
-        </a>
+    <nav class="navbar sticky-top site-nav flex-wrap">
+      <div class="site-nav-inner">
+        <div class="site-nav-brand">
+          <a href="index.html">
+            <img src="./assets/logo-nobg.webp" class="logo-header" alt="Logo" />
+          </a>
+          <span class="site-nav-title">Flexary</span>
+        </div>
       </div>
     </nav>
 
@@ -60,8 +61,8 @@
       <main>
         <section>
           <div id="container" class="container py-3 d-none">
-            <div class="detail-sticky-header">
-              <nav aria-label="breadcrumb" class="mb-3">
+            <div class="detail-sticky-top">
+              <nav aria-label="breadcrumb" class="mb-2">
                 <ol class="breadcrumb mb-0">
                   <li class="breadcrumb-item">
                     <a href="index.html" class="back-link"><i class="bi bi-house me-1"></i><span data-i18n="library_link">Library</span></a>
@@ -71,20 +72,17 @@
                   </li>
                 </ol>
               </nav>
-              <div class="text-center mb-3">
-                <h2 id="exercise-name" class="mb-3 text-center"></h2>
-              </div>
-              <div
-                id="badges-container"
-                class="badge-group mb-4 d-flex justify-content-center"
-              >
-                <span id="category-badge" class="badge me-1"></span>
-                <span id="body-parts-badge" class="badge"></span>
+              <div class="detail-hero">
+                <h2 id="exercise-name" class="detail-exercise-name mb-3"></h2>
+                <div id="badges-container" class="badge-group justify-content-center">
+                  <span id="category-badge" class="badge me-1"></span>
+                  <span id="body-parts-badge" class="badge me-1"></span>
+                </div>
               </div>
             </div>
             <div class="row g-4">
-              <div class="col-md-7">
-                <div class="ratio ratio-16x9">
+              <div class="col-md-7 d-flex flex-column gap-4">
+                <div class="detail-video-wrap ratio ratio-16x9">
                   <iframe
                     id="exercise-video"
                     src=""
@@ -94,30 +92,45 @@
                     allowfullscreen
                   ></iframe>
                 </div>
+                <div class="row g-4">
+                  <div class="col-6">
+                    <div class="detail-card h-100">
+                      <h3 class="detail-card-title">
+                        <i class="bi bi-bullseye me-2"></i><span data-i18n="targeted_muscles_title">Targeted Muscles</span>
+                      </h3>
+                      <div id="primary-muscles-section" class="muscles-section d-none">
+                        <span class="muscles-label" data-i18n="primary_label_short">Primary</span>
+                        <div id="primary-muscles-chips" class="muscles-chips"></div>
+                      </div>
+                      <div id="secondary-muscles-section" class="muscles-section d-none">
+                        <span class="muscles-label muscles-label--secondary" data-i18n="secondary_label_short">Secondary</span>
+                        <div id="secondary-muscles-chips" class="muscles-chips"></div>
+                      </div>
+                      <span id="muscles-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="detail-card h-100">
+                      <h3 class="detail-card-title">
+                        <i class="bi bi-arrow-left-right me-2"></i><span data-i18n="alternatives_title">Alternative Exercises</span>
+                      </h3>
+                      <ul id="alt-ex-container" class="detail-list d-none">
+                        <li id="alt-ex" class="alt-ex-link" style="cursor: pointer"></li>
+                      </ul>
+                      <span id="alt-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="col-md-4">
-                <div class="detail-card h-100">
+              <div class="col-md-5 d-flex flex-column gap-4">
+                <div class="detail-card">
                   <h3 class="detail-card-title">
                     <i class="bi bi-list-ul me-2"></i><span data-i18n="instructions_title">Instructions</span>
                   </h3>
                   <p id="exercise-instructions" class="mb-0"></p>
                   <span id="instructions-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
                 </div>
-              </div>
-            </div>
-            <div class="row g-4 mt-1">
-              <div class="col-md-4">
-                <div class="detail-card h-100">
-                  <h3 class="detail-card-title">
-                    <i class="bi bi-person-arms-up me-2"></i><span data-i18n="targeted_muscles_title">Targeted Muscles</span>
-                  </h3>
-                  <p id="primary-muscles" class="mb-1 text-sm-start"></p>
-                  <p id="secondary-muscles" class="mb-0 text-sm-start" style="opacity: 0.7"></p>
-                  <span id="muscles-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="detail-card h-100">
+                <div class="detail-card">
                   <h3 class="detail-card-title">
                     <i class="bi bi-lightbulb me-2"></i><span data-i18n="key_cues_title">Key Cues</span>
                   </h3>
@@ -126,16 +139,14 @@
                   </ul>
                   <span id="cues-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
                 </div>
-              </div>
-              <div class="col-md-4">
-                <div class="detail-card h-100">
+                <div class="detail-card">
                   <h3 class="detail-card-title">
-                    <i class="bi bi-arrow-left-right me-2"></i><span data-i18n="alternatives_title">Alternative Exercises</span>
+                    <i class="bi bi-lightning-fill me-2"></i><span data-i18n="equipment_title">Equipment</span>
                   </h3>
-                  <ul id="alt-ex-container" class="detail-list d-none">
-                    <li id="alt-ex" class="alt-ex-link" style="cursor: pointer"></li>
+                  <ul id="equipment-container" class="detail-list d-none">
+                    <li id="equipment-item"></li>
                   </ul>
-                  <span id="alt-not-available" class="detail-not-available d-none" data-i18n="not_available">Not available</span>
+                  <span id="equipment-not-available" class="detail-not-available d-none" data-i18n="bodyweight">Bodyweight — no equipment needed</span>
                 </div>
               </div>
             </div>

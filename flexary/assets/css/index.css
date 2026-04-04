@@ -32,30 +32,6 @@
   text-overflow: ellipsis;
 }
 
-.site-nav-inner {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  padding: 0 0.5rem;
-}
-
-.site-nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.site-nav-title {
-  font-size: 1.15rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: #f7e4c6;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
-  padding-bottom: 2px;
-}
 
 .site-nav-tagline {
   display: none;
@@ -430,6 +406,10 @@
 }
 
 .btn-outline-gold {
+  --bs-btn-disabled-color: #ba945e;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #ba945e;
+  --bs-btn-disabled-opacity: 1;
   color: #ba945e;
   border: 1px solid #ba945e;
   background-color: transparent;
@@ -445,6 +425,7 @@
   align-items: center;
   justify-content: center;
 }
+
 
 .btn-outline-gold:hover {
   background-color: #ba945e;

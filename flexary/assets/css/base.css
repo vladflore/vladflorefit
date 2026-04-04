@@ -163,6 +163,31 @@ body {
   pointer-events: none;
 }
 
+.site-nav-inner {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.5rem;
+}
+
+.site-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.site-nav-title {
+  font-size: 1.15rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #f7e4c6;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  padding-bottom: 2px;
+}
+
 .site-nav .container-fluid {
   flex-wrap: nowrap !important;
 }
@@ -416,6 +441,13 @@ nav {
 .card-img-area {
   background-color: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
+  position: relative;
+}
+
+.equipment-badge--card {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
 }
 
 .card-img-top {
@@ -490,12 +522,12 @@ nav {
 
 .exercise-card .card-title {
   font-size: 1.05rem;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.6rem;
 }
 
 .exercise-card .badge {
-  font-size: 0.75rem;
-  padding: 0.3em 0.5em;
+  font-size: 0.65rem;
+  padding: 0.2em 0.4em;
 }
 
 .badge.bg-info {
@@ -506,4 +538,16 @@ nav {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
+}
+
+.equipment-badge {
+  background-color: transparent;
+  border: 1px solid #6c757d;
+  color: #6c757d;
+  cursor: default;
+}
+
+.equipment-badge:has(.bi-lightning-fill) {
+  border-color: #ba945e;
+  color: #ba945e;
 }

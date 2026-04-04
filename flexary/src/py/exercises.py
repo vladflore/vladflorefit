@@ -66,6 +66,15 @@ def create_card_exercise(template, exercise_data: dict):
         new_badge._js.classList.add("bg-secondary")
         badges_container_element._js.append(new_badge._js)
 
+    equipment = exercise_data.get("equipment", "").strip()
+    eq_badge = exercise_html.find("#equipment-badge")[0]
+    if equipment:
+        eq_badge._js.innerHTML = '<i class="bi bi-lightning-fill"></i>'
+        eq_badge._js.title = f"Equipment: {equipment}"
+    else:
+        eq_badge._js.innerHTML = '<i class="bi bi-person-arms-up"></i>'
+        eq_badge._js.title = "Bodyweight"
+
     yt_id = exercise_data.get("yt_video_id", "")
     video_link = exercise_html.find("#video-link")[0]
     if yt_id:
