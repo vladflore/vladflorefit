@@ -168,6 +168,15 @@ def sign_out(event=None) -> None:
     asyncio.ensure_future(_sign_out())
 
 
+def open_contact(event=None) -> None:
+    email = ""
+    if _has_auth_bridge() and window.flexaryAuth.state.user:
+        email = str(getattr(window.flexaryAuth.state.user, "email", "") or "")
+    msg = f"Hello! This is {email}. Write the rest of your message... ;)"
+    url = f"https://wa.me/+34613429288?text={window.encodeURIComponent(msg)}"
+    window.open(url, "_blank")
+
+
 def _on_auth_change(event) -> None:
     asyncio.ensure_future(refresh_auth_ui())
 

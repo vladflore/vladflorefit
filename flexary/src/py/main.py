@@ -14,6 +14,7 @@ from auth import (
     close_auth_modal,
     initialize_auth_ui,
     open_auth_modal,
+    open_contact,
     send_magic_link,
     sign_out,
     toggle_user_menu,
