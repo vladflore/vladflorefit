@@ -7,6 +7,7 @@ from pyscript import document
 from i18n import t
 
 _auth_change_proxy = None
+_click_outside_proxy = None
 
 
 def _el(el_id: str):
@@ -84,9 +85,38 @@ def open_account_modal(event=None) -> None:
     asyncio.ensure_future(_open())
 
 
+def _close_user_menu() -> None:
+    dropdown = _el("auth-user-dropdown")
+    if dropdown:
+        dropdown.classList.add("d-none")
+    button = _el("auth-user-button")
+    if button:
+        button.classList.remove("is-open")
+
+
+def toggle_user_menu(event=None) -> None:
+    dropdown = _el("auth-user-dropdown")
+    if dropdown:
+        hidden = dropdown.classList.toggle("d-none")
+        button = _el("auth-user-button")
+        if button:
+            button.classList.toggle("is-open", not hidden)
+
+
+def _handle_document_click(event) -> None:
+    dropdown = _el("auth-user-dropdown")
+    button = _el("auth-user-button")
+    if not dropdown or not button:
+        return
+    if dropdown.contains(event.target) or button.contains(event.target):
+        return
+    dropdown.classList.add("d-none")
+    button.classList.remove("is-open")
+
+
 def _set_nav_state(user) -> None:
     guest = _el("auth-guest-actions")
-    signed = _el("auth-user-actions")
+    signed = _el("auth-user-menu")
     badge = _el("auth-status-badge")
     account_btn = _el("auth-account-trigger")
 
@@ -97,12 +127,14 @@ def _set_nav_state(user) -> None:
     if is_signed_in:
         email = str(user.email) if getattr(user, "email", None) else t("account")
         badge.textContent = email
-        badge.className = "auth-status-badge"
+        badge.className = "auth-status-pill-label"
         account_btn.title = email
     else:
         badge.textContent = t("auth_guest_badge")
-        badge.className = "auth-status-badge auth-status-badge--muted"
+        badge.className = "auth-status-pill-label auth-status-badge--muted"
         account_btn.title = t("account")
+
+    _close_user_menu()
 
 
 async def refresh_auth_ui() -> None:
@@ -161,12 +193,15 @@ def _on_auth_change(event) -> None:
 
 
 async def initialize_auth_ui() -> None:
-    global _auth_change_proxy
+    global _auth_change_proxy, _click_outside_proxy
 
     if await _wait_for_bridge():
         await window.flexaryAuth.ready
         if _auth_change_proxy is None:
             _auth_change_proxy = create_proxy(_on_auth_change)
             window.addEventListener("flexary-auth-change", _auth_change_proxy)
+        if _click_outside_proxy is None:
+            _click_outside_proxy = create_proxy(_handle_document_click)
+            document.addEventListener("click", _click_outside_proxy)
 
     await refresh_auth_ui()

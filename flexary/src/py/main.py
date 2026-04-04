@@ -19,6 +19,7 @@ from auth import (
     open_auth_modal,
     send_magic_link,
     sign_out,
+    toggle_user_menu,
 )
 from filters import (
     clear_filters,

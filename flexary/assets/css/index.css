@@ -32,6 +32,163 @@
   text-overflow: ellipsis;
 }
 
+.site-nav-inner {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 0.5rem;
+}
+
+.site-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.site-nav-title {
+  font-size: 1.15rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #f7e4c6;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  padding-bottom: 2px;
+}
+
+.site-nav-tagline {
+  display: none;
+}
+
+.site-nav-search-inline {
+  display: flex;
+  justify-content: center;
+}
+
+.site-nav-search {
+  width: 100%;
+  max-width: 480px;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.site-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  justify-content: flex-end;
+}
+
+.auth-nav {
+  min-width: 200px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.auth-nav-group {
+  min-width: 200px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.auth-nav-group button {
+  min-width: 200px;
+}
+
+.lang-select-wrap-right {
+  margin-left: auto;
+}
+
+.lang-select-wrap-right .lang-select {
+  min-width: 56px;
+}
+.auth-user-menu {
+  position: relative;
+  min-width: 200px;
+}
+
+.auth-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid rgba(186, 148, 94, 0.45);
+  background: rgba(186, 148, 94, 0.12);
+  padding: 0.4rem 0.8rem;
+  color: #f5f5f5;
+  font-size: 0.85rem;
+  min-width: 140px;
+  max-width: 240px;
+  transition: background 0.2s ease, border 0.2s ease;
+}
+
+.auth-status-pill.is-open .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
+.auth-status-pill:hover,
+.auth-status-pill:focus-visible {
+  border-color: #f7e4c6;
+  background: rgba(186, 148, 94, 0.25);
+}
+
+.auth-status-pill-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.auth-user-dropdown {
+  position: absolute;
+  left: 0;
+  top: 120%;
+  background: #1c1c1c;
+  border: 1px solid rgba(186, 148, 94, 0.35);
+  border-radius: 10px;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 190px;
+  z-index: 2000;
+}
+
+.auth-dropdown-btn {
+  justify-content: flex-start;
+  font-size: 0.85rem;
+  color: #fff;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: left;
+  border-radius: 8px;
+  min-width: 200px;
+  padding: 0.35rem 0.6rem;
+  min-width: 170px;
+}
+
+.auth-dropdown-btn:hover,
+.auth-dropdown-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff3d8;
+  outline: none;
+}
+
+.nav-help {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.nav-help #nav-whatsapp {
+  margin-right: 0.8rem;
+}
 .auth-status-badge--muted {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.12);
@@ -1607,5 +1764,66 @@ body.feature-describe .describe-workout-btn.d-none {
   .auth-secondary-btn,
   .auth-modal-actions .btn {
     width: 100%;
+  }
+}
+
+/* ── Navbar responsiveness ───────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .site-nav-inner {
+    gap: 0.65rem;
+  }
+
+  .auth-nav,
+  .auth-nav-group,
+  .auth-user-menu {
+    min-width: 0;
+  }
+
+  .auth-nav-group button {
+    min-width: 0;
+  }
+
+  .auth-status-pill {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .site-nav {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  #sticky-filters {
+    top: 90px;
+  }
+
+  .site-nav-inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.5rem;
+    padding: 0 0.75rem;
+  }
+
+  .site-nav-brand {
+    display: none;
+  }
+
+  .site-nav-search-inline {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .site-nav-actions {
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: center;
+  }
+
+  .site-nav-search {
+    max-width: 100%;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.9rem;
   }
 }

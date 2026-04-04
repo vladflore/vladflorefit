@@ -50,13 +50,22 @@
     </dialog>
 
     <nav class="navbar sticky-top site-nav flex-wrap">
-      <div
-        class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2"
-      >
-        <a href="index.html">
-          <img src="./assets/logo-nobg.png" class="logo-header" alt="Logo" />
-        </a>
-        <form class="d-flex flex-grow-1 justify-content-end" role="search" style="min-width: 0">
+      <div class="site-nav-inner">
+        <div class="site-nav-brand">
+          <a href="index.html">
+            <img src="./assets/logo-nobg.png" class="logo-header" alt="Logo" />
+          </a>
+          <span class="site-nav-title">Flexary</span>
+          <button
+            class="btn btn-outline-gold btn-sm nav-help-btn"
+            data-i18n-title="about"
+            title="About"
+            py-click="show_info"
+          >
+            <i class="bi bi-info-circle"></i>
+          </button>
+        </div>
+        <form class="site-nav-search-wrap site-nav-search-inline" role="search">
           <input
             class="site-nav-search"
             type="search"
@@ -66,83 +75,85 @@
             id="search-input"
           />
         </form>
-        <div class="lang-select-wrap">
-          <select id="lang-select" class="lang-select-native visually-hidden" data-i18n-title="language" title="Language" aria-label="Language">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="ca">Català</option>
-            <option value="de">Deutsch</option>
-          </select>
-          <button
-            id="lang-select-trigger"
-            class="lang-select"
-            type="button"
-            data-i18n-title="language"
-            title="Language"
-            aria-label="Language"
-            aria-haspopup="listbox"
-            aria-expanded="false"
-          >
-            <span class="lang-select-current">
-              <span class="lang-flag lang-flag-emoji" id="lang-select-current-flag" aria-hidden="true"></span>
-              <span id="lang-select-current-label">English</span>
-            </span>
-            <i class="bi bi-chevron-down lang-select-caret" aria-hidden="true"></i>
-          </button>
-          <div id="lang-select-menu" class="lang-select-menu d-none" role="listbox" aria-label="Language options">
-            <button class="lang-select-option" type="button" data-lang-value="en" role="option">
-              <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇬🇧</span>
-              <span>English</span>
-            </button>
-            <button class="lang-select-option" type="button" data-lang-value="es" role="option">
-              <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇪🇸</span>
-              <span>Español</span>
-            </button>
-            <button class="lang-select-option" type="button" data-lang-value="ca" role="option">
-              <img class="lang-flag lang-flag-svg" src="./assets/flags/catalonia.svg" alt="" aria-hidden="true" />
-              <span>Català</span>
-            </button>
-            <button class="lang-select-option" type="button" data-lang-value="de" role="option">
-              <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇩🇪</span>
-              <span>Deutsch</span>
-            </button>
+        <div class="site-nav-actions">
+          <div class="auth-nav">
+            <div id="auth-guest-actions" class="auth-nav-group">
+              <button
+                id="auth-signin-trigger"
+                type="button"
+                class="btn btn-outline-gold btn-sm auth-nav-btn"
+                py-click="open_auth_modal"
+                data-i18n-title="sign_in"
+                title="Sign in"
+              >
+                <span data-i18n="sign_in">Sign in</span>
+              </button>
+            </div>
+            <div id="auth-user-menu" class="auth-user-menu d-none">
+              <button
+                id="auth-user-button"
+                type="button"
+                class="auth-status-pill"
+                py-click="toggle_user_menu"
+                aria-label="Account menu"
+              >
+                <span id="auth-status-badge" class="auth-status-pill-label auth-status-badge--muted" data-i18n="auth_guest_badge">Guest</span>
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div id="auth-user-dropdown" class="auth-user-dropdown d-none">
+                <button id="auth-account-trigger" class="btn auth-dropdown-btn" type="button" py-click="open_account_modal" data-i18n-title="account" title="Account">
+                  <i class="bi bi-person-circle me-1"></i><span data-i18n="account">Account</span>
+                </button>
+                <button class="btn auth-dropdown-btn" type="button" data-i18n-title="contact" title="Contact" onclick="window.open('https://wa.me/+34613429288', '_blank')">
+                  <i class="bi bi-whatsapp me-1"></i><span data-i18n="contact">Contact</span>
+                </button>
+                <button class="btn auth-dropdown-btn" type="button" py-click="sign_out" data-i18n-title="log_out" title="Log out">
+                  <i class="bi bi-box-arrow-right me-1"></i><span data-i18n="log_out">Log out</span>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="auth-nav" id="auth-nav">
-          <span id="auth-status-badge" class="auth-status-badge d-none"></span>
-          <div id="auth-guest-actions" class="auth-nav-group">
+          <div class="lang-select-wrap lang-select-wrap-right">
+            <select id="lang-select" class="lang-select-native visually-hidden" data-i18n-title="language" title="Language" aria-label="Language">
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="ca">Català</option>
+              <option value="de">Deutsch</option>
+            </select>
             <button
-              id="auth-signin-trigger"
+              id="lang-select-trigger"
+              class="lang-select lang-select-globe"
               type="button"
-              class="btn btn-outline-gold btn-sm auth-nav-btn"
-              py-click="open_auth_modal"
-              data-i18n-title="sign_in"
-              title="Sign in"
+              data-i18n-title="language"
+              title="Language"
+              aria-label="Language"
+              aria-haspopup="listbox"
+              aria-expanded="false"
             >
-              <span data-i18n="sign_in">Sign in</span>
+              <i class="bi bi-globe" aria-hidden="true"></i>
+              <span id="lang-select-current-code" class="lang-select-current-code">EN</span>
+              <i class="bi bi-chevron-down lang-select-caret" aria-hidden="true"></i>
             </button>
-          </div>
-          <div id="auth-user-actions" class="auth-nav-group d-none">
-            <button
-              id="auth-account-trigger"
-              type="button"
-              class="btn btn-outline-gold btn-sm auth-nav-btn"
-              py-click="open_account_modal"
-              data-i18n-title="account"
-              title="Account"
-            >
-              <span data-i18n="account">Account</span>
-            </button>
-            <button
-              id="auth-logout-trigger"
-              type="button"
-              class="btn btn-outline-gold btn-sm auth-nav-btn"
-              py-click="sign_out"
-              data-i18n-title="log_out"
-              title="Log out"
-            >
-              <span data-i18n="log_out">Log out</span>
-            </button>
+            <div id="lang-select-menu" class="lang-select-menu d-none" role="listbox" aria-label="Language options">
+              <button class="lang-select-option" type="button" data-lang-value="en" role="option">
+                <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇬🇧</span>
+                <span class="lang-option-code">EN</span>
+              </button>
+              <button class="lang-select-option" type="button" data-lang-value="es" role="option">
+                <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇪🇸</span>
+                <span class="lang-option-code">ES</span>
+              </button>
+              <button class="lang-select-option" type="button" data-lang-value="ca" role="option">
+                <span class="lang-flag lang-flag-svg">
+                  <img src="./assets/flags/catalonia.svg" alt="" aria-hidden="true" />
+                </span>
+                <span class="lang-option-code">CA</span>
+              </button>
+              <button class="lang-select-option" type="button" data-lang-value="de" role="option">
+                <span class="lang-flag lang-flag-emoji" aria-hidden="true">🇩🇪</span>
+                <span class="lang-option-code">DE</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -153,7 +164,6 @@
         <section>
           <div id="container" class="container py-3 d-none">
             <h2 class="mb-0 text-center page-title" data-i18n="page_title">Welcome to Flexary</h2>
-            <p class="mb-1 text-center page-subtitle" data-i18n="page_subtitle">Your Fitness Exercises Library</p>
             <div id="sticky-filters">
               <button id="filter-toggle-btn" class="filter-toggle-btn d-lg-none" type="button" aria-expanded="false" data-i18n-title="filters" title="Filters">
                 <span class="d-flex align-items-center gap-2">
@@ -728,26 +738,27 @@
         // Side actions slide-in toggle (for click/tap)
         const sideActions = document.getElementById("side-actions");
         const sideActionsHandle = document.getElementById("side-actions-handle");
-        function setSideActionsOpen(isOpen) {
-          sideActions.classList.toggle("is-open", isOpen);
-          sideActionsHandle.setAttribute("aria-expanded", String(isOpen));
-        }
-        sideActionsHandle.addEventListener("click", function (e) {
-          e.stopPropagation();
-          setSideActionsOpen(!sideActions.classList.contains("is-open"));
-        });
-        document.addEventListener("click", function (e) {
-          if (!sideActions.contains(e.target)) {
-            setSideActionsOpen(false);
+        if (sideActions && sideActionsHandle) {
+          function setSideActionsOpen(isOpen) {
+            sideActions.classList.toggle("is-open", isOpen);
+            sideActionsHandle.setAttribute("aria-expanded", String(isOpen));
           }
-        });
+          sideActionsHandle.addEventListener("click", function (e) {
+            e.stopPropagation();
+            setSideActionsOpen(!sideActions.classList.contains("is-open"));
+          });
+          document.addEventListener("click", function (e) {
+            if (!sideActions.contains(e.target)) {
+              setSideActionsOpen(false);
+            }
+          });
+        }
 
         // Language selector
         const langSelect = document.getElementById("lang-select");
         const langSelectTrigger = document.getElementById("lang-select-trigger");
         const langSelectMenu = document.getElementById("lang-select-menu");
-        const langSelectCurrentFlag = document.getElementById("lang-select-current-flag");
-        const langSelectCurrentLabel = document.getElementById("lang-select-current-label");
+        const langSelectCurrentCode = document.getElementById("lang-select-current-code");
         if (langSelect) {
           const SUPPORTED = ["en", "es", "ca", "de"];
           const LANG_META = {
@@ -763,13 +774,11 @@
             : (SUPPORTED.includes(nav) ? nav : "en");
           function renderSelectedLang(value) {
             const meta = LANG_META[value] || LANG_META.en;
-            langSelectCurrentLabel.textContent = meta.label;
-            if (meta.isSvg) {
-              langSelectCurrentFlag.className = "lang-flag lang-flag-svg";
-              langSelectCurrentFlag.innerHTML = `<img src="${meta.flag}" alt="" aria-hidden="true" />`;
-            } else {
-              langSelectCurrentFlag.className = "lang-flag lang-flag-emoji";
-              langSelectCurrentFlag.textContent = meta.flag;
+            if (langSelectCurrentCode) {
+              langSelectCurrentCode.textContent = value.toUpperCase();
+            }
+            if (langSelectTrigger) {
+              langSelectTrigger.setAttribute("aria-label", meta.label);
             }
             const options = document.querySelectorAll(".lang-select-option");
             options.forEach((option) => {
@@ -841,36 +850,5 @@
       </button>
     </div>
 
-    <div id="side-actions" class="side-actions">
-      <button
-        type="button"
-        class="side-actions-handle"
-        id="side-actions-handle"
-        aria-label="Toggle actions"
-        aria-controls="side-actions-panel"
-        aria-expanded="false"
-      >
-        <i class="bi bi-chevron-left side-actions-chevron"></i>
-      </button>
-      <div class="side-actions-panel" id="side-actions-panel">
-        <button
-          class="side-fab-btn"
-          data-i18n-title="about"
-          title="About"
-          py-click="show_info"
-        >
-          <i class="bi bi-info-lg" style="font-size: 1.3rem"></i>
-        </button>
-        <button
-          id="whatsapp-button"
-          class="side-fab-btn"
-          data-i18n-title="contact_whatsapp"
-          title="Contact via WhatsApp"
-          onclick="window.open('https://wa.me/+34613429288', '_blank')"
-        >
-          <i class="bi bi-whatsapp" style="font-size: 1.3rem"></i>
-        </button>
-      </div>
-    </div>
   </body>
 </html>
