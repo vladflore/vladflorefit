@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//vladflore.fit//Flexary//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:flexary-55784535-0712-40ef-bdc4-5d74b3ef3948@vladflore.fit
+DTSTAMP:20260405T214015Z
+DTSTART;VALUE=DATE:20260406
+DTEND;VALUE=DATE:20260406
+SUMMARY:Empuje HYR — 11 exercises
+DESCRIPTION:Superset (3 rounds):\n  • Barbell Back Squat — 12/10/8 reps
+  (Subo peso en cada serie manteniendo la profundidad. Esfuerzo 7-9.)\n  
+ • Pallof Press — 12 reps (12 repeticiones por lado.)\n\n\n  ⏱ 1m 30s
+  rest\n\nSuperset (3 rounds):\n  • Military Press — 12/10/8 reps (Esfu
+ erzo 7-9.)\n  • Trunk Rotation — 12 reps (12 repeticiones por lado.)\n
+ \n\n  ⏱ 1m 30s rest\n\nSuperset (4 rounds):\n  • Walking Lunges — 20
+ m (20 metros (10 de ida\, 10 de vuelta))\n  • Plank Dumbbell Drag — 20
+  reps (20 desplazamientos en total.)\n\n\n  ⏱ 1m 30s rest\n\nSuperset (3
+  rounds):\n  • Push-Ups — 12 reps (Hazlos en paralelas. Podemos añadi
+ r lastre para complicar el ejercicio. 1'' de pausa abajo.)\n  • Ab Wheel
+  Rollout — 10 reps (8-10 repeticiones)\n\n\n  ⏱ 1m 30s rest\n\nSuperse
+ t (6 rounds):\n  • Wall Balls — 12/10/8/6/4/2 reps\n  • Burpees — 
+ 12/10/8/6/4/2 reps\n  • Sit-Ups — 12/10/8/6/4/2 reps (Use a wall ball 
+ (6-9 kg).)
+END:VEVENT
+END:VCALENDAR
