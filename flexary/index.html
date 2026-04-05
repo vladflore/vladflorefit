@@ -187,6 +187,19 @@
                       </span>
                       <div id="exercises-per-body-part-badges-row" class="d-flex align-items-center flex-wrap gap-2"></div>
                     </div>
+                    <div class="filter-panel-divider"></div>
+                    <div class="filter-panel-row filter-panel-row--collapsible">
+                      <button id="primary-muscle-filter-toggle" class="filter-collapse-btn" aria-expanded="false" type="button">
+                        <span class="filter-label">
+                          <i class="bi bi-bullseye me-1"></i><span data-i18n="filter_primary_muscle">Primary muscle</span>
+                          <span id="pm-filter-count" class="pm-filter-count d-none"></span>
+                        </span>
+                        <i class="bi bi-chevron-down filter-collapse-chevron"></i>
+                      </button>
+                      <div id="primary-muscle-filter-body" class="filter-collapse-body">
+                        <div id="exercises-per-primary-muscle-badges-row" class="d-flex align-items-center flex-wrap gap-2 pt-2"></div>
+                      </div>
+                    </div>
                     <div class="filter-panel-row justify-content-start" style="padding: 0.5rem 0 0.1rem 0;">
                       <button
                         id="clear-filters"

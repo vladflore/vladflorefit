@@ -6,6 +6,7 @@
   "filters": "Filters",
   "filter_category": "Category",
   "filter_body_part": "Body part",
+  "filter_primary_muscle": "Primary muscle",
   "clear_filters": "Clear filters",
   "add_exercise": "Add exercise",
 

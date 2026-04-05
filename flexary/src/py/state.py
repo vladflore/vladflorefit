@@ -15,6 +15,7 @@ footer_el_id = "#footer"
 workout_sidebar_el_id = "#workout-sidebar"
 exercises_per_category_badges_row_id = "#exercises-per-category-badges-row"
 exercises_per_body_part_badges_row_id = "#exercises-per-body-part-badges-row"
+exercises_per_primary_muscle_badges_row_id = "#exercises-per-primary-muscle-badges-row"
 download_pdf_btn_id = "download-workouts"
 pdf_color_modal_id = "pdf-color-modal"
 
@@ -46,6 +47,7 @@ def save_workouts() -> None:
 
 active_category_filters: set[str] = set()
 active_body_part_filters: set[str] = set()
+active_primary_muscle_filters: set[str] = set()
 
 _filters_raw = localStorage.getItem(ls_filters_key)
 if _filters_raw:
@@ -53,6 +55,7 @@ if _filters_raw:
         _f = json.loads(_filters_raw)
         active_category_filters = set(_f.get("categories", []))
         active_body_part_filters = set(_f.get("body_parts", []))
+        active_primary_muscle_filters = set(_f.get("primary_muscles", []))
     except Exception:
         pass
 
@@ -60,6 +63,7 @@ data: list[dict] = []
 base_data: list[dict] = []
 category_count: dict[str, int] = {}
 body_parts_list: list[str] = []
+primary_muscles_list: list[str] = []
 
 custom_exercises: list[dict] = []
 _custom_raw = localStorage.getItem(ls_custom_exercises_key)

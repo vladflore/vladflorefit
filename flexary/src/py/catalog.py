@@ -9,6 +9,7 @@ _all_exercises: list[ExerciseRecord] = []
 _exercise_by_id: dict[str, ExerciseRecord] = {}
 _category_count: dict[str, int] = {}
 _body_parts_list: list[str] = []
+_primary_muscles_list: list[str] = []
 
 
 def _load_base_exercises(csv_file_path: str = "exercises.csv") -> list[ExerciseRecord]:
@@ -52,7 +53,7 @@ def initialize(custom_exercises: list[dict] | None = None) -> None:
 
 
 def refresh(custom_exercises: list[dict] | None = None) -> None:
-    global _all_exercises, _exercise_by_id, _category_count, _body_parts_list
+    global _all_exercises, _exercise_by_id, _category_count, _body_parts_list, _primary_muscles_list
 
     if _base_exercises is None:
         initialize(custom_exercises)
@@ -64,6 +65,8 @@ def refresh(custom_exercises: list[dict] | None = None) -> None:
     category_count: dict[str, int] = {}
     body_parts_seen: set[str] = set()
     body_parts_list: list[str] = []
+    primary_muscles_seen: set[str] = set()
+    primary_muscles_list: list[str] = []
 
     for exercise in merged:
         exercise_by_id[str(exercise["id"])] = exercise
@@ -76,12 +79,19 @@ def refresh(custom_exercises: list[dict] | None = None) -> None:
                 body_parts_seen.add(body_part)
                 body_parts_list.append(body_part)
 
+        for muscle in _split_csv_field(exercise.get("primary_muscles", "")):
+            if muscle not in primary_muscles_seen:
+                primary_muscles_seen.add(muscle)
+                primary_muscles_list.append(muscle)
+
     body_parts_list.sort()
+    primary_muscles_list.sort()
 
     _all_exercises = merged
     _exercise_by_id = exercise_by_id
     _category_count = category_count
     _body_parts_list = body_parts_list
+    _primary_muscles_list = primary_muscles_list
 
     try:
         import state
@@ -91,6 +101,7 @@ def refresh(custom_exercises: list[dict] | None = None) -> None:
         state.category_count.clear()
         state.category_count.update(category_count)
         state.body_parts_list[:] = body_parts_list
+        state.primary_muscles_list[:] = primary_muscles_list
     except Exception:
         pass
 
@@ -109,3 +120,7 @@ def category_count() -> dict[str, int]:
 
 def body_parts_list() -> list[str]:
     return _body_parts_list
+
+
+def primary_muscles_list() -> list[str]:
+    return _primary_muscles_list

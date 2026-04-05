@@ -66,6 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  const pmToggle = document.getElementById("primary-muscle-filter-toggle");
+  const pmBody = document.getElementById("primary-muscle-filter-body");
+  if (pmToggle && pmBody) {
+    pmToggle.addEventListener("click", function () {
+      const isOpen = pmBody.classList.toggle("is-open");
+      pmToggle.setAttribute("aria-expanded", isOpen);
+    });
+  }
+
   const gdprBanner = document.getElementById("gdpr-banner");
   const gdprAccept = document.getElementById("gdpr-accept");
   if (!localStorage.getItem("gdprAccepted")) {

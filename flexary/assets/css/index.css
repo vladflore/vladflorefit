@@ -1146,6 +1146,76 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   flex-wrap: wrap;
 }
 
+.filter-panel-row--collapsible {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.filter-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.filter-collapse-btn:focus-visible {
+  outline: 2px solid #ba945e;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.filter-collapse-chevron {
+  font-size: 0.85rem;
+  color: #ba945e;
+  transition: transform 0.2s ease;
+}
+
+#primary-muscle-filter-toggle[aria-expanded="true"] .pm-filter-count {
+  display: none !important;
+}
+
+.pm-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ba945e;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 1.2em;
+  height: 1.2em;
+  padding: 0 0.3em;
+  border-radius: 999px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.filter-collapse-btn[aria-expanded="true"] .filter-collapse-chevron {
+  transform: rotate(180deg);
+}
+
+.filter-collapse-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+  overflow: hidden;
+}
+
+.filter-collapse-body > div {
+  min-height: 0;
+  overflow: clip;
+}
+
+.filter-collapse-body.is-open {
+  grid-template-rows: 1fr;
+}
+
 .filter-panel-divider {
   height: 1px;
   background-color: #e9ecef;
@@ -1275,18 +1345,33 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   }
 }
 
-.category-filter-active {
-  border-bottom: 2px solid #ba945e !important;
+.category-filter-active,
+.body-part-filter-active,
+.primary-muscle-filter-active {
+  background-color: #ba945e !important;
+  color: #fff !important;
+}
+
+.badge-count {
+  margin-left: 0.35em;
+  font-size: 0.78em;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.badge-count::before {
+  content: "(";
+}
+
+.badge-count::after {
+  content: ")";
 }
 
 [data-category]:hover,
-[data-body-part]:hover {
+[data-body-part]:hover,
+[data-primary-muscle]:hover {
   opacity: 0.8;
   transition: opacity 0.15s;
-}
-
-.body-part-filter-active {
-  border-bottom: 2px solid #ba945e !important;
 }
 
 #pdf-color-modal {
