@@ -2,18 +2,17 @@
 
 <html lang="en">
   <head>
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-1Q5PTQ3F7Y"
-    ></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
+      if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+        var s = document.createElement("script");
+        s.async = true;
+        s.src = "https://www.googletagmanager.com/gtag/js?id=G-1Q5PTQ3F7Y";
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag("js", new Date());
+        gtag("config", "G-1Q5PTQ3F7Y");
       }
-      gtag("js", new Date());
-
-      gtag("config", "G-1Q5PTQ3F7Y");
     </script>
     <meta charset="UTF-8" />
     <meta name="description" content="Exercise details, step-by-step instructions, and video guide — Flexary exercise library." />
