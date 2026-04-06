@@ -513,25 +513,34 @@ def create_pdf(black_and_white: bool = False):
     return pdf
 
 async def _perform_download(black_and_white: bool = False) -> None:
-    await _ensure_pdf_runtime()
-    await _ensure_pdf_assets()
-    pdf = create_pdf(black_and_white=black_and_white)
-    encoded_data = pdf.output()
-    my_stream = io.BytesIO(encoded_data)
+    btn = document.getElementById(state.download_pdf_btn_id)
+    icon = btn.querySelector("i")
+    original_icon_class = icon.className
+    icon.className = "bi bi-arrow-repeat spin"
+    btn.disabled = True
+    try:
+        await _ensure_pdf_runtime()
+        await _ensure_pdf_assets()
+        pdf = create_pdf(black_and_white=black_and_white)
+        encoded_data = pdf.output()
+        my_stream = io.BytesIO(encoded_data)
 
-    js_array = Uint8Array.new(len(encoded_data))
-    js_array.assign(my_stream.getbuffer())
+        js_array = Uint8Array.new(len(encoded_data))
+        js_array.assign(my_stream.getbuffer())
 
-    file = File.new([js_array], "unused_file_name.pdf", {type: "application/pdf"})
-    url = URL.createObjectURL(file)
+        file = File.new([js_array], "unused_file_name.pdf", {type: "application/pdf"})
+        url = URL.createObjectURL(file)
 
-    hidden_link = document.createElement("a")
-    hidden_link.setAttribute(
-        "download",
-        f"workouts_{datetime.datetime.now().strftime('%d%m%Y_%H%M%S')}.pdf",
-    )
-    hidden_link.setAttribute("href", url)
-    hidden_link.click()
+        hidden_link = document.createElement("a")
+        hidden_link.setAttribute(
+            "download",
+            f"workouts_{datetime.datetime.now().strftime('%d%m%Y_%H%M%S')}.pdf",
+        )
+        hidden_link.setAttribute("href", url)
+        hidden_link.click()
+    finally:
+        icon.className = original_icon_class
+        btn.disabled = False
 
 def download_file(*args) -> None:
     if not any(w.exercises for w in state.workouts):
