@@ -9,12 +9,14 @@ category_to_badge: dict[str, str] = {
     "strength": "bg-dark",
     "conditioning": "bg-danger",
     "mobility": "bg-info",
+    "stretching": "bg-primary",
 }
 
 category_to_rgb: dict[str, tuple] = {
     "strength": (50, 50, 50),
     "conditioning": (220, 53, 69),
     "mobility": (13, 202, 240),
+    "stretching": (13, 110, 253),
 }
 
 

@@ -93,3 +93,77 @@ test.describe('Flexary UI', () => {
     await expect(page.locator(`#exercises-row [data-exercise-name="${customName}"]`)).toBeVisible();
   });
 });
+
+test.describe('Stretching category', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('https://www.googletagmanager.com/**', route => route.abort());
+    await page.goto('/index.html');
+    await page.evaluate(() => localStorage.clear());
+    await waitForLibrary(page);
+  });
+
+  test('Stretching badge appears in the filter panel with bg-primary class', async ({ page }) => {
+    const badge = page.locator('[data-category="Stretching"]');
+    await expect(badge).toBeVisible();
+    await expect(badge).toHaveClass(/bg-primary/);
+    await expect(badge).toContainText('Stretching');
+  });
+
+  test('filtering by Stretching shows only Stretching exercises', async ({ page }) => {
+    await page.locator('[data-category="Stretching"]').click();
+
+    const cards = page.locator('#exercises-row [data-exercise-id]');
+    await expect(cards.first()).toBeVisible();
+    const count = await cards.count();
+    expect(count).toBeGreaterThanOrEqual(1);
+
+    for (let i = 0; i < count; i++) {
+      await expect(cards.nth(i).locator('#category-badge')).toContainText('Stretching');
+    }
+  });
+
+  test('Stretching exercise card shows bg-primary badge', async ({ page }) => {
+    await page.locator('#search-input').fill('Quadriceps Stretch');
+    const card = page.locator('#exercises-row [data-exercise-id]').first();
+    await expect(card).toBeVisible();
+    await expect(card.locator('#category-badge')).toContainText('Stretching');
+    await expect(card.locator('#category-badge')).toHaveClass(/bg-primary/);
+  });
+
+  test('detail page shows Stretching badge for stretching exercise', async ({ page }) => {
+    await page.goto('/detail.html?exercise_id=66');
+    await expect(page.locator('#container')).toBeVisible();
+    await expect(page.locator('#exercise-name')).toHaveText('Quadriceps Stretch');
+    await expect(page.locator('#category-badge')).toContainText('Stretching');
+    await expect(page.locator('#category-badge')).toHaveClass(/bg-primary/);
+  });
+
+  test('selecting multiple category filters including Stretching does not error', async ({ page }) => {
+    await page.locator('[data-category="Strength"]').click();
+    await page.locator('[data-category="Stretching"]').click();
+
+    await expect(page.locator('#exercises-row [data-exercise-id]').first()).toBeVisible();
+    await expect(page.locator('#exercise-stats')).toBeVisible();
+  });
+
+  test('custom exercise with Stretching category shows bg-primary badge', async ({ page }) => {
+    const customName = 'Playwright Stretching Test';
+
+    await page.locator('#add-custom-exercise').click();
+    await expect(page.locator('.cm-overlay')).toBeVisible();
+
+    const modal = page.locator('.cm-overlay');
+    await modal.getByPlaceholder('e.g. Resistance Band Row').fill(customName);
+    await modal.locator('select').selectOption('Stretching');
+    await modal.getByPlaceholder('e.g. Legs, Core').fill('Full Body');
+    await modal.getByRole('button', { name: 'Next →' }).click();
+
+    await expect(modal).toContainText('Step 2 of 2');
+    await modal.getByRole('button', { name: 'Add' }).click();
+
+    const customCard = page.locator(`#exercises-row [data-exercise-name="${customName}"]`);
+    await expect(customCard).toBeVisible();
+    await expect(customCard.locator('#category-badge')).toContainText('Stretching');
+    await expect(customCard.locator('#category-badge')).toHaveClass(/bg-primary/);
+  });
+});
