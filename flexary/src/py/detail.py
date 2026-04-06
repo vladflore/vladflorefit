@@ -9,6 +9,7 @@ category_to_badge = {
     "strength": "bg-dark",
     "conditioning": "bg-danger",
     "mobility": "bg-info",
+    "stretching": "bg-primary",
 }
 
 query = URLSearchParams.new(window.location.search)

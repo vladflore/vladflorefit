@@ -53,9 +53,9 @@ _filters_raw = localStorage.getItem(ls_filters_key)
 if _filters_raw:
     try:
         _f = json.loads(_filters_raw)
-        active_category_filters = set(_f.get("categories", []))
-        active_body_part_filters = set(_f.get("body_parts", []))
-        active_primary_muscle_filters = set(_f.get("primary_muscles", []))
+        active_category_filters = set(c for c in _f.get("categories", []) if c is not None)
+        active_body_part_filters = set(c for c in _f.get("body_parts", []) if c is not None)
+        active_primary_muscle_filters = set(c for c in _f.get("primary_muscles", []) if c is not None)
     except Exception:
         pass
 

@@ -155,7 +155,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
 
     category_select = document.createElement("select")
     category_select.style.height = "30px"
-    for value in ("Strength", "Conditioning", "Mobility"):
+    for value in ("Strength", "Conditioning", "Mobility", "Stretching"):
         opt = document.createElement("option")
         opt.value = value
         opt.textContent = value
