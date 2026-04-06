@@ -106,7 +106,10 @@ def attach_primary_muscle_filter_listeners() -> None:
 
 
 def filter_by_category(event) -> None:
-    category = event.target.getAttribute("data-category")
+    el = event.target.closest("[data-category]")
+    if not el:
+        return
+    category = el.getAttribute("data-category")
     if category in state.active_category_filters:
         state.active_category_filters.discard(category)
     else:
@@ -116,7 +119,10 @@ def filter_by_category(event) -> None:
 
 
 def filter_by_body_part(event) -> None:
-    bp = event.target.getAttribute("data-body-part")
+    el = event.target.closest("[data-body-part]")
+    if not el:
+        return
+    bp = el.getAttribute("data-body-part")
     if bp in state.active_body_part_filters:
         state.active_body_part_filters.discard(bp)
     else:
@@ -126,7 +132,10 @@ def filter_by_body_part(event) -> None:
 
 
 def filter_by_primary_muscle(event) -> None:
-    muscle = event.target.getAttribute("data-primary-muscle")
+    el = event.target.closest("[data-primary-muscle]")
+    if not el:
+        return
+    muscle = el.getAttribute("data-primary-muscle")
     if muscle in state.active_primary_muscle_filters:
         state.active_primary_muscle_filters.discard(muscle)
     else:

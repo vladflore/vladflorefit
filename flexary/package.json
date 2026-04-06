@@ -2,7 +2,7 @@
   "scripts": {
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "build:css": "purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content 'index.html' 'detail.html' 'account.html' 'src/js/*.js' 'src/py/*.py' --safelist 'show' 'fade' 'collapsing' 'collapsed' 'active' 'in' 'open' --output assets/css/"
+    "build:css": "purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content 'index.html' 'detail.html' 'account.html' 'src/js/*.js' 'src/py/*.py' --safelist 'show' 'fade' 'collapsing' 'collapsed' 'active' 'in' 'open' 'bg-dark' 'bg-danger' 'bg-info' 'bg-secondary' 'bg-primary' --output assets/css/"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.25.0",

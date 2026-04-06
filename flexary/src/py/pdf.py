@@ -75,6 +75,7 @@ def create_pdf(black_and_white: bool = False):
         "strength": (60, 60, 60),
         "conditioning": (120, 120, 120),
         "mobility": (170, 170, 170),
+        "stretching": (100, 100, 100),
     } if black_and_white else category_to_rgb
 
     class PDF(FPDF):
