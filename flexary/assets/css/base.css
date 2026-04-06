@@ -189,6 +189,11 @@ body {
   color: #f7e4c6;
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
   padding-bottom: 2px;
+  text-decoration: none;
+}
+
+.site-nav-title:hover {
+  color: #f7e4c6;
 }
 
 .site-nav .container-fluid {
