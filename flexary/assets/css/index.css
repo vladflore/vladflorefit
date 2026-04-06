@@ -1,3 +1,7 @@
+.pyscript {
+  flex: 1;
+}
+
 .auth-nav {
   display: flex;
   align-items: center;
