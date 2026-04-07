@@ -13,6 +13,19 @@ from models import Exercise, Workout
 from workout_domain import _cleanup_supersets, _event_attr, _find_exercise
 
 
+def _inject_no_spinner_style():
+    _id = "no-number-spinner-style"
+    if not document.getElementById(_id):
+        style = document.createElement("style")
+        style.id = _id
+        style.textContent = (
+            "input.no-spinner::-webkit-inner-spin-button,"
+            "input.no-spinner::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}"
+            "input.no-spinner{-moz-appearance:textfield;}"
+        )
+        document.head.appendChild(style)
+
+
 def _make_input_group(label_text: str, input_el):
     group = document.createElement("div")
     group.style.display = "flex"
@@ -406,7 +419,7 @@ def _make_distance_stepper(initial_value: str = ""):
     s = initial_value.strip().lower()
     if s.endswith("km"):
         try:
-            val[0] = int(float(s[:-2]))
+            val[0] = float(s[:-2])
             unit[0] = "km"
         except ValueError:
             pass
@@ -423,14 +436,22 @@ def _make_distance_stepper(initial_value: str = ""):
 
     steps = {"m": 1, "km": 1}
 
-    display = document.createElement("span")
-    display.textContent = str(val[0])
-    display.style.minWidth = "32px"
+    _inject_no_spinner_style()
+
+    display = document.createElement("input")
+    display.type = "number"
+    display.min = "0"
+    display.value = str(val[0])
+    display.classList.add("no-spinner")
+    display.style.width = "64px"
     display.style.textAlign = "center"
     display.style.fontSize = "0.95rem"
     display.style.fontWeight = "600"
     display.style.color = "#fff"
-    display.style.userSelect = "none"
+    display.style.background = "transparent"
+    display.style.border = "1px solid rgba(255,255,255,0.3)"
+    display.style.borderRadius = "6px"
+    display.style.padding = "2px 4px"
 
     unit_btn = document.createElement("button")
     unit_btn.type = "button"
@@ -462,24 +483,36 @@ def _make_distance_stepper(initial_value: str = ""):
     def _on_minus(evt):
         evt.preventDefault()
         step = steps[unit[0]]
-        val[0] = max(0, val[0] - step)
-        display.textContent = str(val[0])
+        val[0] = round(max(0, val[0] - step), 3)
+        display.value = str(val[0])
 
     def _on_plus(evt):
         evt.preventDefault()
-        val[0] += steps[unit[0]]
-        display.textContent = str(val[0])
+        val[0] = round(val[0] + steps[unit[0]], 3)
+        display.value = str(val[0])
 
     def _on_unit_toggle(evt):
         evt.preventDefault()
-        unit[0] = "km" if unit[0] == "m" else "m"
+        if unit[0] == "m":
+            unit[0] = "km"
+            val[0] = round(val[0] / 1000, 3)
+        else:
+            unit[0] = "m"
+            val[0] = int(round(val[0] * 1000))
         unit_btn.textContent = unit[0]
-        val[0] = 0
-        display.textContent = "0"
+        display.value = str(val[0])
+
+    def _on_input(evt):
+        try:
+            v = float(display.value or "0")
+            val[0] = max(0, v) if unit[0] == "km" else max(0, int(v))
+        except (ValueError, TypeError):
+            pass
 
     minus_btn.addEventListener("click", create_proxy(_on_minus))
     plus_btn.addEventListener("click", create_proxy(_on_plus))
     unit_btn.addEventListener("click", create_proxy(_on_unit_toggle))
+    display.addEventListener("input", create_proxy(_on_input))
 
     lbl = document.createElement("label")
     lbl.textContent = t("distance_label")
