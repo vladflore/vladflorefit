@@ -743,7 +743,7 @@ def _format_break(secs: int) -> str:
     return f"{m}m {s}s" if s else f"{m}m"
 
 
-def _show_break_popup(anchor_el, workout, ex_below) -> None:
+def _show_break_popup(anchor_el, workout, ex_below, title=None) -> None:
     from workout_rendering import render_workouts
 
     existing = document.querySelector(".break-popup-overlay")
@@ -758,7 +758,7 @@ def _show_break_popup(anchor_el, workout, ex_below) -> None:
 
     title_el = document.createElement("p")
     title_el.className = "confirm-popup-message"
-    title_el.textContent = t("rest_before", name=ex_below.name)
+    title_el.textContent = title if title is not None else t("rest_before", name=ex_below.name)
     popup.appendChild(title_el)
 
     input_row = document.createElement("div")

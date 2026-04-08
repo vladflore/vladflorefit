@@ -61,6 +61,8 @@
   "time_negative_error": "Time values cannot be negative.",
 
   "rest_before": "Rest before {name}",
+  "rest_before_superset": "Rest before Superset",
+  "rest_after_superset": "Rest after Superset's Round",
   "add_rest": "add rest",
   "rest_unit": "rest",
 

@@ -88,6 +88,14 @@ def _build_ics() -> str:
                 prev_was_superset = False
                 i += 1
 
+        if exs and exs[-1].superset_id:
+            trailing_secs = workout.breaks.get(f"_after_{exs[-1].superset_id}", 0)
+            if trailing_secs:
+                _m, _s = divmod(trailing_secs, 60)
+                _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
+                exercise_lines += [""]
+                exercise_lines.append(f"  \u23f1 {_fmt} rest after superset's round")
+
         count = len(workout.exercises)
         workout_label = workout.name if workout.name else "Workout"
         summary = f"{workout_label} — {count} exercise{'s' if count != 1 else ''}"

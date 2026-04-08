@@ -61,6 +61,8 @@
   "time_negative_error": "Els valors de temps no poden ser negatius.",
 
   "rest_before": "Descans abans de {name}",
+  "rest_before_superset": "Descans abans de la Supers\u00e8rie",
+  "rest_after_superset": "Descans despr\u00e9s de la ronda de la Supers\u00e8rie",
   "add_rest": "afegeix descans",
   "rest_unit": "descans",
 

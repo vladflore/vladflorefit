@@ -65,7 +65,14 @@ def _make_superset_connector(workout, idx_above, idx_below):
     return el
 
 
-def _make_break_row(workout, ex_below):
+class _BreakSentinel:
+    """Lightweight stand-in for an Exercise used solely for trailing-break storage."""
+    def __init__(self, internal_id: str, name: str):
+        self.internal_id = internal_id
+        self.name = name
+
+
+def _make_break_row(workout, ex_below, popup_title=None):
     break_mins = workout.breaks.get(ex_below.internal_id, 0)
 
     row = document.createElement("div")
@@ -79,12 +86,12 @@ def _make_break_row(workout, ex_below):
     lbl.textContent = f"{_format_break(break_mins)} {t('rest_unit')}" if break_mins else t("add_rest")
     row.appendChild(lbl)
 
-    def _make_break_handler(w, ex_b):
+    def _make_break_handler(w, ex_b, pt):
         def _on_click(evt):
-            _show_break_popup(row, w, ex_b)
+            _show_break_popup(row, w, ex_b, title=pt)
         return _on_click
 
-    row.addEventListener("click", create_proxy(_make_break_handler(workout, ex_below)))
+    row.addEventListener("click", create_proxy(_make_break_handler(workout, ex_below, popup_title)))
     return row
 
 
@@ -238,7 +245,7 @@ def render_workouts(workouts: list) -> None:
                 if is_group_start:
                     if ei > 0:
                         w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
-                        w_ul._js.appendChild(_make_break_row(w, exercise))
+                        w_ul._js.appendChild(_make_break_row(w, exercise, popup_title=t("rest_before_superset")))
 
                     sid = exercise.superset_id
                     current_superset_wrapper = document.createElement("div")
@@ -287,6 +294,11 @@ def render_workouts(workouts: list) -> None:
                     w_ul._js.appendChild(_make_break_row(w, exercise))
                 current_superset_wrapper = None
                 w_ul.append(w_li)
+
+        if w.exercises and w.exercises[-1].superset_id:
+            last_sid = w.exercises[-1].superset_id
+            sentinel = _BreakSentinel(f"_after_{last_sid}", "Superset")
+            w_ul._js.appendChild(_make_break_row(w, sentinel, popup_title=t("rest_after_superset")))
 
         count_badge = w_div._js.querySelector(".workout-exercise-count")
         count = len(w.exercises)
