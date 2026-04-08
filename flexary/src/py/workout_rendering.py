@@ -31,18 +31,23 @@ def _make_superset_connector(workout, idx_above, idx_below):
     ex_below = workout.exercises[idx_below]
     is_linked = bool(ex_above.superset_id and ex_above.superset_id == ex_below.superset_id)
 
+    label_text = t("split_superset") if is_linked else t("add_to_superset")
+
     el = document.createElement("div")
     el.className = "superset-connector " + ("superset-connector--linked" if is_linked else "superset-connector--unlinked")
     el.setAttribute("data-workout-exercise-id", ex_below.internal_id)
     el.setAttribute("data-workout-id", str(workout.id))
-    el.title = t("split_superset") if is_linked else t("add_to_superset")
 
     icon = document.createElement("i")
     icon.className = "bi bi-scissors" if is_linked else "bi bi-link-45deg"
     icon.setAttribute("data-workout-exercise-id", ex_below.internal_id)
     icon.setAttribute("data-workout-id", str(workout.id))
 
+    lbl = document.createElement("span")
+    lbl.textContent = label_text
+
     el.appendChild(icon)
+    el.appendChild(lbl)
     el.addEventListener("click", create_proxy(toggle_superset))
 
     if not is_linked:
@@ -63,6 +68,14 @@ def _make_superset_connector(workout, idx_above, idx_below):
         el.addEventListener("mouseleave", create_proxy(_on_mouseleave))
 
     return el
+
+
+def _make_between_row(connector, break_row):
+    wrapper = document.createElement("div")
+    wrapper.className = "connector-between-row"
+    wrapper.appendChild(connector)
+    wrapper.appendChild(break_row)
+    return wrapper
 
 
 class _BreakSentinel:
@@ -246,8 +259,10 @@ def render_workouts(workouts: list) -> None:
                     if ei > 0:
                         prev_in_superset = bool(w.exercises[ei - 1].superset_id)
                         break_title = t("rest_after_superset") if prev_in_superset else t("rest_before_superset")
-                        w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
-                        w_ul._js.appendChild(_make_break_row(w, exercise, popup_title=break_title))
+                        w_ul._js.appendChild(_make_between_row(
+                            _make_superset_connector(w, ei - 1, ei),
+                            _make_break_row(w, exercise, popup_title=break_title),
+                        ))
 
                     sid = exercise.superset_id
                     current_superset_wrapper = document.createElement("div")
@@ -292,8 +307,12 @@ def render_workouts(workouts: list) -> None:
                 current_superset_wrapper.appendChild(w_li._js)
             else:
                 if ei > 0:
-                    w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
-                    w_ul._js.appendChild(_make_break_row(w, exercise))
+                    prev_in_superset = bool(w.exercises[ei - 1].superset_id)
+                    break_title = t("rest_after_superset") if prev_in_superset else None
+                    w_ul._js.appendChild(_make_between_row(
+                        _make_superset_connector(w, ei - 1, ei),
+                        _make_break_row(w, exercise, popup_title=break_title),
+                    ))
                 current_superset_wrapper = None
                 w_ul.append(w_li)
 

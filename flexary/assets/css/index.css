@@ -688,7 +688,7 @@
   padding: 0 6px;
   height: 18px;
   border-radius: 3px;
-  font-size: 0.75rem;
+  font-size: 0.62rem;
   transition: background-color 0.15s, color 0.15s;
   user-select: none;
   gap: 4px;
@@ -702,7 +702,7 @@
   height: 14px;
   cursor: pointer;
   font-size: 0.62rem;
-  color: #333;
+  color: #888;
   border-radius: 3px;
   transition: color 0.15s, background-color 0.15s;
   user-select: none;
@@ -721,30 +721,27 @@
   color: #d4aa6e;
 }
 
+.connector-between-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
 .superset-connector::before,
 .superset-connector::after {
   content: '';
-  flex: 1;
   height: 0;
 }
 
 .superset-connector--unlinked {
-  color: #484848;
-}
-
-.superset-connector--unlinked::before,
-.superset-connector--unlinked::after {
-  border-top: 1px dashed #484848;
+  color: #888;
 }
 
 .superset-connector--unlinked:hover {
   color: #ba945e;
   background-color: rgba(186, 148, 94, 0.08);
-}
-
-.superset-connector--unlinked:hover::before,
-.superset-connector--unlinked:hover::after {
-  border-color: #ba945e;
 }
 
 .superset-connector--linked {
@@ -753,17 +750,18 @@
 
 .superset-connector--linked::before,
 .superset-connector--linked::after {
+  flex: 1;
   border-top: 1px solid #ba945e;
 }
 
 .superset-connector--linked:hover {
-  color: #60a5fa;
-  background-color: rgba(96, 165, 250, 0.08);
+  color: #e05555;
+  background-color: rgba(224, 85, 85, 0.08);
 }
 
 .superset-connector--linked:hover::before,
 .superset-connector--linked:hover::after {
-  border-color: #60a5fa;
+  border-color: #e05555;
 }
 
 .list-group-item.superset-hover-stay {
