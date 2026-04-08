@@ -244,8 +244,10 @@ def render_workouts(workouts: list) -> None:
                 is_group_start = ei == 0 or w.exercises[ei - 1].superset_id != exercise.superset_id
                 if is_group_start:
                     if ei > 0:
+                        prev_in_superset = bool(w.exercises[ei - 1].superset_id)
+                        break_title = t("rest_after_superset") if prev_in_superset else t("rest_before_superset")
                         w_ul._js.appendChild(_make_superset_connector(w, ei - 1, ei))
-                        w_ul._js.appendChild(_make_break_row(w, exercise, popup_title=t("rest_before_superset")))
+                        w_ul._js.appendChild(_make_break_row(w, exercise, popup_title=break_title))
 
                     sid = exercise.superset_id
                     current_superset_wrapper = document.createElement("div")
