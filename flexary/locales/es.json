@@ -61,14 +61,16 @@
   "time_negative_error": "Los valores de tiempo no pueden ser negativos.",
 
   "rest_before": "Descanso antes de {name}",
-  "add_rest": "a\u00f1adir descanso",
+  "rest_before_superset": "Descanso antes de la Superserie",
+  "rest_after_superset": "Descanso despu\u00e9s de la ronda de la Superserie",
+  "add_rest": "a\u00f1adir tiempo de descanso",
   "rest_unit": "descanso",
 
   "superset_label": "Superserie",
   "superset_rounds": "Rondas de superserie",
   "rounds_label": "\u00d7 rondas",
   "split_superset": "Dividir superserie aqu\u00ed",
-  "add_to_superset": "A\u00f1adir a superserie",
+  "add_to_superset": "Crear superserie",
   "mismatch_warning": "\u26a0 Ejercicio configurado con {count} ejecuciones pero la superserie tiene {rounds} rondas \u2014 edita la configuraci\u00f3n del ejercicio o el n\u00famero de rondas de la superserie",
   "fix_mismatch": "Corrige las discrepancias de series/rondas antes de descargar",
 

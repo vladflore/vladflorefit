@@ -61,14 +61,16 @@
   "time_negative_error": "Zeitwerte k\u00f6nnen nicht negativ sein.",
 
   "rest_before": "Pause vor {name}",
-  "add_rest": "Pause hinzuf\u00fcgen",
+  "rest_before_superset": "Pause vor dem Supersatz",
+  "rest_after_superset": "Pause nach der Runde des Supersatzes",
+  "add_rest": "Pausenzeit hinzuf\u00fcgen",
   "rest_unit": "Pause",
 
   "superset_label": "Supersatz",
   "superset_rounds": "Supersatz-Runden",
   "rounds_label": "\u00d7 Runden",
   "split_superset": "Supersatz hier teilen",
-  "add_to_superset": "Zum Supersatz hinzuf\u00fcgen",
+  "add_to_superset": "Supersatz erstellen",
   "mismatch_warning": "\u26a0 \u00dcbung mit {count} Ausf\u00fchrungen konfiguriert, aber der Supersatz hat {rounds} Runden \u2014 bearbeite die Konfiguration der \u00dcbung oder die Rundenzahl des Supersatzes",
   "fix_mismatch": "Korrigiere Satz/Runden-Diskrepanzen vor dem Download",
 

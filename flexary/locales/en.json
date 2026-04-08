@@ -61,14 +61,16 @@
   "time_negative_error": "Time values cannot be negative.",
 
   "rest_before": "Rest before {name}",
-  "add_rest": "add rest",
+  "rest_before_superset": "Rest before Superset",
+  "rest_after_superset": "Rest after Superset's Round",
+  "add_rest": "add rest time",
   "rest_unit": "rest",
 
   "superset_label": "Superset",
   "superset_rounds": "Superset rounds",
   "rounds_label": "\u00d7 rounds",
   "split_superset": "Split superset here",
-  "add_to_superset": "Add to superset",
+  "add_to_superset": "Create superset",
   "mismatch_warning": "\u26a0 Exercise configured with {count} executions but the superset has {rounds} rounds \u2014 edit either the exercise\u2019s configuration or the superset\u2019s number of rounds so that they match",
   "fix_mismatch": "Fix reps/rounds mismatches before downloading",
 

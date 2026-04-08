@@ -479,6 +479,32 @@ def create_pdf(black_and_white: bool = False):
                         _close_ss_line(sid)
                 pdf.set_y(y_bottom)
 
+            if is_last_chunk and chunk and chunk[-1].superset_id:
+                trailing_secs = workout.breaks.get(f"_after_{chunk[-1].superset_id}", 0)
+                if trailing_secs:
+                    break_h = 6
+                    if pdf.get_y() + break_h > pdf.h - 25:
+                        for _sid in list(ss_open.keys()):
+                            _close_ss_line(_sid)
+                        workout_total_pages += 1
+                        pdf.workout_total_pages = workout_total_pages
+                        next_page_num = pdf.workout_page_num + 1
+                        pdf.add_page()
+                        pdf.workout_page_num = next_page_num
+                        render_table_header()
+                    pdf.set_x(x_start)
+                    pdf.set_font("opensans", style="I", size=7)
+                    pdf.set_text_color(120, 120, 120)
+                    pdf.set_draw_color(*gold)
+                    pdf.rect(x_start, pdf.get_y(), table_width, break_h, style="D")
+                    pdf.set_xy(x_start, pdf.get_y())
+                    _m, _s = divmod(trailing_secs, 60)
+                    _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
+                    pdf.cell(table_width, break_h, f"rest after superset's round  {_fmt}", border=0, align="C")
+                    pdf.set_y(pdf.get_y() + break_h)
+                    pdf.set_font("opensans", style="", size=10)
+                    pdf.set_text_color(0, 0, 0)
+
             if is_last_chunk:
                 field_h = 18
                 box_padding = 4

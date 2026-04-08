@@ -61,14 +61,16 @@
   "time_negative_error": "Els valors de temps no poden ser negatius.",
 
   "rest_before": "Descans abans de {name}",
-  "add_rest": "afegeix descans",
+  "rest_before_superset": "Descans abans de la Supers\u00e8rie",
+  "rest_after_superset": "Descans despr\u00e9s de la ronda de la Supers\u00e8rie",
+  "add_rest": "afegeix temps de descans",
   "rest_unit": "descans",
 
   "superset_label": "Supersèrie",
   "superset_rounds": "Rondes de supersèrie",
   "rounds_label": "× rondes",
   "split_superset": "Divideix la supersèrie aquí",
-  "add_to_superset": "Afegeix a la supersèrie",
+  "add_to_superset": "Crear supersèrie",
   "mismatch_warning": "⚠ Exercici configurat amb {count} execucions però la supersèrie té {rounds} rondes — edita la configuració de l'exercici o el nombre de rondes de la supersèrie",
   "fix_mismatch": "Corregeix les discrepàncies de sèries/rondes abans de descarregar",
 
