@@ -59,7 +59,12 @@ def _build_ics() -> str:
                     exercise_lines += ["", ""]
                 else:
                     exercise_lines += [""]
-            break_secs = workout.breaks.get(ex.internal_id, 0)
+            prev_ex = exs[i - 1] if i > 0 else None
+            if prev_ex and prev_ex.superset_id and prev_ex.superset_id != ex.superset_id:
+                break_key = f"_after_{prev_ex.superset_id}"
+            else:
+                break_key = ex.internal_id
+            break_secs = workout.breaks.get(break_key, 0)
             if break_secs:
                 _m, _s = divmod(break_secs, 60)
                 _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"

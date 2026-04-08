@@ -257,11 +257,16 @@ def render_workouts(workouts: list) -> None:
                 is_group_start = ei == 0 or w.exercises[ei - 1].superset_id != exercise.superset_id
                 if is_group_start:
                     if ei > 0:
-                        prev_in_superset = bool(w.exercises[ei - 1].superset_id)
-                        break_title = t("rest_after_superset") if prev_in_superset else t("rest_before_superset")
+                        prev_sid = w.exercises[ei - 1].superset_id
+                        if prev_sid:
+                            break_target = _BreakSentinel(f"_after_{prev_sid}", "Superset")
+                            break_title = t("rest_after_superset")
+                        else:
+                            break_target = exercise
+                            break_title = t("rest_before_superset")
                         w_ul._js.appendChild(_make_between_row(
                             _make_superset_connector(w, ei - 1, ei),
-                            _make_break_row(w, exercise, popup_title=break_title),
+                            _make_break_row(w, break_target, popup_title=break_title),
                         ))
 
                     sid = exercise.superset_id
@@ -307,11 +312,16 @@ def render_workouts(workouts: list) -> None:
                 current_superset_wrapper.appendChild(w_li._js)
             else:
                 if ei > 0:
-                    prev_in_superset = bool(w.exercises[ei - 1].superset_id)
-                    break_title = t("rest_after_superset") if prev_in_superset else None
+                    prev_sid = w.exercises[ei - 1].superset_id
+                    if prev_sid:
+                        break_target = _BreakSentinel(f"_after_{prev_sid}", "Superset")
+                        break_title = t("rest_after_superset")
+                    else:
+                        break_target = exercise
+                        break_title = None
                     w_ul._js.appendChild(_make_between_row(
                         _make_superset_connector(w, ei - 1, ei),
-                        _make_break_row(w, exercise, popup_title=break_title),
+                        _make_break_row(w, break_target, popup_title=break_title),
                     ))
                 current_superset_wrapper = None
                 w_ul.append(w_li)
