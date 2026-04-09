@@ -765,6 +765,8 @@
 
 .superset-connector--linked {
   color: #ba945e;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .superset-connector--linked:hover {
