@@ -63,6 +63,7 @@
   "rest_before": "Rest before {name}",
   "rest_before_superset": "Rest before Superset",
   "rest_after_superset": "Rest after Superset's round",
+  "rest_after_all_rounds": "Rest after all rounds",
   "add_rest": "Add rest time",
   "rest_unit": "rest",
 

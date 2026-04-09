@@ -63,6 +63,7 @@
   "rest_before": "Pause vor {name}",
   "rest_before_superset": "Pause vor dem Supersatz",
   "rest_after_superset": "Pause nach der Runde des Supersatzes",
+  "rest_after_all_rounds": "Pause nach allen Runden",
   "add_rest": "Pausenzeit hinzuf\u00fcgen",
   "rest_unit": "Pause",
 

@@ -669,6 +669,29 @@
   color: #ba945e;
 }
 
+.superset-header-sep {
+  opacity: 0.5;
+}
+
+.superset-group-header .connector-break-row {
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  height: auto;
+  padding: 0 2px;
+  gap: 3px;
+}
+
+.superset-group-header .connector-break-row:hover {
+  color: #d4aa6e;
+  background-color: rgba(186, 148, 94, 0.15);
+}
+
+.superset-group-header .connector-break-row--set {
+  color: #ba945e;
+}
+
 .superset-rounds-input {
   width: 36px;
   font-size: 0.65rem;

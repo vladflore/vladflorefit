@@ -63,6 +63,7 @@
   "rest_before": "Descans abans de {name}",
   "rest_before_superset": "Descans abans de la Supers\u00e8rie",
   "rest_after_superset": "Descans despr\u00e9s de la ronda de la Supers\u00e8rie",
+  "rest_after_all_rounds": "Descans despr\u00e9s de totes les rondes",
   "add_rest": "Afegeix temps de descans",
   "rest_unit": "descans",
 

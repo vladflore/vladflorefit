@@ -199,12 +199,12 @@ def create_pdf(black_and_white: bool = False):
                     and not inside_superset
                 )
                 if prev_ex and prev_ex.superset_id and prev_ex.superset_id != exercise.superset_id:
-                    break_key = f"_after_{prev_ex.superset_id}"
+                    break_key = f"_done_{prev_ex.superset_id}"
                 else:
                     break_key = exercise.internal_id
                 break_mins = workout.breaks.get(break_key, 0)
-                is_superset_break = break_key.startswith("_after_")
-                if is_superset_break and not is_superset_start:
+                is_superset_break = break_key.startswith("_done_")
+                if is_superset_break and not is_superset_start and not break_mins:
                     sep_h = 3
                     if pdf.get_y() + sep_h <= pdf.h - 25:
                         _sep_y = pdf.get_y()
@@ -212,7 +212,7 @@ def create_pdf(black_and_white: bool = False):
                         pdf.set_line_width(0.2)
                         pdf.line(x_start, _sep_y, x_start + table_width, _sep_y)
                         pdf.set_y(_sep_y + sep_h)
-                if break_mins and not inside_superset and not is_superset_break:
+                if break_mins and not inside_superset:
                     break_h = 6
                     if pdf.get_y() + break_h > pdf.h - 25:
                         workout_total_pages += 1
@@ -238,7 +238,7 @@ def create_pdf(black_and_white: bool = False):
                     pdf.set_text_color(0, 0, 0)
 
                 if is_superset_start:
-                    if row_num > 0 and not (break_mins and not is_superset_break):
+                    if row_num > 0 and not break_mins:
                         sep_h = 3
                         if pdf.get_y() + sep_h <= pdf.h - 25:
                             _sep_y = pdf.get_y()
@@ -267,7 +267,7 @@ def create_pdf(black_and_white: bool = False):
                     if rest_secs:
                         _m, _s = divmod(rest_secs, 60)
                         _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
-                        header_text = f"Superset — {rounds_label}  ·  rest for {_fmt} after each round"
+                        header_text = f"Superset — {rounds_label}  ·  rest for {_fmt} between rounds"
                     else:
                         header_text = f"Superset — {rounds_label}"
                     pdf.set_xy(x_start + 4, header_y + (ss_header_h - pdf.font_size) / 2)

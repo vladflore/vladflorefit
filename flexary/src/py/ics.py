@@ -61,7 +61,7 @@ def _build_ics() -> str:
                     exercise_lines += [""]
             prev_ex = exs[i - 1] if i > 0 else None
             if prev_ex and prev_ex.superset_id and prev_ex.superset_id != ex.superset_id:
-                break_key = f"_after_{prev_ex.superset_id}"
+                break_key = f"_done_{prev_ex.superset_id}"
             else:
                 break_key = ex.internal_id
             break_secs = workout.breaks.get(break_key, 0)
@@ -84,6 +84,11 @@ def _build_ics() -> str:
                     if g_ex.notes:
                         entry += f" ({g_ex.notes})"
                     exercise_lines.append(entry)
+                between_secs = workout.breaks.get(f"_after_{sid}", 0)
+                if between_secs:
+                    _m, _s = divmod(between_secs, 60)
+                    _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
+                    exercise_lines.append(f"  \u23f1 {_fmt} rest between rounds")
                 prev_was_superset = True
             else:
                 entry = f"• {ex.name} — {ex.detail_str()}"
@@ -93,13 +98,6 @@ def _build_ics() -> str:
                 prev_was_superset = False
                 i += 1
 
-        if exs and exs[-1].superset_id:
-            trailing_secs = workout.breaks.get(f"_after_{exs[-1].superset_id}", 0)
-            if trailing_secs:
-                _m, _s = divmod(trailing_secs, 60)
-                _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
-                exercise_lines += [""]
-                exercise_lines.append(f"  \u23f1 {_fmt} rest after superset's round")
 
         count = len(workout.exercises)
         workout_label = workout.name if workout.name else "Workout"
