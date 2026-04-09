@@ -116,37 +116,10 @@ def create_pdf(black_and_white: bool = False):
         return pdf
     workouts = workouts_from_json(raw)
 
-    ss_palette = [
-        (80, 80, 80),
-        (130, 130, 130),
-        (50, 50, 50),
-        (160, 160, 160),
-        (100, 100, 100),
-        (40, 40, 40),
-        (145, 145, 145),
-        (115, 115, 115),
-    ] if black_and_white else [
-        (186, 148, 94),
-        (70, 130, 180),
-        (80, 170, 100),
-        (160, 90, 200),
-        (210, 110, 40),
-        (30, 170, 170),
-        (200, 75, 75),
-        (190, 80, 145),
-    ]
-
     for workout in workouts:
         exercises = workout.exercises
         if not exercises:
             continue
-
-        ss_color_map: dict = {}
-
-        def _ss_color(sid):
-            if sid not in ss_color_map:
-                ss_color_map[sid] = ss_palette[len(ss_color_map) % len(ss_palette)]
-            return ss_color_map[sid]
 
         chunk_size = 15
         workout_total_pages = math.ceil(len(exercises) / chunk_size)
@@ -215,10 +188,6 @@ def create_pdf(black_and_white: bool = False):
 
             ss_header_h = 6
 
-            def _ss_header_fill(color):
-                r, g, b = color
-                return (int(r * 0.12 + 224), int(g * 0.12 + 224), int(b * 0.12 + 224))
-
             for row_num, exercise in enumerate(chunk):
                 prev_ex = chunk[row_num - 1] if row_num > 0 else None
                 inside_superset = (
@@ -235,7 +204,16 @@ def create_pdf(black_and_white: bool = False):
                 else:
                     break_key = exercise.internal_id
                 break_mins = workout.breaks.get(break_key, 0)
-                if break_mins and not inside_superset:
+                is_superset_break = break_key.startswith("_after_")
+                if is_superset_break and not is_superset_start:
+                    sep_h = 3
+                    if pdf.get_y() + sep_h <= pdf.h - 25:
+                        _sep_y = pdf.get_y()
+                        pdf.set_draw_color(*gold)
+                        pdf.set_line_width(0.2)
+                        pdf.line(x_start, _sep_y, x_start + table_width, _sep_y)
+                        pdf.set_y(_sep_y + sep_h)
+                if break_mins and not inside_superset and not is_superset_break:
                     break_h = 6
                     if pdf.get_y() + break_h > pdf.h - 25:
                         workout_total_pages += 1
@@ -250,22 +228,24 @@ def create_pdf(black_and_white: bool = False):
                     pdf.set_draw_color(*gold)
                     _break_y = pdf.get_y()
                     pdf.line(x_start, _break_y, x_start + table_width, _break_y)
-                    if break_key.startswith("_after_"):
-                        pdf.set_draw_color(*_ss_color(break_key[len("_after_"):]))
-                        pdf.line(x_start, _break_y, x_start + table_width, _break_y)
-                        pdf.set_draw_color(*gold)
                     pdf.line(x_start, _break_y + break_h, x_start + table_width, _break_y + break_h)
                     pdf.set_xy(x_start, _break_y)
                     _m, _s = divmod(break_mins, 60)
                     _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
-                    is_superset_break = break_key.startswith("_after_")
-                    label = f"rest {_fmt} after superset's round" if is_superset_break else f"rest  {_fmt}"
-                    pdf.cell(table_width, break_h, label, border=0, align="C")
+                    pdf.cell(table_width, break_h, f"rest  {_fmt}", border=0, align="C")
                     pdf.set_y(pdf.get_y() + break_h)
                     pdf.set_font("opensans", style="", size=10)
                     pdf.set_text_color(0, 0, 0)
 
                 if is_superset_start:
+                    if row_num > 0:
+                        sep_h = 3
+                        if pdf.get_y() + sep_h <= pdf.h - 25:
+                            _sep_y = pdf.get_y()
+                            pdf.set_draw_color(*gold)
+                            pdf.set_line_width(0.2)
+                            pdf.line(x_start, _sep_y, x_start + table_width, _sep_y)
+                            pdf.set_y(_sep_y + sep_h)
                     if pdf.get_y() + ss_header_h > pdf.h - 25:
                         workout_total_pages += 1
                         pdf.workout_total_pages = workout_total_pages
@@ -275,22 +255,25 @@ def create_pdf(black_and_white: bool = False):
                         render_table_header()
                     sid = exercise.superset_id
                     rounds = workout.superset_rounds.get(sid, 1)
-                    color = _ss_color(sid)
-                    fill_c = _ss_header_fill(color)
+                    rest_secs = workout.breaks.get(f"_after_{sid}", 0)
                     header_y = pdf.get_y()
-                    pdf.set_fill_color(*fill_c)
-                    pdf.set_draw_color(*color)
-                    pdf.set_line_width(0.4)
-                    pdf.rect(x_start, header_y, table_width, ss_header_h, style="FD")
-                    pdf.set_font("opensans", "B", 7)
-                    pdf.set_text_color(*color)
-                    rounds_label = f"{rounds} round{'s' if rounds != 1 else ''}"
-                    pdf.set_xy(x_start + 4, header_y + (ss_header_h - pdf.font_size) / 2)
-                    pdf.cell(table_width - 4, pdf.font_size, f"Superset — {rounds_label}", border=0, align="L")
-                    pdf.set_y(header_y + ss_header_h)
-                    pdf.set_text_color(0, 0, 0)
+                    pdf.set_fill_color(*header_fill)
                     pdf.set_draw_color(*gold)
                     pdf.set_line_width(0.2)
+                    pdf.rect(x_start, header_y, table_width, ss_header_h, style="FD")
+                    pdf.set_font("opensans", "B", 7)
+                    pdf.set_text_color(*gold)
+                    rounds_label = f"{rounds} round{'s' if rounds != 1 else ''}"
+                    if rest_secs:
+                        _m, _s = divmod(rest_secs, 60)
+                        _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
+                        header_text = f"Superset — {rounds_label}  ·  rest for {_fmt} after each round"
+                    else:
+                        header_text = f"Superset — {rounds_label}"
+                    pdf.set_xy(x_start + 4, header_y + (ss_header_h - pdf.font_size) / 2)
+                    pdf.cell(table_width - 4, pdf.font_size, header_text, border=0, align="L")
+                    pdf.set_y(header_y + ss_header_h)
+                    pdf.set_text_color(0, 0, 0)
 
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
@@ -317,9 +300,26 @@ def create_pdf(black_and_white: bool = False):
                 badge_pad_v = 1.5
                 badge_area_h = badge_h + badge_pad_v * 2
                 notes_line_h = 4
+                _tri_size = 2.2
+                _qr_size = 12
+                if detailed_page_link:
+                    _name_text_w = exercise_name_column_width - (_qr_size + 2) - 3 - _tri_size * 1.6 - 2 - 2
+                else:
+                    _name_text_w = exercise_name_column_width - 5
+                pdf.set_font("opensans", style="B", size=10)
+                name_line_h = 5
+                _nlines, _nlw = 1, 0
+                for _nword in exercise.name.split():
+                    _nww = pdf.get_string_width(_nword + " ")
+                    if _nlw + _nww > _name_text_w:
+                        _nlines += 1
+                        _nlw = _nww
+                    else:
+                        _nlw += _nww
+                name_h = max(_nlines * name_line_h, row_height)
+                pdf.set_font("opensans", style="", size=10)
                 if exercise.notes:
-                    _tri_size = 2.2
-                    _qr_reserved = (12 + 2) if detailed_page_link else 0
+                    _qr_reserved = (_qr_size + 2) if detailed_page_link else 0
                     _text_w = exercise_name_column_width - _qr_reserved - 3 - _tri_size * 1.6 - 2 - 2
                     pdf.set_font("opensans", style="I", size=7)
                     _lines, _line_w = 1, 0
@@ -357,7 +357,7 @@ def create_pdf(black_and_white: bool = False):
                     rest_label = ""
                     rest_row_h = 0
                 sets_content_h = row_height + rest_row_h
-                min_cell_h = badge_area_h + max(row_height + notes_h, sets_content_h) + 1
+                min_cell_h = badge_area_h + max(name_h + notes_h, sets_content_h) + 1
                 total_h = max(min_cell_h, row_count * sub_row_h)
 
                 if pdf.get_y() + total_h > pdf.h - 25:
@@ -373,14 +373,7 @@ def create_pdf(black_and_white: bool = False):
                 if row_fill:
                     pdf.set_fill_color(245, 245, 245)
 
-                if exercise.superset_id:
-                    pdf.set_draw_color(*_ss_color(exercise.superset_id))
-
                 pdf.rect(x_start, row_y, exercise_name_column_width, total_h, style=rect_style)
-                if prev_ex and prev_ex.superset_id and not exercise.superset_id:
-                    pdf.set_draw_color(*_ss_color(prev_ex.superset_id))
-                    pdf.line(x_start, row_y, x_start + table_width, row_y)
-                    pdf.set_draw_color(*gold)
 
                 pdf.set_font("opensans", style="B", size=6)
                 badge_x = x_start + 3
@@ -404,7 +397,7 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_font("opensans", style="", size=10)
                 tri_size = 2.2
                 icon_x = x_start + 3
-                icon_y_center = name_y + row_height / 2
+                icon_y_center = name_y + name_line_h / 2
                 if detailed_page_link:
                     pdf.set_fill_color(*gold)
                     pdf.polygon([
@@ -435,13 +428,13 @@ def create_pdf(black_and_white: bool = False):
 
                 pdf.set_xy(text_x, name_y)
                 pdf.set_font("opensans", style="B", size=10)
-                pdf.cell(text_w, row_height, exercise.name, border=0, align="L", link=detailed_page_link)
+                pdf.multi_cell(text_w, name_line_h, exercise.name, border=0, align="L", link=detailed_page_link)
                 pdf.set_font("opensans", style="", size=10)
 
                 if exercise.notes:
                     pdf.set_font("opensans", style="I", size=7)
                     pdf.set_text_color(100, 100, 100)
-                    pdf.set_xy(text_x, name_y + row_height)
+                    pdf.set_xy(text_x, name_y + name_h)
                     pdf.multi_cell(text_w, notes_line_h, exercise.notes, border=0, align="L")
                     pdf.set_text_color(0, 0, 0)
                     pdf.set_font("opensans", style="", size=10)
@@ -491,39 +484,9 @@ def create_pdf(black_and_white: bool = False):
                 pdf.set_font("opensans", style="", size=10)
                 y_bottom = row_y + total_h
 
-                if exercise.superset_id:
-                    pdf.set_draw_color(*gold)
 
                 pdf.set_y(y_bottom)
 
-            if is_last_chunk and chunk and chunk[-1].superset_id:
-                trailing_secs = workout.breaks.get(f"_after_{chunk[-1].superset_id}", 0)
-                if trailing_secs:
-                    break_h = 6
-                    if pdf.get_y() + break_h > pdf.h - 25:
-                        workout_total_pages += 1
-                        pdf.workout_total_pages = workout_total_pages
-                        next_page_num = pdf.workout_page_num + 1
-                        pdf.add_page()
-                        pdf.workout_page_num = next_page_num
-                        render_table_header()
-                    pdf.set_x(x_start)
-                    pdf.set_font("opensans", style="I", size=7)
-                    pdf.set_text_color(120, 120, 120)
-                    pdf.set_draw_color(*gold)
-                    _break_y = pdf.get_y()
-                    pdf.line(x_start, _break_y, x_start + table_width, _break_y)
-                    pdf.set_draw_color(*_ss_color(chunk[-1].superset_id))
-                    pdf.line(x_start, _break_y, x_start + table_width, _break_y)
-                    pdf.set_draw_color(*gold)
-                    pdf.line(x_start, _break_y + break_h, x_start + table_width, _break_y + break_h)
-                    pdf.set_xy(x_start, _break_y)
-                    _m, _s = divmod(trailing_secs, 60)
-                    _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
-                    pdf.cell(table_width, break_h, f"rest {_fmt} after superset's round", border=0, align="C")
-                    pdf.set_y(pdf.get_y() + break_h)
-                    pdf.set_font("opensans", style="", size=10)
-                    pdf.set_text_color(0, 0, 0)
 
             if is_last_chunk:
                 field_h = 18
