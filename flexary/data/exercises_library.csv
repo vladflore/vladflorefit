@@ -46,7 +46,7 @@ Hold for the desired time, keeping the ball as still as possible.","Brace your c
 32,Trap Bar Deadlift,Strength,Upper Legs,"Quadriceps,Gluteus Maximus","Hamstrings,Core,Erector Spinae",placeholder.webp,,Stand inside a trap bar with feet hip-width apart. Grip the handles and brace your core. Drive through the feet to lift the bar until hips and knees are fully extended. Lower back down under control.,"Neutral spine,Drive through midfoot,Chest up",,Trap Bar
 33,Romanian Deadlift,Strength,Upper Legs,"Hamstrings,Gluteus Maximus","Erector Spinae,Core,Adductors",placeholder.webp,,"Hold a barbell or dumbbells in front of your thighs. Slightly bend the knees and hinge at the hips to lower the weight while keeping the back straight. Lower until you feel a hamstring stretch, then extend the hips to stand.","Hinge at hips,Slight knee bend,Keep back flat",,Barbell / Dumbbells
 34,Dumbbell Squat Press,Strength,Full Body,"Quadriceps,Deltoids","Gluteus Maximus,Core,Triceps",placeholder.webp,,"Hold dumbbells at shoulder height. Perform a squat by bending hips and knees. As you stand up, press the dumbbells overhead. Lower them back to the shoulders and repeat.","Smooth transition,Core tight,Heels down",,Dumbbells
-35,Bench Dips,Strength,Arms,Triceps Brachii,"Anterior Deltoids,Pectoralis Major",placeholder.webp,,Place hands on a bench behind you with legs extended. Lower your body by bending the elbows until arms reach about 90°. Push through the hands to extend the elbows and return to the start.,"Elbows back,Chest up,Control descent",,Bench
+35,Bench Dips,Strength,Arms,Triceps Brachii,"Anterior Deltoids,Pectoralis Major",bench_dips.webp,,Place hands on a bench behind you with legs extended. Lower your body by bending the elbows until arms reach about 90°. Push through the hands to extend the elbows and return to the start.,"Elbows back,Chest up,Control descent",,Bench
 36,Single Arm Dumbbell Plank Row,Strength,Back,"Latissimus Dorsi,Rhomboids","Core,Posterior Deltoids,Biceps",placeholder.webp,,Start in a plank with one hand holding a dumbbell. Row the dumbbell toward your hip while stabilizing the torso. Lower it slowly and repeat before switching sides.,"Keep hips square,Pull elbow back,Brace core",,Dumbbell
 37,Barbell Bench Press,Strength,"Chest,Arms,Shoulders",Pectoralis Major,"Triceps,Anterior Deltoids",barbell_bench_press.webp,,Lie on a bench with feet planted and grip the bar slightly wider than shoulder-width. Lower the bar to the chest with control. Press it back up until arms are fully extended.,"Shoulder blades tight,Bar to mid-chest,Feet planted",,"Barbell, Bench"
 38,Dumbbell Bicep Curls,Strength,Arms,Biceps Brachii,"Brachialis,Brachioradialis",placeholder.webp,,Hold dumbbells at your sides with palms facing forward. Curl the weights toward your shoulders while keeping elbows close to the torso. Lower slowly to the starting position.,"Elbows still,Full range,Control lowering",,Dumbbells
@@ -107,3 +107,26 @@ When the legs are nearly extended, lean the torso slightly back and pull the han
 Finish position: legs extended, handle near the torso, elbows pulled behind the body.
 Recovery phase: extend the arms, hinge the torso forward, then bend the knees to slide back to the catch position.
 Repeat in a smooth and controlled rhythm.","Push with the legs first, Arms stay straight during the drive start, Keep chest tall, Neutral spine, Pull handle to lower ribs, Control the recovery",,Rowing Machine
+68,Gorilla Row,Strength,"Back, Core","Latissimus Dorsi, Rhomboids","Biceps, Rear Deltoids",gorilla_row.webp,,"Stand with feet wider than shoulder-width, kettlebells between your feet.
+Hinge at the hips with a flat back.
+Grip both kettlebells.
+Row one kettlebell up while stabilizing with the other.
+Alternate sides in a controlled manner.","Keep spine neutral, Avoid torso rotation, Pull elbow toward hip, Engage core throughout","46, 72",Kettlebels / Dumbbells
+69,Kettlebell Swing,Conditioning,Full Body,"Glutes, Hamstrings","Lower Back, Shoulders",kettlebell_swing.webp,,"Stand with feet shoulder-width apart, kettlebell in front.
+Hinge at hips and grab the kettlebell.
+Swing it back between your legs.
+Explosively extend hips to swing it to chest height.
+Let it fall back naturally and repeat.","Hinge\, don’t squat, Drive with hips, not arms, Keep arms relaxed, Neutral spine",,Kettlebels
+70,Battle Rope,Conditioning,Full Body,"Shoulders, Arms","Core, Legs, Upper Back",battle_rope.webp,,"Hold one rope in each hand.
+Assume athletic stance (slight squat).
+Create waves by moving arms up and down alternately or together.
+Maintain steady rhythm or perform explosive slams.","Stay low and stable, Keep core tight, Generate power from whole body, Control breathing",,Battle Ropes
+71,Lateral Raises,Strength,Shoulders,Lateral Deltoids,"Upper Traps, Supraspinatus",lateral_raises.webp,,"Stand holding dumbbells at your sides.
+Raise arms out to the sides until shoulder height.
+Lower slowly under control.","Slight bend in elbows, Lead with elbows, not hands, Avoid swinging, Keep shoulders down",,
+72,Bent-Over Row,Strength,Back,"Latissimus Dorsi, Rhomboids","Biceps, Rear Deltoids, Trapezius, Core, Erector Spinae",bent_over_row.webp,,"Stand with feet hip-width apart, holding a barbell or dumbbells.
+Hinge at the hips until torso is ~30–45° forward, keep back flat.
+Let the weight hang with arms extended.
+Pull the weight toward your lower ribcage or waist.
+Squeeze shoulder blades together at the top.
+Lower under control and repeat.","Neutral spine (no rounding), Hinge, don’t squat, Pull elbows back\, not up, Keep bar close to body, Avoid using momentum",68,Barbell / Dumbbell / Cable Machine
