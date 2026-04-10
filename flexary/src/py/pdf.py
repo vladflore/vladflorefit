@@ -114,7 +114,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
 
         def footer(self):
             self.set_y(-20)
-            self.set_font("opensans", "I", 10)
+            self.set_font("opensans", "", 10)
             self.set_draw_color(180, 180, 180)
             self.set_line_width(0.3)
             self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
@@ -264,6 +264,21 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
 
             ss_header_h = 6
 
+            def render_ss_header(text):
+                header_y = pdf.get_y()
+                pdf.set_fill_color(*header_fill)
+                pdf.set_draw_color(*gold)
+                pdf.set_line_width(0.2)
+                pdf.rect(x_start, header_y, table_width, ss_header_h, style="FD")
+                pdf.set_font("opensans", "B", 7)
+                pdf.set_text_color(*gold)
+                pdf.set_xy(x_start + 4, header_y + (ss_header_h - pdf.font_size) / 2)
+                pdf.cell(table_width - 4, pdf.font_size, text, border=0, align="L")
+                pdf.set_y(header_y + ss_header_h)
+                pdf.set_text_color(0, 0, 0)
+
+            current_ss_header_text = ""
+
             for row_num, exercise in enumerate(chunk):
                 prev_ex = chunk[row_num - 1] if row_num > 0 else None
                 inside_superset = (
@@ -299,7 +314,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                         pdf.workout_page_num = next_page_num
                         render_table_header()
                     pdf.set_x(x_start)
-                    pdf.set_font("opensans", style="I", size=7)
+                    pdf.set_font("opensans", style="", size=7)
                     pdf.set_text_color(120, 120, 120)
                     pdf.set_draw_color(*gold)
                     _break_y = pdf.get_y()
@@ -333,24 +348,14 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     sid = exercise.superset_id
                     rounds = workout.superset_rounds.get(sid, 1)
                     rest_secs = workout.breaks.get(f"_after_{sid}", 0)
-                    header_y = pdf.get_y()
-                    pdf.set_fill_color(*header_fill)
-                    pdf.set_draw_color(*gold)
-                    pdf.set_line_width(0.2)
-                    pdf.rect(x_start, header_y, table_width, ss_header_h, style="FD")
-                    pdf.set_font("opensans", "B", 7)
-                    pdf.set_text_color(*gold)
                     rounds_label = f"{rounds} round{'s' if rounds != 1 else ''}"
                     if rest_secs:
                         _m, _s = divmod(rest_secs, 60)
                         _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
-                        header_text = f"Superset — {rounds_label}  ·  rest for {_fmt} between rounds"
+                        current_ss_header_text = f"Superset — {rounds_label}  ·  rest for {_fmt} between rounds"
                     else:
-                        header_text = f"Superset — {rounds_label}"
-                    pdf.set_xy(x_start + 4, header_y + (ss_header_h - pdf.font_size) / 2)
-                    pdf.cell(table_width - 4, pdf.font_size, header_text, border=0, align="L")
-                    pdf.set_y(header_y + ss_header_h)
-                    pdf.set_text_color(0, 0, 0)
+                        current_ss_header_text = f"Superset — {rounds_label}"
+                    render_ss_header(current_ss_header_text)
 
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
@@ -368,9 +373,6 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     sets = int(exercise.sets)
                 except Exception:
                     sets = 1
-                row_count = workout.superset_rounds.get(exercise.superset_id, 1) if exercise.superset_id else sets
-
-                sub_row_h = 7
                 categories = [c.strip() for c in ex_data["category"].split(",")] if ex_data else []
 
                 badge_h = 4
@@ -398,7 +400,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                 if exercise.notes:
                     _qr_reserved = (_qr_size + 2) if detailed_page_link else 0
                     _text_w = exercise_name_column_width - _qr_reserved - 3 - _tri_size * 1.6 - 2 - 2
-                    pdf.set_font("opensans", style="I", size=7)
+                    pdf.set_font("opensans", style="", size=7)
                     _lines, _line_w = 1, 0
                     for _word in exercise.notes.split():
                         _word_w = pdf.get_string_width(_word + " ")
@@ -419,7 +421,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     _fmt_r = (f"{_m_r}m {_s_r}s" if _s_r else f"{_m_r}m") if _m_r else f"{_s_r}s"
                     rest_label = f"{_fmt_r} rest between sets"
                     _rest_line_h = 3.5
-                    pdf.set_font("opensans", "I", 5.5)
+                    pdf.set_font("opensans", "", 5.5)
                     _rl_count, _rl_w = 1, 0
                     for _rw in rest_label.split():
                         _rww = pdf.get_string_width(_rw + " ")
@@ -435,7 +437,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     rest_row_h = 0
                 sets_content_h = row_height + rest_row_h
                 min_cell_h = badge_area_h + max(name_h + notes_h, sets_content_h) + 1
-                total_h = max(min_cell_h, row_count * sub_row_h)
+                total_h = min_cell_h
 
                 if pdf.get_y() + total_h > pdf.h - 25:
                     workout_total_pages += 1
@@ -444,6 +446,8 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     pdf.add_page()
                     pdf.workout_page_num = next_page_num
                     render_table_header()
+                    if inside_superset and current_ss_header_text:
+                        render_ss_header(current_ss_header_text + "  (cont.)")
 
                 row_y = pdf.get_y()
                 rect_style = "FD" if row_fill else "D"
@@ -528,7 +532,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     y_sets_block = row_y + (total_h - sets_content_h) / 2
                     pdf.set_xy(sets_x, y_sets_block)
                     pdf.cell(sets_column_width, row_height, sets_label, border=0, align="C")
-                    pdf.set_font("opensans", "I", 5.5)
+                    pdf.set_font("opensans", "", 5.5)
                     pdf.set_text_color(150, 150, 150)
                     pdf.set_xy(sets_x, y_sets_block + row_height)
                     pdf.multi_cell(sets_column_width, _rest_line_h, rest_label, border=0, align="C")
