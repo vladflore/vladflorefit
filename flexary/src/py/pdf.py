@@ -304,13 +304,17 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     exercise.superset_id
                     and not inside_superset
                 )
-                if prev_ex and prev_ex.superset_id and prev_ex.superset_id != exercise.superset_id:
-                    break_key = f"_done_{prev_ex.superset_id}"
+                follows_superset = (
+                    prev_ex is not None
+                    and prev_ex.superset_id
+                    and not exercise.superset_id
+                )
+                if is_superset_start and (not prev_ex or not prev_ex.superset_id):
+                    break_key = f"_before_{exercise.superset_id}"
                 else:
                     break_key = exercise.internal_id
                 break_mins = workout.breaks.get(break_key, 0)
-                is_superset_break = break_key.startswith("_done_")
-                if is_superset_break and not is_superset_start and not break_mins:
+                if follows_superset and not break_mins:
                     sep_h = 3
                     if pdf.get_y() + sep_h <= pdf.h - 25:
                         _sep_y = pdf.get_y()
@@ -318,7 +322,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                         pdf.set_line_width(0.2)
                         pdf.line(x_start, _sep_y, x_start + table_width, _sep_y)
                         pdf.set_y(_sep_y + sep_h)
-                if break_mins and not inside_superset:
+                if break_mins and not inside_superset and not (row_num == 0 and is_first_chunk):
                     break_h = 6
                     if pdf.get_y() + break_h > pdf.h - 25:
                         workout_total_pages += 1

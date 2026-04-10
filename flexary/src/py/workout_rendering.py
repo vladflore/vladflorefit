@@ -260,15 +260,15 @@ def render_workouts(workouts: list) -> None:
                     if ei > 0:
                         prev_sid = w.exercises[ei - 1].superset_id
                         if prev_sid:
-                            done_sentinel = _BreakSentinel(f"_done_{prev_sid}", "Superset")
                             w_ul._js.appendChild(_make_between_row(
                                 _make_superset_connector(w, ei - 1, ei),
-                                _make_break_row(w, done_sentinel, popup_title=t("rest_after_all_rounds")),
+                                _make_break_row(w, exercise, popup_title=None),
                             ))
                         else:
+                            before_sentinel = _BreakSentinel(f"_before_{exercise.superset_id}", "Superset")
                             w_ul._js.appendChild(_make_between_row(
                                 _make_superset_connector(w, ei - 1, ei),
-                                _make_break_row(w, exercise, popup_title=t("rest_before_superset")),
+                                _make_break_row(w, before_sentinel, popup_title=t("rest_before_superset")),
                             ))
 
                     sid = exercise.superset_id
@@ -326,10 +326,9 @@ def render_workouts(workouts: list) -> None:
                 if ei > 0:
                     prev_sid = w.exercises[ei - 1].superset_id
                     if prev_sid:
-                        done_sentinel = _BreakSentinel(f"_done_{prev_sid}", "Superset")
                         w_ul._js.appendChild(_make_between_row(
                             _make_superset_connector(w, ei - 1, ei),
-                            _make_break_row(w, done_sentinel, popup_title=t("rest_after_all_rounds")),
+                            _make_break_row(w, exercise, popup_title=None),
                         ))
                     else:
                         w_ul._js.appendChild(_make_between_row(

@@ -210,6 +210,25 @@ def _parse_workouts_payload(raw: str):
         return ast.literal_eval(raw)
 
 
+def _migrate_done_breaks(workout: "Workout") -> None:
+    """Migrate _done_{sid} break keys to the internal_id of the first exercise after that superset."""
+    to_delete = []
+    to_add = {}
+    exs = workout.exercises
+    for i, ex in enumerate(exs):
+        if ex.superset_id:
+            continue
+        prev = exs[i - 1] if i > 0 else None
+        if prev and prev.superset_id:
+            done_key = f"_done_{prev.superset_id}"
+            if done_key in workout.breaks:
+                to_add[ex.internal_id] = workout.breaks[done_key]
+                to_delete.append(done_key)
+    for k in to_delete:
+        del workout.breaks[k]
+    workout.breaks.update(to_add)
+
+
 def workouts_from_json(raw: str) -> list:
     try:
         payload = _parse_workouts_payload(raw)
@@ -224,6 +243,9 @@ def workouts_from_json(raw: str) -> list:
         if not isinstance(data, list):
             return []
 
-        return [_parse_workout(w_data) for w_data in data]
+        result = [_parse_workout(w_data) for w_data in data]
+        for w in result:
+            _migrate_done_breaks(w)
+        return result
     except Exception:
         return []
