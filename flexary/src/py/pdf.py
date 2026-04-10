@@ -68,7 +68,7 @@ async def _ensure_pdf_assets() -> None:
         data = await response.bytes()
         target.write_bytes(data)
 
-def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = None):
+def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = None, custom_site_url: str | None = None):
     gold = (80, 80, 80) if black_and_white else (186, 148, 94)
     header_fill = (220, 220, 220) if black_and_white else (240, 228, 208)
     cat_colors = {
@@ -82,8 +82,13 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
     _logo_y = 3
     _url_font_pt = 6
     _url_h_mm = _url_font_pt * 25.4 / 72
-    _site_url = "vladflore.fit"
-    _site_link = "https://vladflore.fit"
+    if custom_site_url and custom_site_url.strip():
+        _raw = custom_site_url.strip()
+        _site_link = _raw if "://" in _raw else f"https://{_raw}"
+        _site_url = _raw.split("://", 1)[-1]
+    else:
+        _site_url = "vladflore.fit"
+        _site_link = "https://vladflore.fit"
 
     def _draw_logo_block(pdf_obj, logo_x, logo_y, logo_bytes):
         if logo_bytes is not None:
@@ -620,6 +625,8 @@ async def _perform_download(black_and_white: bool = False) -> None:
     # Read logo bytes while the modal is still open and the file input is populated.
     # The modal's JS close event resets the input, so we must read before closing.
     custom_logo_bytes = await _read_logo_bytes()
+    link_input = document.getElementById("pdf-link-input")
+    custom_site_url = link_input.value.strip() if link_input and link_input.value else None
     document.getElementById(state.pdf_color_modal_id).close()
 
     btn = document.getElementById(state.download_pdf_btn_id)
@@ -630,7 +637,7 @@ async def _perform_download(black_and_white: bool = False) -> None:
     try:
         await _ensure_pdf_runtime()
         await _ensure_pdf_assets()
-        pdf = create_pdf(black_and_white=black_and_white, custom_logo_bytes=custom_logo_bytes)
+        pdf = create_pdf(black_and_white=black_and_white, custom_logo_bytes=custom_logo_bytes, custom_site_url=custom_site_url)
         encoded_data = pdf.output()
         my_stream = io.BytesIO(encoded_data)
 

@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filename) filename.textContent = "";
     const clearBtn = document.getElementById("pdf-logo-clear");
     if (clearBtn) clearBtn.style.display = "none";
+    const linkInput = document.getElementById("pdf-link-input");
+    if (linkInput) linkInput.value = "";
   });
   const pdfColorBtn = document.getElementById("pdf-color-btn");
   const pdfBwBtn = document.getElementById("pdf-bw-btn");
