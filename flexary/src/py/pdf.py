@@ -21,7 +21,7 @@ _PDF_FONT_SOURCES = {
     "OpenSans-BoldItalic.ttf": "./assets/fonts/OpenSans-BoldItalic.ttf",
 }
 _PDF_IMAGE_SOURCES = {
-    "logo-nobg.png": "./assets/logo-nobg.png",
+    "logo-nobg.webp": "./assets/logo-nobg.webp",
 }
 _PDF_PACKAGES = ["fpdf2==2.8.3", "pillow==10.0.0", "qrcode==7.4.2"]
 _pdf_runtime_ready = False
@@ -78,18 +78,39 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
         "stretching": (100, 100, 100),
     } if black_and_white else category_to_rgb
 
+    _logo_size = 18
+    _logo_y = 3
+    _url_font_pt = 6
+    _url_h_mm = _url_font_pt * 25.4 / 72
+    _site_url = "vladflore.fit"
+    _site_link = "https://vladflore.fit"
+
+    def _draw_logo_block(pdf_obj, logo_x, logo_y, logo_bytes):
+        if logo_bytes is not None:
+            try:
+                pdf_obj.image(io.BytesIO(logo_bytes), x=logo_x, y=logo_y, w=_logo_size, h=_logo_size)
+            except Exception:
+                pdf_obj.image(str(_PDF_ASSET_DIR / "logo-nobg.webp"), x=logo_x, y=logo_y, w=_logo_size, h=_logo_size)
+        else:
+            pdf_obj.image(str(_PDF_ASSET_DIR / "logo-nobg.webp"), x=logo_x, y=logo_y, w=_logo_size, h=_logo_size)
+        pdf_obj.set_font("opensans", "", _url_font_pt)
+        url_w = pdf_obj.get_string_width(_site_url)
+        url_x = logo_x + (_logo_size - url_w) / 2
+        url_y = logo_y + _logo_size + 1
+        pdf_obj.set_text_color(120, 120, 120)
+        pdf_obj.set_xy(url_x, url_y)
+        pdf_obj.cell(url_w, pdf_obj.font_size, _site_url, border=0, align="C", link=_site_link)
+        pdf_obj.set_text_color(0, 0, 0)
+        pdf_obj.set_font("opensans", "", 10)
+
     class PDF(FPDF):
         def header(self):
-            logo_size = 18
-            logo_y = 3
-            if custom_logo_bytes is not None:
-                try:
-                    self.image(io.BytesIO(custom_logo_bytes), x=self.w - self.r_margin - logo_size, y=logo_y, w=logo_size, h=logo_size)
-                except Exception:
-                    self.image(str(_PDF_ASSET_DIR / "logo-nobg.png"), x=self.w - self.r_margin - logo_size, y=logo_y, w=logo_size, h=logo_size)
-            else:
-                self.image(str(_PDF_ASSET_DIR / "logo-nobg.png"), x=self.w - self.r_margin - logo_size, y=logo_y, w=logo_size, h=logo_size)
-            self.set_y(logo_y + logo_size + 4)
+            if getattr(self, "_skip_header_logo", False):
+                self.set_y(self.t_margin)
+                return
+            logo_x = self.w - self.r_margin - _logo_size
+            _draw_logo_block(self, logo_x, _logo_y, custom_logo_bytes)
+            self.set_y(_logo_y + _logo_size + 1 + _url_h_mm + 3)
 
         def footer(self):
             self.set_y(-20)
@@ -99,11 +120,9 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
             self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
             self.ln(2)
             self.set_text_color(120, 120, 120)
-            self.cell(0, 10, "vladflore.fit", align="C")
+            page_label = f"{getattr(self, 'workout_page_num', 1)} / {getattr(self, 'workout_total_pages', 1)}"
+            self.cell(0, 10, page_label, align="C")
             self.set_text_color(0, 0, 0)
-            self.set_y(self.get_y() - 10)
-            page_label = f"Page {getattr(self, 'workout_page_num', 1)} of {getattr(self, 'workout_total_pages', 1)}"
-            self.cell(0, 10, page_label, align="R")
 
     pdf = PDF()
     pdf.set_top_margin(5)
@@ -133,7 +152,10 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
         for i in range(0, len(exercises), chunk_size):
             chunk = exercises[i: i + chunk_size]
             is_last_chunk = (i + chunk_size >= len(exercises))
+            is_first_chunk = (i == 0)
+            pdf._skip_header_logo = is_first_chunk
             pdf.add_page()
+            pdf._skip_header_logo = False
             pdf.workout_page_num = i // chunk_size + 1
             pdf.workout_total_pages = workout_total_pages
 
@@ -146,30 +168,78 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
             page_width = pdf.w - 2 * pdf.l_margin
             x_start = (page_width - table_width) / 2 + pdf.l_margin
 
-            pdf.ln(2)
             formatted_date = workout.execution_date.strftime("%d.%m.%Y")
-
-            if workout.name:
-                pdf.set_font("opensans", style="B", size=13)
-                pdf.set_text_color(0, 0, 0)
-                pdf.set_x(x_start)
-                pdf.cell(0, 9, workout.name, new_x="LMARGIN", new_y="NEXT")
-                pdf.ln(1)
-
-            pdf.set_font("opensans", style="I", size=10)
             exercise_count = len(exercises)
             ex_label = "exercise" if exercise_count == 1 else "exercises"
-            prefix = "Scheduled for: "
-            prefix_w = pdf.get_string_width(prefix)
-            pdf.set_x(x_start)
-            pdf.cell(prefix_w, 8, prefix, new_x="END", new_y="LAST")
-            pdf.set_font("opensans", style="BI", size=10)
-            date_w = pdf.get_string_width(formatted_date)
-            pdf.cell(date_w, 8, formatted_date, new_x="END", new_y="LAST")
-            pdf.set_font("opensans", style="I", size=10)
-            suffix = f"  ·  {exercise_count} {ex_label}"
-            pdf.cell(pdf.get_string_width(suffix), 8, suffix, new_x="LMARGIN", new_y="NEXT")
-            pdf.ln(4)
+
+            if is_first_chunk:
+                # Two-column layout: text on left, logo+URL on right
+                right_col_w = _logo_size + 10
+                left_col_w = table_width - right_col_w
+                right_col_x = x_start + left_col_w
+
+                name_block_h = (9 + 1) if workout.name else 0
+                ex_block_h = 8
+                date_block_h = 8
+                text_block_h = name_block_h + ex_block_h + date_block_h
+                right_content_h = _logo_size + 1 + _url_h_mm
+                padding_v = 4
+                inner_h = max(right_content_h, text_block_h)
+                two_col_h = padding_v + inner_h + padding_v
+
+                two_col_top = pdf.get_y()
+
+                # Left column: text, vertically centered
+                text_y = two_col_top + padding_v + (inner_h - text_block_h) / 2
+                if workout.name:
+                    pdf.set_font("opensans", style="B", size=13)
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.set_xy(x_start, text_y)
+                    pdf.cell(left_col_w, 9, workout.name, border=0, align="L")
+                    text_y += 9 + 1
+
+                pdf.set_font("opensans", style="", size=10)
+                pdf.set_xy(x_start, text_y)
+                pdf.cell(left_col_w, 8, f"{exercise_count} {ex_label}", border=0, align="L")
+                text_y += 8
+
+                pdf.set_font("opensans", style="", size=10)
+                prefix = "Scheduled for: "
+                prefix_w = pdf.get_string_width(prefix)
+                pdf.set_xy(x_start, text_y)
+                pdf.cell(prefix_w, 8, prefix, new_x="END", new_y="LAST")
+                pdf.set_font("opensans", style="B", size=10)
+                date_w = pdf.get_string_width(formatted_date)
+                pdf.cell(date_w, 8, formatted_date)
+
+                # Right column: logo + URL, centered both axes
+                logo_x = right_col_x + (right_col_w - _logo_size) / 2
+                logo_y = two_col_top + padding_v + (inner_h - right_content_h) / 2
+                _draw_logo_block(pdf, logo_x, logo_y, custom_logo_bytes)
+
+                pdf.set_y(two_col_top + two_col_h)
+            else:
+                pdf.ln(2)
+                if workout.name:
+                    pdf.set_font("opensans", style="B", size=13)
+                    pdf.set_text_color(0, 0, 0)
+                    pdf.set_x(x_start)
+                    pdf.cell(0, 9, workout.name, new_x="LMARGIN", new_y="NEXT")
+                    pdf.ln(1)
+
+                pdf.set_font("opensans", style="", size=10)
+                pdf.set_x(x_start)
+                pdf.cell(0, 8, f"{exercise_count} {ex_label}", new_x="LMARGIN", new_y="NEXT")
+
+                pdf.set_font("opensans", style="", size=10)
+                prefix = "Scheduled for: "
+                prefix_w = pdf.get_string_width(prefix)
+                pdf.set_x(x_start)
+                pdf.cell(prefix_w, 8, prefix, new_x="END", new_y="LAST")
+                pdf.set_font("opensans", style="B", size=10)
+                date_w = pdf.get_string_width(formatted_date)
+                pdf.cell(date_w, 8, formatted_date, new_x="LMARGIN", new_y="NEXT")
+                pdf.ln(4)
 
             pdf.set_font("opensans", style="", size=10)
             pdf.set_x(x_start)
@@ -439,7 +509,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                 pdf.set_font("opensans", style="", size=10)
 
                 if exercise.notes:
-                    pdf.set_font("opensans", style="I", size=7)
+                    pdf.set_font("opensans", style="", size=7)
                     pdf.set_text_color(100, 100, 100)
                     pdf.set_xy(text_x, name_y + name_h)
                     pdf.multi_cell(text_w, notes_line_h, exercise.notes, border=0, align="L")
@@ -509,7 +579,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                     pdf.workout_page_num = next_page_num
 
                 pdf.ln(8)
-                pdf.set_font("opensans", style="I", size=10)
+                pdf.set_font("opensans", style="", size=10)
                 pdf.set_text_color(100, 100, 100)
                 pdf.set_draw_color(*gold)
 
@@ -534,11 +604,20 @@ async def _read_logo_bytes() -> bytes | None:
     if not logo_input or not logo_input.files or logo_input.files.length == 0:
         return None
     logo_file = logo_input.files.item(0)
-    array_buffer = await logo_file.arrayBuffer()
-    return bytes(Uint8Array.new(array_buffer))
+    blob_url = URL.createObjectURL(logo_file)
+    try:
+        response = await pyfetch(blob_url)
+        return await response.bytes()
+    finally:
+        URL.revokeObjectURL(blob_url)
 
 
 async def _perform_download(black_and_white: bool = False) -> None:
+    # Read logo bytes while the modal is still open and the file input is populated.
+    # The modal's JS close event resets the input, so we must read before closing.
+    custom_logo_bytes = await _read_logo_bytes()
+    document.getElementById(state.pdf_color_modal_id).close()
+
     btn = document.getElementById(state.download_pdf_btn_id)
     icon = btn.querySelector("i")
     original_icon_class = icon.className
@@ -547,7 +626,6 @@ async def _perform_download(black_and_white: bool = False) -> None:
     try:
         await _ensure_pdf_runtime()
         await _ensure_pdf_assets()
-        custom_logo_bytes = await _read_logo_bytes()
         pdf = create_pdf(black_and_white=black_and_white, custom_logo_bytes=custom_logo_bytes)
         encoded_data = pdf.output()
         my_stream = io.BytesIO(encoded_data)
@@ -609,5 +687,4 @@ def download_file(*args) -> None:
 
 def download_pdf_with_options(*args) -> None:
     bw = document.getElementById("pdf-bw-btn").classList.contains("pdf-toggle-btn--active")
-    document.getElementById(state.pdf_color_modal_id).close()
     asyncio.ensure_future(_perform_download(black_and_white=bw))
