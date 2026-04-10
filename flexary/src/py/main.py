@@ -45,6 +45,14 @@ def download_pdf_with_options(*args) -> None:
     _pdf().download_pdf_with_options(*args)
 
 
+def on_logo_file_change(*args) -> None:
+    _pdf().on_logo_file_change(*args)
+
+
+def clear_logo(*args) -> None:
+    _pdf().clear_logo(*args)
+
+
 def show_info(event) -> None:
     document.getElementById("info-modal").showModal()
 
@@ -65,6 +73,8 @@ pydom[state.footer_el_id][0]._js.classList.remove("d-none")
 add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", open_pdf_modal)
 add_event_listener(document.getElementById("download-ics"), "click", download_ics)
 add_event_listener(document.getElementById("pdf-download-btn"), "click", download_pdf_with_options)
+add_event_listener(document.getElementById("pdf-logo-input"), "change", on_logo_file_change)
+add_event_listener(document.getElementById("pdf-logo-clear"), "click", clear_logo)
 
 if state.workouts:
     render_workouts(state.workouts)

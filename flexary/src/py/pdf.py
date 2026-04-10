@@ -6,7 +6,7 @@ import math
 from pathlib import Path
 
 import catalog
-from js import Uint8Array, File, URL, document, localStorage
+from js import Uint8Array, File, URL, document, localStorage, window
 from pyodide_js import loadPackage
 from pyodide.http import pyfetch
 
@@ -68,7 +68,7 @@ async def _ensure_pdf_assets() -> None:
         data = await response.bytes()
         target.write_bytes(data)
 
-def create_pdf(black_and_white: bool = False):
+def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = None):
     gold = (80, 80, 80) if black_and_white else (186, 148, 94)
     header_fill = (220, 220, 220) if black_and_white else (240, 228, 208)
     cat_colors = {
@@ -80,9 +80,16 @@ def create_pdf(black_and_white: bool = False):
 
     class PDF(FPDF):
         def header(self):
-            logo_size = 14
-            self.image(str(_PDF_ASSET_DIR / "logo-nobg.png"), x=self.w - self.r_margin - logo_size, y=3, w=logo_size, h=logo_size)
-            self.ln(logo_size - 4)
+            logo_size = 18
+            logo_y = 3
+            if custom_logo_bytes is not None:
+                try:
+                    self.image(io.BytesIO(custom_logo_bytes), x=self.w - self.r_margin - logo_size, y=logo_y, w=logo_size, h=logo_size)
+                except Exception:
+                    self.image(str(_PDF_ASSET_DIR / "logo-nobg.png"), x=self.w - self.r_margin - logo_size, y=logo_y, w=logo_size, h=logo_size)
+            else:
+                self.image(str(_PDF_ASSET_DIR / "logo-nobg.png"), x=self.w - self.r_margin - logo_size, y=logo_y, w=logo_size, h=logo_size)
+            self.set_y(logo_y + logo_size + 4)
 
         def footer(self):
             self.set_y(-20)
@@ -522,6 +529,15 @@ def create_pdf(black_and_white: bool = False):
 
     return pdf
 
+async def _read_logo_bytes() -> bytes | None:
+    logo_input = document.getElementById("pdf-logo-input")
+    if not logo_input or not logo_input.files or logo_input.files.length == 0:
+        return None
+    logo_file = logo_input.files.item(0)
+    array_buffer = await logo_file.arrayBuffer()
+    return bytes(Uint8Array.new(array_buffer))
+
+
 async def _perform_download(black_and_white: bool = False) -> None:
     btn = document.getElementById(state.download_pdf_btn_id)
     icon = btn.querySelector("i")
@@ -531,7 +547,8 @@ async def _perform_download(black_and_white: bool = False) -> None:
     try:
         await _ensure_pdf_runtime()
         await _ensure_pdf_assets()
-        pdf = create_pdf(black_and_white=black_and_white)
+        custom_logo_bytes = await _read_logo_bytes()
+        pdf = create_pdf(black_and_white=black_and_white, custom_logo_bytes=custom_logo_bytes)
         encoded_data = pdf.output()
         my_stream = io.BytesIO(encoded_data)
 
@@ -552,9 +569,42 @@ async def _perform_download(black_and_white: bool = False) -> None:
         icon.className = original_icon_class
         btn.disabled = False
 
+def on_logo_file_change(event=None) -> None:
+    logo_input = document.getElementById("pdf-logo-input")
+    filename_el = document.getElementById("pdf-logo-filename")
+    clear_btn = document.getElementById("pdf-logo-clear")
+    if logo_input and logo_input.files and logo_input.files.length > 0:
+        filename_el.textContent = logo_input.files.item(0).name
+        clear_btn.style.display = ""
+    else:
+        filename_el.textContent = ""
+        clear_btn.style.display = "none"
+
+
+def clear_logo(event=None) -> None:
+    logo_input = document.getElementById("pdf-logo-input")
+    filename_el = document.getElementById("pdf-logo-filename")
+    clear_btn = document.getElementById("pdf-logo-clear")
+    if logo_input:
+        logo_input.value = ""
+    if filename_el:
+        filename_el.textContent = ""
+    if clear_btn:
+        clear_btn.style.display = "none"
+
+
 def download_file(*args) -> None:
     if not any(w.exercises for w in state.workouts):
         return
+    logo_option = document.getElementById("pdf-logo-option")
+    if logo_option:
+        is_signed_in = (
+            hasattr(window, "flexaryAuth")
+            and window.flexaryAuth
+            and window.flexaryAuth.state
+            and window.flexaryAuth.state.user
+        )
+        logo_option.style.display = "flex" if is_signed_in else "none"
     document.getElementById(state.pdf_color_modal_id).showModal()
 
 def download_pdf_with_options(*args) -> None:

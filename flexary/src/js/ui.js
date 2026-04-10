@@ -2,6 +2,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const pdfColorModal = document.getElementById("pdf-color-modal");
   document.getElementById("pdf-color-modal-close").addEventListener("click", () => pdfColorModal.close());
   pdfColorModal.addEventListener("click", (e) => { if (e.target === pdfColorModal) pdfColorModal.close(); });
+  pdfColorModal.addEventListener("close", () => {
+    const input = document.getElementById("pdf-logo-input");
+    if (input) input.value = "";
+    const filename = document.getElementById("pdf-logo-filename");
+    if (filename) filename.textContent = "";
+    const clearBtn = document.getElementById("pdf-logo-clear");
+    if (clearBtn) clearBtn.style.display = "none";
+  });
   const pdfColorBtn = document.getElementById("pdf-color-btn");
   const pdfBwBtn = document.getElementById("pdf-bw-btn");
   pdfColorBtn.addEventListener("click", () => { pdfColorBtn.classList.add("pdf-toggle-btn--active"); pdfBwBtn.classList.remove("pdf-toggle-btn--active"); });

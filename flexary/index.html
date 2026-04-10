@@ -476,6 +476,22 @@
             <button class="pdf-toggle-btn" id="pdf-bw-btn" data-i18n="bw_btn" data-i18n-title="bw_btn" title="B&amp;W">B&amp;W</button>
           </div>
         </div>
+        <div class="pdf-modal-option" id="pdf-logo-option" style="display:none;">
+          <span class="pdf-modal-option-label" data-i18n="logo_label">Logo</span>
+          <div class="pdf-logo-upload-group">
+            <div class="pdf-logo-upload">
+              <label for="pdf-logo-input" class="pdf-logo-label">
+                <i class="bi bi-upload me-1"></i><span data-i18n="upload_btn">Upload</span>
+              </label>
+              <input type="file" id="pdf-logo-input" accept="image/*,.svg" style="display:none;">
+              <span id="pdf-logo-filename" class="pdf-logo-filename"></span>
+              <button id="pdf-logo-clear" class="pdf-logo-clear" style="display:none;" title="Remove">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+            <span class="pdf-logo-hint" data-i18n="logo_hint">PNG or JPEG · square logos work best</span>
+          </div>
+        </div>
       </div>
       <div class="pdf-color-modal-footer">
         <button class="btn btn-outline-gold" id="pdf-download-btn" data-i18n-title="download_btn" title="Download">

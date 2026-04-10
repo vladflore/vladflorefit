@@ -1470,6 +1470,67 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   flex-shrink: 0;
 }
 
+.pdf-logo-upload-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.pdf-logo-upload {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pdf-logo-hint {
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.pdf-logo-label {
+  padding: 0.3rem 0.85rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.pdf-logo-label:hover {
+  border-color: #ba945e;
+  color: #ba945e;
+}
+
+.pdf-logo-filename {
+  font-size: 0.75rem;
+  color: #ba945e;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdf-logo-clear {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #555;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  line-height: 1;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.pdf-logo-clear:hover {
+  border-color: #e05555;
+  color: #e05555;
+}
+
 #info-modal {
   background-color: #1a1a1a;
   color: #fff;
