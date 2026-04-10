@@ -68,9 +68,18 @@ async def _ensure_pdf_assets() -> None:
         data = await response.bytes()
         target.write_bytes(data)
 
-def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = None, custom_site_url: str | None = None):
-    gold = (80, 80, 80) if black_and_white else (186, 148, 94)
-    header_fill = (220, 220, 220) if black_and_white else (240, 228, 208)
+def _hex_to_rgb(hex_color: str) -> tuple:
+    h = hex_color.lstrip("#")
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = None, custom_site_url: str | None = None, custom_border_color: str | None = None):
+    if black_and_white:
+        gold = (80, 80, 80)
+    elif custom_border_color:
+        gold = _hex_to_rgb(custom_border_color)
+    else:
+        gold = (186, 148, 94)
+    header_fill = tuple(int(c * 0.20 + 255 * 0.80) for c in gold)
     cat_colors = {
         "strength": (60, 60, 60),
         "conditioning": (120, 120, 120),
@@ -276,7 +285,7 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                 pdf.set_line_width(0.2)
                 pdf.rect(x_start, header_y, table_width, ss_header_h, style="FD")
                 pdf.set_font("opensans", "B", 7)
-                pdf.set_text_color(*gold)
+                pdf.set_text_color(0, 0, 0)
                 pdf.set_xy(x_start + 4, header_y + (ss_header_h - pdf.font_size) / 2)
                 pdf.cell(table_width - 4, pdf.font_size, text, border=0, align="L")
                 pdf.set_y(header_y + ss_header_h)
@@ -627,6 +636,8 @@ async def _perform_download(black_and_white: bool = False) -> None:
     custom_logo_bytes = await _read_logo_bytes()
     link_input = document.getElementById("pdf-link-input")
     custom_site_url = link_input.value.strip() if link_input and link_input.value else None
+    border_color_input = document.getElementById("pdf-border-color-input")
+    custom_border_color = border_color_input.value if border_color_input and not border_color_input.disabled else None
     document.getElementById(state.pdf_color_modal_id).close()
 
     btn = document.getElementById(state.download_pdf_btn_id)
@@ -637,7 +648,7 @@ async def _perform_download(black_and_white: bool = False) -> None:
     try:
         await _ensure_pdf_runtime()
         await _ensure_pdf_assets()
-        pdf = create_pdf(black_and_white=black_and_white, custom_logo_bytes=custom_logo_bytes, custom_site_url=custom_site_url)
+        pdf = create_pdf(black_and_white=black_and_white, custom_logo_bytes=custom_logo_bytes, custom_site_url=custom_site_url, custom_border_color=custom_border_color)
         encoded_data = pdf.output()
         my_stream = io.BytesIO(encoded_data)
 
@@ -685,15 +696,17 @@ def clear_logo(event=None) -> None:
 def download_file(*args) -> None:
     if not any(w.exercises for w in state.workouts):
         return
-    logo_option = document.getElementById("pdf-logo-option")
-    if logo_option:
-        is_signed_in = (
-            hasattr(window, "flexaryAuth")
-            and window.flexaryAuth
-            and window.flexaryAuth.state
-            and window.flexaryAuth.state.user
-        )
-        logo_option.style.display = "flex" if is_signed_in else "none"
+    is_signed_in = (
+        hasattr(window, "flexaryAuth")
+        and window.flexaryAuth
+        and window.flexaryAuth.state
+        and window.flexaryAuth.state.user
+    )
+    display = "flex" if is_signed_in else "none"
+    for opt_id in ("pdf-logo-option", "pdf-link-option", "pdf-border-color-option"):
+        el = document.getElementById(opt_id)
+        if el:
+            el.style.display = display
     document.getElementById(state.pdf_color_modal_id).showModal()
 
 def download_pdf_with_options(*args) -> None:

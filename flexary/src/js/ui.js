@@ -11,11 +11,21 @@ document.addEventListener("DOMContentLoaded", function () {
     if (clearBtn) clearBtn.style.display = "none";
     const linkInput = document.getElementById("pdf-link-input");
     if (linkInput) linkInput.value = "";
+    const borderColorInput = document.getElementById("pdf-border-color-input");
+    if (borderColorInput) { borderColorInput.value = "#ba945e"; borderColorInput.disabled = false; }
   });
   const pdfColorBtn = document.getElementById("pdf-color-btn");
   const pdfBwBtn = document.getElementById("pdf-bw-btn");
-  pdfColorBtn.addEventListener("click", () => { pdfColorBtn.classList.add("pdf-toggle-btn--active"); pdfBwBtn.classList.remove("pdf-toggle-btn--active"); });
-  pdfBwBtn.addEventListener("click", () => { pdfBwBtn.classList.add("pdf-toggle-btn--active"); pdfColorBtn.classList.remove("pdf-toggle-btn--active"); });
+  pdfColorBtn.addEventListener("click", () => {
+    pdfColorBtn.classList.add("pdf-toggle-btn--active"); pdfBwBtn.classList.remove("pdf-toggle-btn--active");
+    const bci = document.getElementById("pdf-border-color-input");
+    if (bci) bci.disabled = false;
+  });
+  pdfBwBtn.addEventListener("click", () => {
+    pdfBwBtn.classList.add("pdf-toggle-btn--active"); pdfColorBtn.classList.remove("pdf-toggle-btn--active");
+    const bci = document.getElementById("pdf-border-color-input");
+    if (bci) bci.disabled = true;
+  });
   const infoModal = document.getElementById("info-modal");
   document.getElementById("info-modal-close").addEventListener("click", () => infoModal.close());
   document.getElementById("info-modal-close-btn").addEventListener("click", () => infoModal.close());

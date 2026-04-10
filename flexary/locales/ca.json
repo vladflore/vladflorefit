@@ -94,6 +94,8 @@
   "logo_label": "Logo",
   "upload_btn": "Pujar",
   "logo_hint": "PNG, JPEG o SVG · els logos quadrats queden millor",
+  "link_label": "Enllaç",
+  "accent_color_label": "Color d'accent",
 
   "about_flexary": "Sobre Flexary",
   "info_tagline": "Un recurs en creixement per donar suport al teu entrenament amb guies clares i eines flexibles.",

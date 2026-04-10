@@ -1552,6 +1552,35 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   color: #555;
 }
 
+.pdf-border-color-input {
+  width: 36px;
+  height: 28px;
+  padding: 2px 3px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.pdf-border-color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.pdf-border-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
+.pdf-border-color-input:hover {
+  border-color: #ba945e;
+}
+
+.pdf-border-color-input:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 #info-modal {
   background-color: #1a1a1a;
   color: #fff;
