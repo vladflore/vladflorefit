@@ -45,6 +45,31 @@ def save_workouts() -> None:
     localStorage.setItem(ls_workouts_key, workouts_to_json(workouts))
 
 
+def flush_workout_inputs() -> None:
+    """Read name/date inputs directly from the DOM so pending unsaved edits are captured
+    before a download, bypassing change-event timing issues."""
+    import datetime
+    changed = False
+    for w in workouts:
+        name_el = document.getElementById(f"workout-name-{w.id}")
+        if name_el:
+            val = str(name_el.value).strip()
+            if val != w.name:
+                w.name = val
+                changed = True
+        date_el = document.getElementById(f"workout-date-{w.id}")
+        if date_el and date_el.value:
+            try:
+                new_date = datetime.datetime.strptime(str(date_el.value), "%Y-%m-%d").date()
+                if new_date != w.execution_date:
+                    w.execution_date = new_date
+                    changed = True
+            except Exception:
+                pass
+    if changed:
+        save_workouts()
+
+
 active_category_filters: set[str] = set()
 active_body_part_filters: set[str] = set()
 active_primary_muscle_filters: set[str] = set()

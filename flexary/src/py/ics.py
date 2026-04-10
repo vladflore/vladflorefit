@@ -1,8 +1,7 @@
 import datetime
 import io
 
-from js import Uint8Array, File, URL, document, localStorage
-from models import workouts_from_json
+from js import Uint8Array, File, URL, document
 
 import state
 
@@ -25,10 +24,7 @@ def _escape(text: str) -> str:
 
 
 def _build_ics() -> str:
-    raw = localStorage.getItem(state.ls_workouts_key)
-    if not raw:
-        return ""
-    workouts = workouts_from_json(raw)
+    workouts = state.workouts
 
     lines = [
         "BEGIN:VCALENDAR",
@@ -45,6 +41,7 @@ def _build_ics() -> str:
             continue
 
         date_str = workout.execution_date.strftime("%Y%m%d")
+        date_end_str = (workout.execution_date + datetime.timedelta(days=1)).strftime("%Y%m%d")
         uid = f"flexary-{workout.id}@vladflore.fit"
 
         exercise_lines = []
@@ -109,7 +106,7 @@ def _build_ics() -> str:
             _fold(f"UID:{uid}"),
             f"DTSTAMP:{now}",
             f"DTSTART;VALUE=DATE:{date_str}",
-            f"DTEND;VALUE=DATE:{date_str}",
+            f"DTEND;VALUE=DATE:{date_end_str}",
             _fold(f"SUMMARY:{_escape(summary)}"),
             _fold(f"DESCRIPTION:{description}"),
             "END:VEVENT",
@@ -120,6 +117,7 @@ def _build_ics() -> str:
 
 
 def download_ics(*args) -> None:
+    state.flush_workout_inputs()
     if not any(w.exercises for w in state.workouts):
         return
 

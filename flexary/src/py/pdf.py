@@ -694,6 +694,7 @@ def clear_logo(event=None) -> None:
 
 
 def download_file(*args) -> None:
+    state.flush_workout_inputs()
     if not any(w.exercises for w in state.workouts):
         return
     is_signed_in = (
