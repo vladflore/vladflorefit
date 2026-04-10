@@ -14,6 +14,34 @@ category_to_badge = {
 
 query = URLSearchParams.new(window.location.search)
 exercise_id = query.get("exercise_id") or ""
+custom_video_id = query.get("custom_video_id") or ""
+
+
+def _is_authenticated() -> bool:
+    try:
+        if (
+            hasattr(window, "flexaryAuth")
+            and window.flexaryAuth
+            and window.flexaryAuth.state
+            and (window.flexaryAuth.state.user or window.flexaryAuth.state.session)
+        ):
+            return True
+    except Exception:
+        pass
+    return bool(localStorage.getItem("flexary_auth_session"))
+
+
+def _extract_yt_id(value: str) -> str:
+    value = (value or "").strip()
+    if not value:
+        return ""
+    if "youtu.be/" in value:
+        return value.split("youtu.be/")[-1].split("?")[0].split("&")[0]
+    if "v=" in value:
+        return value.split("v=")[-1].split("&")[0]
+    if "embed/" in value:
+        return value.split("embed/")[-1].split("?")[0].split("&")[0]
+    return value
 
 customs = catalog.parse_custom_exercises(localStorage.getItem("custom_exercises"))
 catalog.initialize(customs)
@@ -61,7 +89,9 @@ if equipment:
 else:
     pydom["#equipment-not-available"][0]._js.classList.remove("d-none")
 
-yt_id = data.get("yt_video_id", "")
+yt_id = (
+    _extract_yt_id(custom_video_id) if _is_authenticated() else ""
+) or _extract_yt_id(data.get("yt_video_id", ""))
 iframe = pydom["#exercise-video"][0]._js
 ratio_div = iframe.closest(".ratio")
 

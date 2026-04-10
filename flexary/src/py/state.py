@@ -1,7 +1,7 @@
 import json
 
 import catalog
-from js import localStorage
+from js import localStorage, window
 from pyscript import document
 from pyweb import pydom
 
@@ -22,6 +22,7 @@ pdf_color_modal_id = "pdf-color-modal"
 ls_workouts_key = "workouts"
 ls_filters_key = "filters"
 ls_custom_exercises_key = "custom_exercises"
+ls_auth_session_key = "flexary_auth_session"
 
 
 def q(selector, root=document):
@@ -43,6 +44,32 @@ active_workout = workouts[0].id if workouts else None
 
 def save_workouts() -> None:
     localStorage.setItem(ls_workouts_key, workouts_to_json(workouts))
+
+
+def is_authenticated() -> bool:
+    try:
+        if (
+            hasattr(window, "flexaryAuth")
+            and window.flexaryAuth
+            and window.flexaryAuth.state
+            and window.flexaryAuth.state.user
+        ):
+            return True
+    except Exception:
+        pass
+    return bool(localStorage.getItem(ls_auth_session_key))
+
+
+def strip_custom_video_overrides() -> bool:
+    changed = False
+    for workout in workouts:
+        for exercise in workout.exercises:
+            if getattr(exercise, "custom_video_id", ""):
+                exercise.custom_video_id = ""
+                changed = True
+    if changed:
+        save_workouts()
+    return changed
 
 
 def flush_workout_inputs() -> None:
@@ -106,3 +133,7 @@ def next_custom_id() -> int:
     if not custom_exercises:
         return -1
     return min(int(ex["id"]) for ex in custom_exercises) - 1
+
+
+if workouts and not is_authenticated():
+    strip_custom_video_overrides()

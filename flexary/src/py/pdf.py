@@ -379,15 +379,20 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                 pdf.set_x(x_start)
                 row_fill = row_num % 2 == 1
                 is_custom_ex = exercise.id < 0
+                can_use_custom_video = state.is_authenticated()
                 ex_data = catalog.get_exercise(exercise.id)
                 if is_custom_ex:
-                    _yt_id = ex_data.get("yt_video_id", "") if ex_data else ""
+                    _yt_id = (
+                        exercise.custom_video_id if can_use_custom_video else ""
+                    ) or (ex_data.get("yt_video_id", "") if ex_data else "")
                     detailed_page_link = f"https://www.youtube.com/watch?v={_yt_id}" if _yt_id else ""
                 else:
-                    detailed_page_link = (
-                        f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
-                        if ex_data else ""
-                    )
+                    if ex_data:
+                        detailed_page_link = f"https://vladflore.fit/flexary/detail.html?exercise_id={exercise.id}"
+                        if can_use_custom_video and exercise.custom_video_id:
+                            detailed_page_link += f"&custom_video_id={exercise.custom_video_id}"
+                    else:
+                        detailed_page_link = ""
                 try:
                     sets = int(exercise.sets)
                 except Exception:

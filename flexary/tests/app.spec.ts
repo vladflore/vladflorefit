@@ -51,6 +51,40 @@ test.describe('Flexary UI', () => {
     await expect(page.locator('#key-cues-container')).toContainText('Keep knees tracking over toes');
   });
 
+  test('detail page prefers custom_video_id over the library video', async ({ page }) => {
+    await page.route('**/src/js/auth.js', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: '',
+      });
+    });
+    await page.addInitScript(() => {
+      window.flexaryAuth = {
+        ready: Promise.resolve(),
+        state: {
+          session: { access_token: 'test-token' },
+          user: { email: 'tester@example.com' },
+        },
+        getCurrentUser: async () => ({ email: 'tester@example.com' }),
+      };
+      localStorage.setItem('flexary_auth_session', JSON.stringify({ access_token: 'test-token' }));
+    });
+    await page.goto('/detail.html?exercise_id=1&custom_video_id=0EpP3pYUYTk');
+
+    await expect(page.locator('#container')).toBeVisible();
+    await expect(page.locator('#exercise-video')).toHaveAttribute('src', /0EpP3pYUYTk/);
+    await expect(page.locator('#exercise-video')).not.toHaveAttribute('src', /l83R5PblSMA/);
+  });
+
+  test('detail page ignores custom_video_id for guests', async ({ page }) => {
+    await page.goto('/detail.html?exercise_id=1&custom_video_id=0EpP3pYUYTk');
+
+    await expect(page.locator('#container')).toBeVisible();
+    await expect(page.locator('#exercise-video')).toHaveAttribute('src', /l83R5PblSMA/);
+    await expect(page.locator('#exercise-video')).not.toHaveAttribute('src', /0EpP3pYUYTk/);
+  });
+
   test('adding an exercise creates a workout entry', async ({ page }) => {
     await waitForLibrary(page);
 
@@ -91,6 +125,45 @@ test.describe('Flexary UI', () => {
     await page.reload();
     await expect(page.locator('#container')).toBeVisible();
     await expect(page.locator(`#exercises-row [data-exercise-name="${customName}"]`)).toBeVisible();
+  });
+
+  test('guests do not see stored custom workout video traces', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('workouts', JSON.stringify([
+        {
+          id: '11111111-1111-1111-1111-111111111111',
+          execution_date: '2026-04-11',
+          name: 'Guest Workout',
+          superset_rounds: {},
+          breaks: {},
+          exercises: [
+            {
+              id: 1,
+              internal_id: '22222222-2222-2222-2222-222222222222',
+              name: 'Body Weight Squat',
+              sets: 1,
+              reps: '10',
+              time: '',
+              distance: '',
+              notes: '',
+              superset_id: '',
+              rest_between_sets: 0,
+              custom_video_id: '0EpP3pYUYTk',
+            },
+          ],
+        },
+      ]));
+    });
+
+    await page.goto('/index.html');
+    await expect(page.locator('#container')).toBeVisible();
+    await expect(page.locator('#toggle-workout-sidebar .workout-count-badge')).toHaveText('1');
+    await page.locator('#toggle-workout-sidebar').click();
+    await expect(page.locator('#workout-list-container')).toContainText('Body Weight Squat');
+    await expect(page.locator('.exercise-item-video-link')).toHaveCount(0);
+
+    await page.locator('#workout-list-container #workout-item-edit').first().click();
+    await expect(page.getByPlaceholder('YouTube URL or video ID')).toHaveCount(0);
   });
 });
 

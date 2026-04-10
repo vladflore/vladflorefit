@@ -1,6 +1,7 @@
 import asyncio
 import importlib
 
+from pyodide.ffi import create_proxy
 from pyodide.ffi.wrappers import add_event_listener
 from pyscript import document
 from pyweb import pydom
@@ -76,14 +77,27 @@ add_event_listener(document.getElementById("pdf-download-btn"), "click", downloa
 add_event_listener(document.getElementById("pdf-logo-input"), "change", on_logo_file_change)
 add_event_listener(document.getElementById("pdf-logo-clear"), "click", clear_logo)
 
-if state.workouts:
-    render_workouts(state.workouts)
-    update_workout_badge()
-else:
-    hide_sidebar()
+def _refresh_workouts_ui() -> None:
+    if state.workouts:
+        render_workouts(state.workouts)
+        update_workout_badge()
+    else:
+        hide_sidebar()
 
 
-asyncio.ensure_future(initialize_auth_ui())
+def _on_auth_change(event) -> None:
+    if not state.is_authenticated() and state.strip_custom_video_overrides():
+        _refresh_workouts_ui()
 
-document.getElementById("loading").close()
-document.getElementById("container").classList.remove("d-none")
+
+async def _bootstrap() -> None:
+    await initialize_auth_ui()
+    if not state.is_authenticated():
+        state.strip_custom_video_overrides()
+    _refresh_workouts_ui()
+    window.addEventListener("flexary-auth-change", create_proxy(_on_auth_change))
+    document.getElementById("loading").close()
+    document.getElementById("container").classList.remove("d-none")
+
+
+asyncio.ensure_future(_bootstrap())

@@ -53,6 +53,7 @@ class Exercise:
     notes: str = ""
     superset_id: str = ""
     rest_between_sets: int = 0
+    custom_video_id: str = ""
 
     def execution_mismatch(self, rounds: int) -> bool:
         """True when any per-set field has multiple values that don't match the superset rounds count."""
@@ -121,6 +122,7 @@ def workouts_to_json(workouts: list) -> str:
             "notes": ex.notes,
             "superset_id": ex.superset_id,
             "rest_between_sets": ex.rest_between_sets,
+            "custom_video_id": ex.custom_video_id,
         }
 
     def _w(w):
@@ -171,6 +173,7 @@ def _parse_exercise(ex_data) -> Exercise:
         notes=_coerce_str(ex_data.get("notes", "")),
         superset_id=_coerce_str(ex_data.get("superset_id", "")),
         rest_between_sets=_coerce_int(ex_data.get("rest_between_sets", 0)),
+        custom_video_id=_coerce_str(ex_data.get("custom_video_id", "")),
     )
 
 

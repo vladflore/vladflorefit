@@ -13,6 +13,17 @@ from models import Exercise, Workout
 from workout_domain import _cleanup_supersets, _event_attr, _find_exercise
 
 
+def _extract_yt_id(value: str) -> str:
+    value = value.strip()
+    if not value:
+        return ""
+    if "youtu.be/" in value:
+        return value.split("youtu.be/")[-1].split("?")[0].split("&")[0]
+    if "v=" in value:
+        return value.split("v=")[-1].split("&")[0]
+    return value
+
+
 def _inject_no_spinner_style():
     _id = "no-number-spinner-style"
     if not document.getElementById(_id):
@@ -919,10 +930,18 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
 
     _rebuild_per_set(1)
 
+    input_video = None
+    if state.is_authenticated():
+        input_video = document.createElement("input")
+        input_video.type = "text"
+        input_video.placeholder = t("video_placeholder")
+
     inputs_container.appendChild(sets_stepper)
     inputs_container.appendChild(per_set_wrapper)
     inputs_container.appendChild(rest_group)
     inputs_container.appendChild(_make_input_group(t("notes_label"), input_notes))
+    if input_video is not None:
+        inputs_container.appendChild(_make_input_group(t("video_label"), input_video))
 
     def _on_sets_change(evt):
         val = input_sets.value.strip()
@@ -966,8 +985,9 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         reps_val, time_val, distance_val = get_per_set_values[0]()
         rest_val = int(input_rest.value) if input_rest.value.strip() else 0
         notes_val = input_notes.value.strip()
+        video_id = _extract_yt_id(input_video.value) if state.is_authenticated() and input_video is not None else ""
 
-        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, distance_val, notes_val, rest_between_sets=rest_val)
+        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, distance_val, notes_val, rest_between_sets=rest_val, custom_video_id=video_id)
         if state.active_workout is None:
             state.active_workout = uuid4()
             w = Workout(state.active_workout, datetime.datetime.now().date(), [ex])
@@ -1071,10 +1091,19 @@ def edit_exercise_in_workout(event) -> None:
     input_sets.addEventListener("change", create_proxy(_on_edit_sets_change))
     input_sets.addEventListener("input", create_proxy(_on_edit_sets_change))
 
+    edit_input_video = None
+    if state.is_authenticated():
+        edit_input_video = document.createElement("input")
+        edit_input_video.type = "text"
+        edit_input_video.placeholder = t("video_placeholder")
+        edit_input_video.value = target_ex.custom_video_id or ""
+
     modal.appendChild(sets_stepper)
     modal.appendChild(per_set_wrapper)
     modal.appendChild(edit_rest_group)
     modal.appendChild(_make_input_group(t("notes_label"), input_notes))
+    if edit_input_video is not None:
+        modal.appendChild(_make_input_group(t("video_label"), edit_input_video))
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
@@ -1105,6 +1134,7 @@ def edit_exercise_in_workout(event) -> None:
         reps_val, time_val, distance_val = get_per_set_values[0]()
         rest_val = int(input_rest.value) if input_rest.value.strip() else 0
         notes_val = input_notes.value.strip()
+        video_id = _extract_yt_id(edit_input_video.value) if state.is_authenticated() and edit_input_video is not None else ""
 
         target_ex.sets = sets
         target_ex.reps = reps_val
@@ -1112,6 +1142,7 @@ def edit_exercise_in_workout(event) -> None:
         target_ex.distance = distance_val
         target_ex.rest_between_sets = rest_val
         target_ex.notes = notes_val
+        target_ex.custom_video_id = video_id
 
         state.save_workouts()
         render_workouts(state.workouts)

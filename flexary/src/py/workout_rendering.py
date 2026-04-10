@@ -222,6 +222,17 @@ def render_workouts(workouts: list) -> None:
                 notes_el.className = "exercise-item-notes"
                 notes_el.textContent = exercise.notes[:60] + "…" if len(exercise.notes) > 60 else exercise.notes
                 item_name_span.appendChild(notes_el)
+            if state.is_authenticated() and exercise.custom_video_id:
+                video_link_el = document.createElement("a")
+                video_link_el.href = f"https://www.youtube.com/watch?v={exercise.custom_video_id}"
+                video_link_el.target = "_blank"
+                video_link_el.rel = "noopener noreferrer"
+                video_link_el.className = "exercise-item-video-link"
+                video_link_el.title = t("watch_video")
+                video_icon = document.createElement("i")
+                video_icon.className = "bi bi-play-circle"
+                video_link_el.appendChild(video_icon)
+                item_name_span.appendChild(video_link_el)
 
             w_item_move_up = w_li.find("#workout-item-move-up")[0]
             from workout_domain import move_exercise_up, move_exercise_down

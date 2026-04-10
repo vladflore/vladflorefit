@@ -957,6 +957,21 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   margin-top: 2px;
 }
 
+.exercise-item-video-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  color: #ba945e;
+  text-decoration: none;
+  margin-top: 2px;
+}
+
+.exercise-item-video-link:hover {
+  color: #d4b07e;
+  text-decoration: underline;
+}
+
 .workout-sidebar-footer {
   display: flex;
   gap: 0.4rem;
