@@ -17,6 +17,7 @@
   "add_workout": "Add Workout",
   "scheduled_for": "Scheduled for:",
   "workout_name_placeholder": "Name (optional)",
+  "workout_default_name": "Your Workout",
   "activate": "Activate",
   "activate_workout": "Activate workout",
   "remove_workout": "Remove workout",

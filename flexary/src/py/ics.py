@@ -4,6 +4,7 @@ import io
 from js import Uint8Array, File, URL, document
 
 import state
+from i18n import t
 
 
 def _fold(line: str) -> str:
@@ -62,7 +63,7 @@ def _build_ics() -> str:
             else:
                 break_key = ex.internal_id
             break_secs = workout.breaks.get(break_key, 0)
-            if break_secs:
+            if break_secs and i > 0:
                 _m, _s = divmod(break_secs, 60)
                 _fmt = (f"{_m}m {_s}s" if _s else f"{_m}m") if _m else f"{_s}s"
                 exercise_lines.append(f"  \u23f1 {_fmt} rest")
@@ -97,7 +98,7 @@ def _build_ics() -> str:
 
 
         count = len(workout.exercises)
-        workout_label = workout.name if workout.name else "Workout"
+        workout_label = workout.name if workout.name else t("workout_default_name")
         summary = f"{workout_label} — {count} exercise{'s' if count != 1 else ''}"
         description = "\\n".join(_escape(l) for l in exercise_lines)
 

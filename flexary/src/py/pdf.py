@@ -11,6 +11,7 @@ from pyodide_js import loadPackage
 from pyodide.http import pyfetch
 
 import state
+from i18n import t
 from models import category_to_rgb, workouts_from_json, _reps_display, _time_display, _dist_display
 
 _PDF_ASSET_DIR = Path(".pdf-assets")
@@ -192,7 +193,8 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
                 left_col_w = table_width - right_col_w
                 right_col_x = x_start + left_col_w
 
-                name_block_h = (9 + 1) if workout.name else 0
+                workout_name = workout.name or t("workout_default_name")
+                name_block_h = 9 + 1
                 ex_block_h = 8
                 date_block_h = 8
                 text_block_h = name_block_h + ex_block_h + date_block_h
@@ -205,12 +207,11 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
 
                 # Left column: text, vertically centered
                 text_y = two_col_top + padding_v + (inner_h - text_block_h) / 2
-                if workout.name:
-                    pdf.set_font("opensans", style="B", size=13)
-                    pdf.set_text_color(0, 0, 0)
-                    pdf.set_xy(x_start, text_y)
-                    pdf.cell(left_col_w, 9, workout.name, border=0, align="L")
-                    text_y += 9 + 1
+                pdf.set_font("opensans", style="B", size=13)
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_xy(x_start, text_y)
+                pdf.cell(left_col_w, 9, workout_name, border=0, align="L")
+                text_y += 9 + 1
 
                 pdf.set_font("opensans", style="", size=10)
                 pdf.set_xy(x_start, text_y)
@@ -233,13 +234,13 @@ def create_pdf(black_and_white: bool = False, custom_logo_bytes: bytes | None = 
 
                 pdf.set_y(two_col_top + two_col_h)
             else:
+                workout_name = workout.name or t("workout_default_name")
                 pdf.ln(2)
-                if workout.name:
-                    pdf.set_font("opensans", style="B", size=13)
-                    pdf.set_text_color(0, 0, 0)
-                    pdf.set_x(x_start)
-                    pdf.cell(0, 9, workout.name, new_x="LMARGIN", new_y="NEXT")
-                    pdf.ln(1)
+                pdf.set_font("opensans", style="B", size=13)
+                pdf.set_text_color(0, 0, 0)
+                pdf.set_x(x_start)
+                pdf.cell(0, 9, workout_name, new_x="LMARGIN", new_y="NEXT")
+                pdf.ln(1)
 
                 pdf.set_font("opensans", style="", size=10)
                 pdf.set_x(x_start)

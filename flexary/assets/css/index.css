@@ -669,11 +669,9 @@
   color: #ba945e;
 }
 
-.superset-header-sep {
-  opacity: 0.5;
-}
 
 .superset-group-header .connector-break-row {
+  margin-left: auto;
   font-size: 0.58rem;
   font-weight: 400;
   letter-spacing: normal;
@@ -692,16 +690,48 @@
   color: #ba945e;
 }
 
-.superset-rounds-input {
-  width: 36px;
-  font-size: 0.65rem;
+.superset-rounds-stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.superset-rounds-display {
+  min-width: 24px;
   text-align: center;
-  background: rgba(186, 148, 94, 0.15);
-  border: 1px solid #ba945e;
-  border-radius: 3px;
+  font-size: 0.95rem;
+  font-weight: 600;
   color: #ba945e;
-  padding: 0 2px;
+  user-select: none;
+}
+
+.superset-rounds-btn {
+  width: 18px;
   height: 18px;
+  padding: 0;
+  font-size: 0.8rem;
+  line-height: 1;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid #ba945e;
+  color: #ba945e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.superset-rounds-btn:hover {
+  background: #ba945e;
+  color: #fff;
+}
+
+.superset-rounds-btn:active {
+  background: #a07840;
+  border-color: #a07840;
+  color: #fff;
 }
 
 .superset-connector {

@@ -17,6 +17,7 @@
   "add_workout": "Training hinzuf\u00fcgen",
   "scheduled_for": "Geplant f\u00fcr:",
   "workout_name_placeholder": "Name (optional)",
+  "workout_default_name": "Dein Training",
   "activate": "Aktivieren",
   "activate_workout": "Training aktivieren",
   "remove_workout": "Training entfernen",

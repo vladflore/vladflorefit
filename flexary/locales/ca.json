@@ -17,6 +17,7 @@
   "add_workout": "Afegeix Entrenament",
   "scheduled_for": "Programat per a:",
   "workout_name_placeholder": "Nom (opcional)",
+  "workout_default_name": "El teu Entrenament",
   "activate": "Activa",
   "activate_workout": "Activa entrenament",
   "remove_workout": "Elimina entrenament",

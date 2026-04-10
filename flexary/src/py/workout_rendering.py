@@ -283,23 +283,39 @@ def render_workouts(workouts: list) -> None:
                     header.appendChild(ss_label)
 
                     rounds = w.superset_rounds.get(sid, 1)
+
                     rounds_input = document.createElement("input")
-                    rounds_input.type = "number"
-                    rounds_input.min = "1"
+                    rounds_input.type = "hidden"
                     rounds_input.value = str(rounds)
                     rounds_input.className = "superset-rounds-input"
-                    rounds_input.title = t("superset_rounds")
+
+                    rounds_display = document.createElement("span")
+                    rounds_display.textContent = str(rounds)
+                    rounds_display.className = "superset-rounds-display"
+
+                    minus_btn = document.createElement("button")
+                    minus_btn.type = "button"
+                    minus_btn.textContent = "\u2212"
+                    minus_btn.className = "superset-rounds-btn"
+
+                    plus_btn = document.createElement("button")
+                    plus_btn.type = "button"
+                    plus_btn.textContent = "+"
+                    plus_btn.className = "superset-rounds-btn"
+
+                    rounds_stepper = document.createElement("div")
+                    rounds_stepper.className = "superset-rounds-stepper"
+                    rounds_stepper.title = t("superset_rounds")
+                    rounds_stepper.appendChild(minus_btn)
+                    rounds_stepper.appendChild(rounds_display)
+                    rounds_stepper.appendChild(plus_btn)
+                    rounds_stepper.appendChild(rounds_input)
 
                     rounds_label = document.createElement("span")
                     rounds_label.textContent = t("rounds_label")
 
-                    header.appendChild(rounds_input)
+                    header.appendChild(rounds_stepper)
                     header.appendChild(rounds_label)
-
-                    sep = document.createElement("span")
-                    sep.textContent = "·"
-                    sep.className = "superset-header-sep"
-                    header.appendChild(sep)
 
                     break_sentinel = _BreakSentinel(f"_after_{sid}", "Superset")
                     rest_row = _make_break_row(w, break_sentinel, popup_title=t("rest_after_superset"))
@@ -308,16 +324,29 @@ def render_workouts(workouts: list) -> None:
                     current_superset_wrapper.appendChild(header)
                     w_ul._js.appendChild(current_superset_wrapper)
 
-                    def _make_rounds_handler(workout, superset_id):
-                        def _on_change(evt):
-                            val = evt.target.value
-                            if val and int(val) > 0:
-                                workout.superset_rounds[superset_id] = int(val)
+                    def _make_rounds_handlers(workout, superset_id, inp, disp):
+                        def _on_minus(evt):
+                            evt.stopPropagation()
+                            cur = int(inp.value) if inp.value.strip().isdigit() else 1
+                            if cur > 1:
+                                inp.value = str(cur - 1)
+                                disp.textContent = inp.value
+                                workout.superset_rounds[superset_id] = cur - 1
                                 state.save_workouts()
                                 render_workouts(state.workouts)
-                        return _on_change
+                        def _on_plus(evt):
+                            evt.stopPropagation()
+                            cur = int(inp.value) if inp.value.strip().isdigit() else 1
+                            inp.value = str(cur + 1)
+                            disp.textContent = inp.value
+                            workout.superset_rounds[superset_id] = cur + 1
+                            state.save_workouts()
+                            render_workouts(state.workouts)
+                        return _on_minus, _on_plus
 
-                    rounds_input.addEventListener("change", create_proxy(_make_rounds_handler(w, sid)))
+                    _on_minus, _on_plus = _make_rounds_handlers(w, sid, rounds_input, rounds_display)
+                    minus_btn.addEventListener("click", create_proxy(_on_minus))
+                    plus_btn.addEventListener("click", create_proxy(_on_plus))
                 else:
                     current_superset_wrapper.appendChild(_make_superset_connector(w, ei - 1, ei))
 
