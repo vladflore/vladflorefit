@@ -833,6 +833,20 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   margin-left: 360px;
 }
 
+@media (min-width: 1400px) {
+  .workout-sidebar {
+    width: 440px;
+  }
+
+  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) #toggle-workout-sidebar {
+    left: 440px;
+  }
+
+  body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
+    margin-left: 440px;
+  }
+}
+
 .sidebar-backdrop {
   position: fixed;
   inset: 0;
