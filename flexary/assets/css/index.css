@@ -1044,6 +1044,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
 
 .confirm-popup-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   justify-content: flex-end;
 }

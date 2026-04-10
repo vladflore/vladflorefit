@@ -72,7 +72,7 @@
   "rounds_label": "× rondes",
   "split_superset": "Divideix la supersèrie",
   "add_to_superset": "Crear supersèrie",
-  "mismatch_warning": "⚠ Exercici configurat amb {count} execucions però la supersèrie té {rounds} rondes — edita la configuració de l'exercici o el nombre de rondes de la supersèrie",
+  "mismatch_warning": "⚠ Exercici configurat amb {count} sèries però la supersèrie té {rounds} ronda(es) — edita el nombre de sèries de l'exercici o el nombre de rondes de la supersèrie perquè coincideixin",
   "fix_mismatch": "Corregeix les discrepàncies de sèries/rondes abans de descarregar",
 
   "yes_btn": "Sí",

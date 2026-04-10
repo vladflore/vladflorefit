@@ -72,7 +72,7 @@
   "rounds_label": "\u00d7 rounds",
   "split_superset": "Split superset",
   "add_to_superset": "Create superset",
-  "mismatch_warning": "\u26a0 Exercise configured with {count} executions but the superset has {rounds} rounds \u2014 edit either the exercise\u2019s configuration or the superset\u2019s number of rounds so that they match",
+  "mismatch_warning": "\u26a0 Exercise configured with {count} sets but the superset has {rounds} round(s) \u2014 edit either the exercise\u2019s number of sets or the superset\u2019s number of rounds so that they match",
   "fix_mismatch": "Fix reps/rounds mismatches before downloading",
 
   "yes_btn": "Yes",

@@ -834,9 +834,9 @@ def _show_break_popup(anchor_el, workout, ex_below, title=None) -> None:
     cancel_btn.addEventListener("click", create_proxy(_cancel))
     overlay.addEventListener("click", create_proxy(_dismiss))
 
+    btn_row.appendChild(save_btn)
     btn_row.appendChild(clear_btn)
     btn_row.appendChild(cancel_btn)
-    btn_row.appendChild(save_btn)
     popup.appendChild(btn_row)
     overlay.appendChild(popup)
     document.body.appendChild(overlay)

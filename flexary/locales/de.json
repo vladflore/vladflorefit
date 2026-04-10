@@ -72,7 +72,7 @@
   "rounds_label": "\u00d7 Runden",
   "split_superset": "Supersatz teilen",
   "add_to_superset": "Supersatz erstellen",
-  "mismatch_warning": "\u26a0 \u00dcbung mit {count} Ausf\u00fchrungen konfiguriert, aber der Supersatz hat {rounds} Runden \u2014 bearbeite die Konfiguration der \u00dcbung oder die Rundenzahl des Supersatzes",
+  "mismatch_warning": "\u26a0 \u00dcbung mit {count} S\u00e4tzen konfiguriert, aber der Supersatz hat {rounds} Runde(n) \u2014 bearbeite die Satzanzahl der \u00dcbung oder die Rundenzahl des Supersatzes, damit sie \u00fcbereinstimmen",
   "fix_mismatch": "Korrigiere Satz/Runden-Diskrepanzen vor dem Download",
 
   "yes_btn": "Ja",

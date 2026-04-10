@@ -72,7 +72,7 @@
   "rounds_label": "\u00d7 rondas",
   "split_superset": "Dividir superserie",
   "add_to_superset": "Crear superserie",
-  "mismatch_warning": "\u26a0 Ejercicio configurado con {count} ejecuciones pero la superserie tiene {rounds} rondas \u2014 edita la configuraci\u00f3n del ejercicio o el n\u00famero de rondas de la superserie",
+  "mismatch_warning": "\u26a0 Ejercicio configurado con {count} series pero la superserie tiene {rounds} ronda(s) \u2014 edita el n\u00famero de series del ejercicio o el n\u00famero de rondas de la superserie para que coincidan",
   "fix_mismatch": "Corrige las discrepancias de series/rondas antes de descargar",
 
   "yes_btn": "S\u00ed",
