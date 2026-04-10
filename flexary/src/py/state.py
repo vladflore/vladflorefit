@@ -66,8 +66,7 @@ def flush_workout_inputs() -> None:
                     changed = True
             except Exception:
                 pass
-    if changed:
-        save_workouts()
+    save_workouts()
 
 
 active_category_filters: set[str] = set()

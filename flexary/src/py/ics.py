@@ -105,6 +105,7 @@ def _build_ics() -> str:
             "BEGIN:VEVENT",
             _fold(f"UID:{uid}"),
             f"DTSTAMP:{now}",
+            f"LAST-MODIFIED:{now}",
             f"DTSTART;VALUE=DATE:{date_str}",
             f"DTEND;VALUE=DATE:{date_end_str}",
             _fold(f"SUMMARY:{_escape(summary)}"),
