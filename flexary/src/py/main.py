@@ -83,7 +83,11 @@ pydom["#filter-row"][0]._js.classList.remove("d-none")
 
 pydom[state.copyright_el_id][0]._js.innerHTML = copyright()
 pydom[state.version_el_id][0]._js.innerHTML = current_version()
-pydom[state.footer_el_id][0]._js.classList.remove("d-none")
+# Footer is revealed in _bootstrap() AFTER the exercise container, so the
+# footer never occupies viewport space before the cards push it to the bottom.
+# Revealing it here (while the container is still d-none) caused the footer to
+# sit near the top of the page, then shift ~6000 px down — the dominant CLS
+# culprit (score 0.145).
 
 add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", open_pdf_modal)
 add_event_listener(document.getElementById("download-ics"), "click", download_ics)
@@ -112,6 +116,9 @@ async def _bootstrap() -> None:
     window.addEventListener("flexary-auth-change", create_proxy(_on_auth_change))
     document.getElementById("loading").close()
     document.getElementById("container").classList.remove("d-none")
+    # Reveal footer only after the container is visible so the footer is already
+    # off-screen (below the fold) when it appears — no layout shift.
+    document.getElementById("footer").classList.remove("d-none")
 
 
 asyncio.ensure_future(_bootstrap())
