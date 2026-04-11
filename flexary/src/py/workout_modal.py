@@ -8,20 +8,10 @@ from pyodide.ffi import create_proxy
 from pyscript import document
 
 import state
+from common import extract_yt_id, make_input_group, make_warning_el, show_warning
 from i18n import t
 from models import Exercise, Workout
 from workout_domain import _cleanup_supersets, _event_attr, _find_exercise
-
-
-def _extract_yt_id(value: str) -> str:
-    value = value.strip()
-    if not value:
-        return ""
-    if "youtu.be/" in value:
-        return value.split("youtu.be/")[-1].split("?")[0].split("&")[0]
-    if "v=" in value:
-        return value.split("v=")[-1].split("&")[0]
-    return value
 
 
 def _inject_no_spinner_style():
@@ -35,43 +25,6 @@ def _inject_no_spinner_style():
             "input.no-spinner{-moz-appearance:textfield;}"
         )
         document.head.appendChild(style)
-
-
-def _make_input_group(label_text: str, input_el):
-    group = document.createElement("div")
-    group.style.display = "flex"
-    group.style.flexDirection = "column"
-    group.style.gap = "2px"
-    label = document.createElement("label")
-    label.textContent = label_text
-    label.style.fontSize = "0.75rem"
-    label.style.color = "rgba(255,255,255,0.75)"
-    input_el.style.width = "100%"
-    input_el.style.fontSize = "0.8rem"
-    if input_el.tagName.lower() != "textarea":
-        input_el.style.height = "26px"
-    input_el.style.padding = "2px 6px"
-    input_el.style.borderRadius = "4px"
-    input_el.style.border = "1px solid rgba(255,255,255,0.2)"
-    input_el.style.backgroundColor = "rgba(255,255,255,0.1)"
-    input_el.style.color = "#fff"
-    group.appendChild(label)
-    group.appendChild(input_el)
-    return group
-
-
-def _make_warning_el():
-    el = document.createElement("div")
-    el.style.display = "none"
-    el.style.color = "#f87171"
-    el.style.fontSize = "0.75rem"
-    el.style.marginTop = "-4px"
-    return el
-
-
-def _show_warning(el, msg: str) -> None:
-    el.textContent = msg
-    el.style.display = "block"
 
 
 def _make_sets_stepper(initial_value: int = 1):
@@ -862,57 +815,44 @@ def _show_break_popup(anchor_el, workout, ex_below, title=None) -> None:
     popup.style.transform = "translateY(-100%)"
 
 
-def configure_exercise(exercise_id: str, exercise_name: str) -> None:
-    from workout_persistence import update_workout_badge
-    from workout_rendering import render_workouts
+def _build_exercise_modal(
+    overlay_class,
+    title_text,
+    confirm_label,
+    initial_sets=1,
+    initial_rest=0,
+    initial_reps="",
+    initial_time="",
+    initial_distance="",
+    initial_notes="",
+    initial_video="",
+    on_confirm=None,
+):
+    """Build and show the exercise configuration modal.
 
+    on_confirm(sets, reps_val, time_val, distance_val, rest_val, notes_val, video_id)
+    is called when the user confirms; the overlay is removed automatically afterwards.
+    """
     overlay = document.createElement("div")
-    overlay.classList.add("exercise-overlay")
+    overlay.classList.add(overlay_class, "exercise-modal-overlay")
     overlay.setAttribute("onclick", "event.stopPropagation()")
-    overlay.style.position = "fixed"
-    overlay.style.top = "0"
-    overlay.style.left = "0"
-    overlay.style.width = "100%"
-    overlay.style.height = "100%"
-    overlay.style.backgroundColor = "rgba(0,0,0,0.7)"
-    overlay.style.display = "flex"
-    overlay.style.alignItems = "center"
-    overlay.style.justifyContent = "center"
-    overlay.style.zIndex = "1000"
 
     modal = document.createElement("div")
-    modal.style.backgroundColor = "#1a1a1a"
-    modal.style.border = "1px solid #444"
-    modal.style.borderRadius = "8px"
-    modal.style.padding = "20px"
-    modal.style.width = "320px"
-    modal.style.display = "flex"
-    modal.style.flexDirection = "column"
-    modal.style.gap = "12px"
-    modal.style.color = "white"
+    modal.className = "exercise-modal-box"
 
     title = document.createElement("div")
-    title.textContent = exercise_name
-    title.style.fontWeight = "bold"
-    title.style.fontSize = "0.95rem"
-    title.style.color = "#ba945e"
-    title.style.marginBottom = "4px"
+    title.textContent = title_text
+    title.className = "exercise-modal-title"
     modal.appendChild(title)
 
-    inputs_container = document.createElement("div")
-    inputs_container.style.display = "flex"
-    inputs_container.style.flexDirection = "column"
-    inputs_container.style.gap = "8px"
-    inputs_container.style.width = "100%"
-
-    sets_stepper, input_sets = _make_sets_stepper(1)
-    rest_group, input_rest, reset_rest = _make_rest_stepper(0)
-    rest_group.style.display = "none"
+    sets_stepper, input_sets = _make_sets_stepper(initial_sets)
+    rest_group, input_rest, reset_rest = _make_rest_stepper(initial_rest)
+    rest_group.style.display = "flex" if initial_sets > 1 else "none"
 
     input_notes = document.createElement("textarea")
     input_notes.placeholder = t("notes_placeholder")
     input_notes.rows = "3"
-    input_notes.style.resize = "vertical"
+    input_notes.value = initial_notes
 
     per_set_wrapper = document.createElement("div")
     per_set_wrapper.style.width = "100%"
@@ -928,20 +868,23 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
         per_set_wrapper.appendChild(group_el)
         get_per_set_values[0] = get_vals
 
-    _rebuild_per_set(1)
+    _rebuild_per_set(initial_sets, initial_reps, initial_time, initial_distance)
 
     input_video = None
     if state.is_authenticated():
         input_video = document.createElement("input")
         input_video.type = "text"
         input_video.placeholder = t("video_placeholder")
+        input_video.value = initial_video
 
+    inputs_container = document.createElement("div")
+    inputs_container.className = "exercise-modal-inputs"
     inputs_container.appendChild(sets_stepper)
     inputs_container.appendChild(per_set_wrapper)
     inputs_container.appendChild(rest_group)
-    inputs_container.appendChild(_make_input_group(t("notes_label"), input_notes))
+    inputs_container.appendChild(make_input_group(t("notes_label"), input_notes))
     if input_video is not None:
-        inputs_container.appendChild(_make_input_group(t("video_label"), input_video))
+        inputs_container.appendChild(make_input_group(t("video_label"), input_video))
 
     def _on_sets_change(evt):
         val = input_sets.value.strip()
@@ -955,39 +898,48 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
     input_sets.addEventListener("change", create_proxy(_on_sets_change))
     input_sets.addEventListener("input", create_proxy(_on_sets_change))
 
-    buttons_container = document.createElement("div")
-    buttons_container.style.display = "flex"
-    buttons_container.style.gap = "8px"
-    buttons_container.style.marginTop = "4px"
-
     confirm_btn = document.createElement("button")
-    confirm_btn.textContent = t("add_btn")
-    confirm_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
-    confirm_btn.style.flex = "1"
-    confirm_btn.style.fontSize = "0.8rem"
+    confirm_btn.textContent = confirm_label
+    confirm_btn.className = "confirm-popup-cancel"
 
-    close_btn = document.createElement("button")
-    close_btn.textContent = t("cancel_btn")
-    close_btn.classList.add("btn", "btn-outline-secondary", "btn-sm")
-    close_btn.style.flex = "1"
-    close_btn.style.fontSize = "0.8rem"
-    close_btn.onclick = lambda evt: overlay.remove()
+    cancel_btn = document.createElement("button")
+    cancel_btn.textContent = t("cancel_btn")
+    cancel_btn.className = "confirm-popup-confirm"
+    cancel_btn.onclick = lambda evt: overlay.remove()
 
+    buttons_container = document.createElement("div")
+    buttons_container.className = "exercise-modal-actions"
     buttons_container.appendChild(confirm_btn)
-    buttons_container.appendChild(close_btn)
+    buttons_container.appendChild(cancel_btn)
+
     modal.appendChild(inputs_container)
     modal.appendChild(buttons_container)
     overlay.appendChild(modal)
     document.body.appendChild(overlay)
 
-    def on_confirm_click(evt):
+    def _on_confirm(evt):
         sets = int(input_sets.value) if input_sets.value.strip() else 1
         reps_val, time_val, distance_val = get_per_set_values[0]()
         rest_val = int(input_rest.value) if input_rest.value.strip() else 0
         notes_val = input_notes.value.strip()
-        video_id = _extract_yt_id(input_video.value) if state.is_authenticated() and input_video is not None else ""
+        video_id = extract_yt_id(input_video.value) if state.is_authenticated() and input_video is not None else ""
+        if on_confirm:
+            on_confirm(sets, reps_val, time_val, distance_val, rest_val, notes_val, video_id)
+        overlay.remove()
 
-        ex = Exercise(int(exercise_id), str(uuid4()), exercise_name, sets, reps_val, time_val, distance_val, notes_val, rest_between_sets=rest_val, custom_video_id=video_id)
+    confirm_btn.onclick = _on_confirm
+
+
+def configure_exercise(exercise_id: str, exercise_name: str) -> None:
+    from workout_persistence import update_workout_badge
+    from workout_rendering import render_workouts
+
+    def on_confirm(sets, reps_val, time_val, distance_val, rest_val, notes_val, video_id):
+        ex = Exercise(
+            int(exercise_id), str(uuid4()), exercise_name,
+            sets, reps_val, time_val, distance_val, notes_val,
+            rest_between_sets=rest_val, custom_video_id=video_id,
+        )
         if state.active_workout is None:
             state.active_workout = uuid4()
             w = Workout(state.active_workout, datetime.datetime.now().date(), [ex])
@@ -997,13 +949,16 @@ def configure_exercise(exercise_id: str, exercise_name: str) -> None:
                 if w.id == state.active_workout:
                     w.exercises.append(ex)
                     break
-
         state.save_workouts()
         update_workout_badge()
         render_workouts(state.workouts)
-        overlay.remove()
 
-    confirm_btn.onclick = on_confirm_click
+    _build_exercise_modal(
+        overlay_class="exercise-overlay",
+        title_text=exercise_name,
+        confirm_label=t("add_btn"),
+        on_confirm=on_confirm,
+    )
 
 
 def edit_exercise_in_workout(event) -> None:
@@ -1018,121 +973,9 @@ def edit_exercise_in_workout(event) -> None:
     if target_ex is None:
         return
 
-    overlay = document.createElement("div")
-    overlay.classList.add("exercise-edit-overlay")
-    overlay.setAttribute("onclick", "event.stopPropagation()")
-    overlay.style.position = "fixed"
-    overlay.style.top = "0"
-    overlay.style.left = "0"
-    overlay.style.width = "100%"
-    overlay.style.height = "100%"
-    overlay.style.backgroundColor = "rgba(0,0,0,0.7)"
-    overlay.style.display = "flex"
-    overlay.style.alignItems = "center"
-    overlay.style.justifyContent = "center"
-    overlay.style.zIndex = "1000"
+    initial_sets = int(target_ex.sets) if str(target_ex.sets).isdigit() else 1
 
-    modal = document.createElement("div")
-    modal.style.backgroundColor = "#1a1a1a"
-    modal.style.border = "1px solid #444"
-    modal.style.borderRadius = "8px"
-    modal.style.padding = "20px"
-    modal.style.width = "320px"
-    modal.style.display = "flex"
-    modal.style.flexDirection = "column"
-    modal.style.gap = "12px"
-    modal.style.color = "white"
-
-    title = document.createElement("div")
-    title.textContent = t("edit_exercise_title", name=target_ex.name)
-    title.style.fontWeight = "bold"
-    title.style.fontSize = "0.95rem"
-    title.style.color = "#ba945e"
-    title.style.marginBottom = "4px"
-    modal.appendChild(title)
-
-    initial_sets_val = int(target_ex.sets) if str(target_ex.sets).isdigit() else 1
-    sets_stepper, input_sets = _make_sets_stepper(initial_sets_val)
-    initial_rest = int(target_ex.rest_between_sets) if target_ex.rest_between_sets else 0
-    edit_rest_group, input_rest, reset_rest = _make_rest_stepper(initial_rest)
-    edit_rest_group.style.display = "flex" if initial_sets_val > 1 else "none"
-
-    input_notes = document.createElement("textarea")
-    input_notes.placeholder = t("notes_placeholder")
-    input_notes.rows = "3"
-    input_notes.style.resize = "vertical"
-    input_notes.value = target_ex.notes or ""
-
-    per_set_wrapper = document.createElement("div")
-    per_set_wrapper.style.width = "100%"
-    get_per_set_values = [None]
-
-    def _rebuild_per_set(n, reps_csv="", time_csv="", dist_csv=""):
-        reps_list = [v.strip() for v in reps_csv.split(",") if v.strip()] if reps_csv else []
-        time_list = [v.strip() for v in time_csv.split(",") if v.strip()] if time_csv else []
-        dist_list = [v.strip() for v in dist_csv.split(",") if v.strip()] if dist_csv else []
-        while per_set_wrapper.firstChild:
-            per_set_wrapper.removeChild(per_set_wrapper.firstChild)
-        group_el, get_vals = _make_per_set_group(n, reps_list, time_list, dist_list)
-        per_set_wrapper.appendChild(group_el)
-        get_per_set_values[0] = get_vals
-
-    _rebuild_per_set(initial_sets_val, target_ex.reps or "", target_ex.time or "", target_ex.distance or "")
-
-    def _on_edit_sets_change(evt):
-        val = input_sets.value.strip()
-        edit_rest_group.style.display = "flex" if val and val.isdigit() and int(val) > 1 else "none"
-        if edit_rest_group.style.display == "none":
-            reset_rest(0)
-        if val and val.isdigit() and int(val) >= 1:
-            reps_csv, time_csv, dist_csv = get_per_set_values[0]() if get_per_set_values[0] else ("", "", "")
-            _rebuild_per_set(int(val), reps_csv, time_csv, dist_csv)
-
-    input_sets.addEventListener("change", create_proxy(_on_edit_sets_change))
-    input_sets.addEventListener("input", create_proxy(_on_edit_sets_change))
-
-    edit_input_video = None
-    if state.is_authenticated():
-        edit_input_video = document.createElement("input")
-        edit_input_video.type = "text"
-        edit_input_video.placeholder = t("video_placeholder")
-        edit_input_video.value = target_ex.custom_video_id or ""
-
-    modal.appendChild(sets_stepper)
-    modal.appendChild(per_set_wrapper)
-    modal.appendChild(edit_rest_group)
-    modal.appendChild(_make_input_group(t("notes_label"), input_notes))
-    if edit_input_video is not None:
-        modal.appendChild(_make_input_group(t("video_label"), edit_input_video))
-
-    buttons_container = document.createElement("div")
-    buttons_container.style.display = "flex"
-    buttons_container.style.justifyContent = "flex-end"
-    buttons_container.style.gap = "8px"
-    buttons_container.style.marginTop = "4px"
-
-    confirm_btn = document.createElement("button")
-    confirm_btn.textContent = t("save_btn")
-    confirm_btn.className = "confirm-popup-cancel"
-
-    cancel_btn = document.createElement("button")
-    cancel_btn.textContent = t("cancel_btn")
-    cancel_btn.className = "confirm-popup-confirm"
-    cancel_btn.onclick = lambda evt: overlay.remove()
-
-    buttons_container.appendChild(confirm_btn)
-    buttons_container.appendChild(cancel_btn)
-    modal.appendChild(buttons_container)
-    overlay.appendChild(modal)
-    document.body.appendChild(overlay)
-
-    def on_save(evt):
-        sets = int(input_sets.value) if input_sets.value.strip() else 1
-        reps_val, time_val, distance_val = get_per_set_values[0]()
-        rest_val = int(input_rest.value) if input_rest.value.strip() else 0
-        notes_val = input_notes.value.strip()
-        video_id = _extract_yt_id(edit_input_video.value) if state.is_authenticated() and edit_input_video is not None else ""
-
+    def on_confirm(sets, reps_val, time_val, distance_val, rest_val, notes_val, video_id):
         target_ex.sets = sets
         target_ex.reps = reps_val
         target_ex.time = time_val
@@ -1140,12 +983,22 @@ def edit_exercise_in_workout(event) -> None:
         target_ex.rest_between_sets = rest_val
         target_ex.notes = notes_val
         target_ex.custom_video_id = video_id
-
         state.save_workouts()
         render_workouts(state.workouts)
-        overlay.remove()
 
-    confirm_btn.onclick = on_save
+    _build_exercise_modal(
+        overlay_class="exercise-edit-overlay",
+        title_text=t("edit_exercise_title", name=target_ex.name),
+        confirm_label=t("save_btn"),
+        initial_sets=initial_sets,
+        initial_rest=int(target_ex.rest_between_sets) if target_ex.rest_between_sets else 0,
+        initial_reps=target_ex.reps or "",
+        initial_time=target_ex.time or "",
+        initial_distance=target_ex.distance or "",
+        initial_notes=target_ex.notes or "",
+        initial_video=target_ex.custom_video_id or "",
+        on_confirm=on_confirm,
+    )
 
 
 def remove_exercise_from_workout(event) -> None:

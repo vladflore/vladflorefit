@@ -2,7 +2,7 @@ import catalog
 from js import URLSearchParams, localStorage
 from pyscript import window
 from pyweb import pydom
-from common import copyright, current_version
+from common import copyright, current_version, extract_yt_id
 from i18n import t, apply_html_translations
 
 category_to_badge = {
@@ -30,18 +30,6 @@ def _is_authenticated() -> bool:
         pass
     return bool(localStorage.getItem("flexary_auth_session"))
 
-
-def _extract_yt_id(value: str) -> str:
-    value = (value or "").strip()
-    if not value:
-        return ""
-    if "youtu.be/" in value:
-        return value.split("youtu.be/")[-1].split("?")[0].split("&")[0]
-    if "v=" in value:
-        return value.split("v=")[-1].split("&")[0]
-    if "embed/" in value:
-        return value.split("embed/")[-1].split("?")[0].split("&")[0]
-    return value
 
 customs = catalog.parse_custom_exercises(localStorage.getItem("custom_exercises"))
 catalog.initialize(customs)
@@ -90,8 +78,8 @@ else:
     pydom["#equipment-not-available"][0]._js.classList.remove("d-none")
 
 yt_id = (
-    _extract_yt_id(custom_video_id) if _is_authenticated() else ""
-) or _extract_yt_id(data.get("yt_video_id", ""))
+    extract_yt_id(custom_video_id) if _is_authenticated() else ""
+) or extract_yt_id(data.get("yt_video_id", ""))
 iframe = pydom["#exercise-video"][0]._js
 ratio_div = iframe.closest(".ratio")
 

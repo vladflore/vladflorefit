@@ -4,6 +4,7 @@ from pyscript import document
 from pyweb import pydom
 
 import state
+from common import extract_yt_id, make_input_group, make_warning_el, show_warning
 from exercise_records import normalize_exercise_record
 from filters import update as update_filters
 from i18n import t
@@ -26,56 +27,6 @@ def _inject_modal_css() -> None:
         ".cm-box{width:100%;max-height:85vh;border-radius:12px 12px 0 0}}"
     )
     document.head.appendChild(style)
-
-
-def _make_input_group(label_text: str, input_el, is_textarea: bool = False):
-    group = document.createElement("div")
-    group.style.display = "flex"
-    group.style.flexDirection = "column"
-    group.style.gap = "2px"
-    label = document.createElement("label")
-    label.textContent = label_text
-    label.style.fontSize = "0.75rem"
-    label.style.color = "rgba(255,255,255,0.6)"
-    input_el.style.width = "100%"
-    input_el.style.fontSize = "0.8rem"
-    if not is_textarea:
-        input_el.style.height = "30px"
-    input_el.style.padding = "4px 8px"
-    input_el.style.borderRadius = "4px"
-    input_el.style.border = "1px solid rgba(186,148,94,0.3)"
-    input_el.style.backgroundColor = "rgba(255,255,255,0.07)"
-    input_el.style.color = "#fff"
-    input_el.style.outline = "none"
-    if is_textarea:
-        input_el.style.resize = "vertical"
-    group.appendChild(label)
-    group.appendChild(input_el)
-    return group
-
-
-def _make_warning_el():
-    el = document.createElement("div")
-    el.style.display = "none"
-    el.style.color = "#f87171"
-    el.style.fontSize = "0.75rem"
-    return el
-
-
-def _show_warning(el, msg: str) -> None:
-    el.textContent = msg
-    el.style.display = "block"
-
-
-def _extract_yt_id(value: str) -> str:
-    value = value.strip()
-    if not value:
-        return ""
-    if "youtu.be/" in value:
-        return value.split("youtu.be/")[-1].split("?")[0].split("&")[0]
-    if "v=" in value:
-        return value.split("v=")[-1].split("&")[0]
-    return value
 
 
 def _rebuild_data() -> None:
@@ -151,7 +102,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     name_input.placeholder = t("name_placeholder")
     if is_edit:
         name_input.value = ex["name"]
-    step1.appendChild(_make_input_group(t("name_label"), name_input))
+    step1.appendChild(make_input_group(t("name_label"), name_input))
 
     category_select = document.createElement("select")
     category_select.style.height = "30px"
@@ -162,30 +113,30 @@ def _open_custom_modal(ex: dict | None = None) -> None:
         if is_edit and value == ex["category"]:
             opt.selected = True
         category_select.appendChild(opt)
-    step1.appendChild(_make_input_group(t("category_label"), category_select))
+    step1.appendChild(make_input_group(t("category_label"), category_select))
 
     body_parts_input = document.createElement("input")
     body_parts_input.type = "text"
     body_parts_input.placeholder = t("body_parts_placeholder")
     if is_edit:
         body_parts_input.value = ex.get("body_parts", "")
-    step1.appendChild(_make_input_group(t("body_parts_label"), body_parts_input))
+    step1.appendChild(make_input_group(t("body_parts_label"), body_parts_input))
 
     image_input = document.createElement("input")
     image_input.type = "url"
     image_input.placeholder = t("image_url_placeholder")
     if is_edit:
         image_input.value = ex.get("thumbnail_url", "")
-    step1.appendChild(_make_input_group(t("image_url_label"), image_input))
+    step1.appendChild(make_input_group(t("image_url_label"), image_input))
 
     video_input = document.createElement("input")
     video_input.type = "text"
     video_input.placeholder = t("video_placeholder")
     if is_edit:
         video_input.value = ex.get("yt_video_id", "")
-    step1.appendChild(_make_input_group(t("video_label"), video_input))
+    step1.appendChild(make_input_group(t("video_label"), video_input))
 
-    warning1 = _make_warning_el()
+    warning1 = make_warning_el()
     step1.appendChild(warning1)
 
     footer1 = document.createElement("div")
@@ -220,35 +171,35 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     instructions_input.placeholder = t("instructions_placeholder")
     if is_edit:
         instructions_input.value = ex.get("instructions", "")
-    step2.appendChild(_make_input_group(t("instructions_label"), instructions_input, is_textarea=True))
+    step2.appendChild(make_input_group(t("instructions_label"), instructions_input))
 
     primary_muscles_input = document.createElement("input")
     primary_muscles_input.type = "text"
     primary_muscles_input.placeholder = t("primary_muscles_placeholder")
     if is_edit:
         primary_muscles_input.value = ex.get("primary_muscles", "")
-    step2.appendChild(_make_input_group(t("primary_muscles_label"), primary_muscles_input))
+    step2.appendChild(make_input_group(t("primary_muscles_label"), primary_muscles_input))
 
     secondary_muscles_input = document.createElement("input")
     secondary_muscles_input.type = "text"
     secondary_muscles_input.placeholder = t("secondary_muscles_placeholder")
     if is_edit:
         secondary_muscles_input.value = ex.get("secondary_muscles", "")
-    step2.appendChild(_make_input_group(t("secondary_muscles_label"), secondary_muscles_input))
+    step2.appendChild(make_input_group(t("secondary_muscles_label"), secondary_muscles_input))
 
     key_cues_input = document.createElement("input")
     key_cues_input.type = "text"
     key_cues_input.placeholder = t("key_cues_placeholder")
     if is_edit:
         key_cues_input.value = ex.get("key_cues", "")
-    step2.appendChild(_make_input_group(t("key_cues_label"), key_cues_input))
+    step2.appendChild(make_input_group(t("key_cues_label"), key_cues_input))
 
     alternatives_input = document.createElement("input")
     alternatives_input.type = "text"
     alternatives_input.placeholder = t("alternatives_placeholder")
     if is_edit:
         alternatives_input.value = ex.get("alternatives", "")
-    step2.appendChild(_make_input_group(t("alternatives_label"), alternatives_input))
+    step2.appendChild(make_input_group(t("alternatives_label"), alternatives_input))
 
     footer2 = document.createElement("div")
     footer2.style.display = "flex"
@@ -298,12 +249,12 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     def on_next(evt):
         name = name_input.value.strip()
         if not name:
-            _show_warning(warning1, t("name_required"))
+            show_warning(warning1, t("name_required"))
             name_input.focus()
             return
         body_parts = body_parts_input.value.strip()
         if not body_parts:
-            _show_warning(warning1, t("body_parts_required"))
+            show_warning(warning1, t("body_parts_required"))
             body_parts_input.focus()
             return
         warning1.style.display = "none"
@@ -327,7 +278,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
                 "category": category,
                 "body_parts": body_parts,
                 "thumbnail_url": image_input.value.strip(),
-                "yt_video_id": _extract_yt_id(video_input.value),
+                "yt_video_id": extract_yt_id(video_input.value),
                 "instructions": instructions_input.value.strip(),
                 "primary_muscles": primary_muscles_input.value.strip(),
                 "secondary_muscles": secondary_muscles_input.value.strip(),
