@@ -197,13 +197,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     cancel_btn = document.createElement("button")
     cancel_btn.type = "button"
     cancel_btn.textContent = t("cancel_btn")
-    cancel_btn.style.borderRadius = "4px"
-    cancel_btn.style.fontSize = "0.8rem"
-    cancel_btn.style.border = "1px solid #555"
-    cancel_btn.style.color = "#aaa"
-    cancel_btn.style.background = "transparent"
-    cancel_btn.style.cursor = "pointer"
-    cancel_btn.style.padding = "4px 14px"
+    cancel_btn.className = "confirm-popup-confirm"
 
     next_btn = document.createElement("button")
     next_btn.type = "button"
@@ -211,8 +205,8 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     next_btn.className = "btn btn-outline-gold btn-sm"
     next_btn.style.padding = "4px 14px"
 
-    footer1.appendChild(cancel_btn)
     footer1.appendChild(next_btn)
+    footer1.appendChild(cancel_btn)
     step1.appendChild(footer1)
     modal.appendChild(step1)
 
@@ -265,12 +259,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     back_btn = document.createElement("button")
     back_btn.type = "button"
     back_btn.textContent = t("back_btn")
-    back_btn.style.borderRadius = "4px"
-    back_btn.style.fontSize = "0.8rem"
-    back_btn.style.border = "1px solid #555"
-    back_btn.style.color = "#aaa"
-    back_btn.style.background = "transparent"
-    back_btn.style.cursor = "pointer"
+    back_btn.className = "btn btn-outline-gold btn-sm"
     back_btn.style.padding = "4px 14px"
 
     confirm_btn = document.createElement("button")
@@ -279,8 +268,19 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     confirm_btn.className = "btn btn-outline-gold btn-sm"
     confirm_btn.style.padding = "4px 14px"
 
+    cancel2_btn = document.createElement("button")
+    cancel2_btn.type = "button"
+    cancel2_btn.textContent = t("cancel_btn")
+    cancel2_btn.className = "confirm-popup-confirm"
+
+    right_btns = document.createElement("div")
+    right_btns.style.display = "flex"
+    right_btns.style.gap = "8px"
+    right_btns.appendChild(confirm_btn)
+    right_btns.appendChild(cancel2_btn)
+
     footer2.appendChild(back_btn)
-    footer2.appendChild(confirm_btn)
+    footer2.appendChild(right_btns)
     step2.appendChild(footer2)
     modal.appendChild(step2)
 
@@ -356,6 +356,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
         overlay.remove()
 
     cancel_btn.onclick = create_proxy(on_cancel)
+    cancel2_btn.onclick = create_proxy(on_cancel)
     next_btn.onclick = create_proxy(on_next)
     back_btn.onclick = create_proxy(on_back)
     confirm_btn.onclick = create_proxy(on_confirm)

@@ -731,8 +731,8 @@ def _show_confirm_popup(anchor_el, message, on_confirm, confirm_label="Remove", 
     cancel_btn.addEventListener("click", create_proxy(_cancel))
     overlay.addEventListener("click", create_proxy(_dismiss))
 
-    btn_row.appendChild(cancel_btn)
     btn_row.appendChild(confirm_btn)
+    btn_row.appendChild(cancel_btn)
     popup.appendChild(btn_row)
     overlay.appendChild(popup)
     document.body.appendChild(overlay)
@@ -1107,20 +1107,17 @@ def edit_exercise_in_workout(event) -> None:
 
     buttons_container = document.createElement("div")
     buttons_container.style.display = "flex"
+    buttons_container.style.justifyContent = "flex-end"
     buttons_container.style.gap = "8px"
     buttons_container.style.marginTop = "4px"
 
     confirm_btn = document.createElement("button")
     confirm_btn.textContent = t("save_btn")
-    confirm_btn.classList.add("btn", "btn-outline-gold", "btn-sm")
-    confirm_btn.style.flex = "1"
-    confirm_btn.style.fontSize = "0.8rem"
+    confirm_btn.className = "confirm-popup-cancel"
 
     cancel_btn = document.createElement("button")
     cancel_btn.textContent = t("cancel_btn")
-    cancel_btn.classList.add("btn", "btn-outline-secondary", "btn-sm")
-    cancel_btn.style.flex = "1"
-    cancel_btn.style.fontSize = "0.8rem"
+    cancel_btn.className = "confirm-popup-confirm"
     cancel_btn.onclick = lambda evt: overlay.remove()
 
     buttons_container.appendChild(confirm_btn)
