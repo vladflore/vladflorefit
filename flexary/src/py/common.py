@@ -23,4 +23,4 @@ def copyright():
 
 
 def current_version():
-    return "<i>Version: 07.04.2026</i>"
+    return "<i>Version: 11.04.2026</i>"
