@@ -238,6 +238,17 @@
   gap: 6px;
 }
 
+.auth-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.auth-input-row .auth-input {
+  flex: 1;
+  min-width: 0;
+}
+
 .auth-field-group label {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.75);

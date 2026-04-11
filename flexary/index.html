@@ -510,7 +510,7 @@
 
     <dialog id="auth-modal" class="auth-modal">
       <div class="auth-modal-header">
-        <span class="auth-modal-title" data-i18n="auth_magic_title">Sign in with magic link</span>
+        <span class="auth-modal-title" data-i18n="auth_magic_title">Sign in with secure link</span>
         <button
           class="auth-modal-close"
           type="button"
@@ -530,29 +530,29 @@
         </div>
         <div class="auth-field-group">
           <label for="auth-email" data-i18n="email_label">Email</label>
-          <input
-            id="auth-email"
-            class="auth-input"
-            type="email"
-            autocomplete="email"
-            placeholder="you@example.com"
-            data-i18n-ph="email_placeholder"
-          />
+          <div class="auth-input-row">
+            <input
+              id="auth-email"
+              class="auth-input"
+              type="email"
+              autocomplete="email"
+              placeholder="you@example.com"
+              data-i18n-ph="email_placeholder"
+            />
+            <button
+              id="auth-magic-link-btn"
+              type="button"
+              class="btn btn-outline-gold"
+              py-click="send_magic_link"
+              data-i18n="send_magic_link"
+              data-i18n-title="send_magic_link"
+              title="Send secure link"
+            >
+              Send secure link
+            </button>
+          </div>
         </div>
         <div id="auth-feedback" class="auth-feedback d-none"></div>
-      </div>
-      <div class="auth-modal-actions">
-        <button
-          id="auth-magic-link-btn"
-          type="button"
-          class="btn btn-outline-gold"
-          py-click="send_magic_link"
-          data-i18n="send_magic_link"
-          data-i18n-title="send_magic_link"
-          title="Send magic link"
-        >
-          Send magic link
-        </button>
       </div>
     </dialog>
 
