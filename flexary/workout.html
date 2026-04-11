@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Log your workout — Flexary" />
+    <title>Workout Logger — Flexary</title>
+    <link rel="icon" type="image/png" href="./assets/favicon.jpeg" />
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="./assets/css/workout-logger.css" />
+  </head>
+
+  <body>
+    <div id="wl-root">
+
+      <!-- Sticky header: topbar + progress + toolbar -->
+      <div class="wl-sticky-header">
+        <nav class="wl-topbar">
+          <a id="wl-topbar-back" href="index.html" class="wl-topbar-back" aria-label="Back">
+            <i class="bi bi-arrow-left"></i>
+          </a>
+          <div class="wl-topbar-info">
+            <div id="wl-workout-name" class="wl-topbar-name">Loading…</div>
+            <div id="wl-workout-date" class="wl-topbar-date"></div>
+          </div>
+        </nav>
+
+        <!-- Progress -->
+        <div class="wl-progress-wrap">
+          <div class="wl-progress-bar-track">
+            <div id="wl-progress-fill" class="wl-progress-bar-fill"></div>
+          </div>
+          <div id="wl-progress-label" class="wl-progress-label">0 / 0 sets</div>
+        </div>
+
+        <!-- Collapse toolbar -->
+        <div class="wl-toolbar">
+          <button id="wl-collapse-all" class="wl-toolbar-btn" onclick="wlToggleAll()">
+            <i class="bi bi-arrows-collapse"></i><span>Collapse all</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Exercise list -->
+      <main class="wl-main" id="wl-exercises"></main>
+
+      <!-- Floating finish bar -->
+      <div class="wl-finish-bar">
+        <button class="wl-finish-btn" onclick="wlFinish()">
+          <i class="bi bi-flag-fill me-2"></i>Finish workout
+        </button>
+      </div>
+
+    </div><!-- #wl-root -->
+
+    <div id="wl-toast" class="wl-toast"></div>
+
+    <!-- Exercise info modal (bottom sheet) -->
+    <div id="wl-info-modal" class="wl-info-modal" hidden>
+      <div class="wl-info-backdrop" onclick="wlCloseInfo()"></div>
+      <div class="wl-info-sheet">
+        <div class="wl-info-header">
+          <span id="wl-info-title" class="wl-info-title"></span>
+          <button class="wl-info-close" onclick="wlCloseInfo()" aria-label="Close">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div id="wl-info-body" class="wl-info-body"></div>
+      </div>
+    </div>
+
+    <script src="./src/js/workout-logger.js"></script>
+  </body>
+</html>

@@ -82,10 +82,13 @@ def _set_nav_state(user) -> None:
     signed = _el("auth-user-menu")
     badge = _el("auth-status-badge")
     account_btn = _el("auth-account-trigger")
+    save_btn = _el("save-workouts")
 
     is_signed_in = bool(user)
     guest.classList.toggle("d-none", is_signed_in)
     signed.classList.toggle("d-none", not is_signed_in)
+    if save_btn:
+        save_btn.classList.toggle("d-none", not is_signed_in)
 
     if is_signed_in:
         email = str(user.email) if getattr(user, "email", None) else t("account")

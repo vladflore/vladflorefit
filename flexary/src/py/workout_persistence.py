@@ -26,6 +26,19 @@ def hide_sidebar() -> None:
     update_workout_badge()
 
 
+def update_action_buttons() -> None:
+    """Enable or disable PDF / ICS buttons based on whether any workout has exercises."""
+    from pyscript import document
+    has_content = any(w.exercises for w in state.workouts)
+    for btn_id in ("download-workouts", "download-ics"):
+        btn = document.getElementById(btn_id)
+        if btn:
+            if has_content:
+                btn.removeAttribute("disabled")
+            else:
+                btn.setAttribute("disabled", "")
+
+
 def update_workout_badge() -> None:
     count = len(state.workouts)
     btn = pydom["#toggle-workout-sidebar"][0]._js
@@ -50,12 +63,14 @@ def remove_workout(event) -> None:
         return
 
     def _do():
+        from workout_export import sync_export
         for i, w in enumerate(state.workouts):
             if str(w.id) == workout_id:
                 del state.workouts[i]
                 break
         state.active_workout = None if not state.workouts else state.workouts[-1].id
         state.save_workouts()
+        sync_export()
         render_workouts(state.workouts)
         update_workout_badge()
         if not state.workouts:
@@ -75,13 +90,16 @@ def remove_workouts(event) -> None:
     anchor = event.target.closest("button") or event.target
 
     def _do():
+        from workout_export import sync_export
         state.workouts.clear()
         state.active_workout = None
         localStorage.removeItem(state.ls_workouts_key)
+        sync_export()  # removes flexary_export since no workouts remain
         ws_container = pydom["#workout-list-container"][0]
         while ws_container._js.firstChild:
             ws_container._js.removeChild(ws_container._js.firstChild)
         update_workout_badge()
+        update_action_buttons()
         hide_sidebar()
 
     if any(w.exercises for w in state.workouts):

@@ -43,14 +43,14 @@
 
   <body>
     <dialog id="loading">
-      <img src="./assets/logo-nobg.webp" class="logo pulsate" alt="Loading..." />
+      <img src="./assets/logo-nobg.webp" class="logo pulsate" alt="Loading..." width="50" height="50" />
     </dialog>
 
     <nav class="navbar sticky-top site-nav flex-wrap">
       <div class="site-nav-inner">
         <div class="site-nav-brand">
           <a href="index.html">
-            <img src="./assets/logo-nobg.webp" class="logo-header" alt="Logo" />
+            <img src="./assets/logo-nobg.webp" class="logo-header" alt="Logo" width="50" height="50" />
           </a>
           <a href="index.html" class="site-nav-title">Flexary</a>
           <button
@@ -142,7 +142,7 @@
               </button>
               <button class="lang-select-option" type="button" data-lang-value="ca" role="option">
                 <span class="lang-flag lang-flag-svg">
-                  <img src="./assets/flags/catalonia.svg" alt="" aria-hidden="true" />
+                  <img src="./assets/flags/catalonia.svg" alt="" aria-hidden="true" width="24" height="18" />
                 </span>
                 <span class="lang-option-code">CA</span>
               </button>
@@ -244,6 +244,8 @@
                       src=""
                       class="card-img-top"
                       alt=""
+                      width="320"
+                      height="160"
                     />
                     <span id="equipment-badge" class="badge equipment-badge equipment-badge--card"></span>
                   </div>
@@ -335,10 +337,9 @@
               <input
                 id="workout-name"
                 type="text"
-                class="form-control form-control-sm mb-2"
+                class="form-control form-control-sm mb-2 sidebar-text-input"
                 placeholder="Name (optional)"
                 data-i18n-ph="workout_name_placeholder"
-                style="background-color: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); color: #e0e0e0;"
               />
               <label
                 for="workout-date"
@@ -412,13 +413,17 @@
           </template>
         </div>
         <div class="workout-sidebar-footer">
-          <button id="download-workouts" type="button" class="sidebar-action-btn" data-i18n-title="download_pdf_title" title="Download PDF">
+          <button id="download-workouts" type="button" class="sidebar-action-btn" data-i18n-title="download_pdf_title" title="Download PDF" disabled>
             <i class="bi bi-file-earmark-arrow-down"></i>
             <span data-i18n="pdf_label">PDF</span>
           </button>
-          <button id="download-ics" type="button" class="sidebar-action-btn" data-i18n-title="ics_label" title="ICS">
+          <button id="download-ics" type="button" class="sidebar-action-btn" data-i18n-title="ics_label" title="ICS" disabled>
             <i class="bi bi-calendar-event"></i>
             <span data-i18n="ics_label">ICS</span>
+          </button>
+          <button id="save-workouts" type="button" class="sidebar-action-btn d-none" title="Save workouts">
+            <i class="bi bi-floppy"></i>
+            <span>Save</span>
           </button>
 
           <button id="clear-workouts" type="button" class="sidebar-action-btn sidebar-action-btn--danger" py-click="remove_workouts" data-i18n-title="clear_label" title="Clear">
@@ -571,35 +576,51 @@
               <span class="info-feature-icon"><i class="bi bi-collection"></i></span>
               <div class="info-feature-body">
                 <strong class="info-feature-title" data-i18n="info_feature_collection_title">Expanding Exercise Collection</strong>
-                <span class="info-feature-desc" data-i18n="info_feature_collection_desc">Instructions, tips, and muscle focus for each movement.</span>
+                <ul class="info-feature-bullets">
+                  <li data-i18n="info_feature_collection_b1">Instructions and tips for each movement</li>
+                  <li data-i18n="info_feature_collection_b2">Muscle focus and equipment details</li>
+                </ul>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-journal-plus"></i></span>
               <div class="info-feature-body">
                 <strong class="info-feature-title" data-i18n="info_feature_workouts_title">Create and Customize Workouts</strong>
-                <span class="info-feature-desc" data-i18n="info_feature_workouts_desc">Combine your favourite exercises into routines that fit your goals.</span>
+                <ul class="info-feature-bullets">
+                  <li data-i18n="info_feature_workouts_b1">Build routines from your favourite exercises</li>
+                  <li class="info-feature-bullet--auth"><span class="info-auth-badge"><i class="bi bi-person-check" aria-hidden="true"></i><span data-i18n="info_auth_badge">Signed in</span></span><span data-i18n="info_feature_workouts_b2">Link your own video to any exercise</span></li>
+                </ul>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-file-earmark-arrow-down"></i></span>
               <div class="info-feature-body">
                 <strong class="info-feature-title" data-i18n="info_feature_pdf_title">Export to PDF</strong>
-                <span class="info-feature-desc" data-i18n="info_feature_pdf_desc">Print your workout and take it with you wherever you train. Signed-in users can personalise the PDF with their own logo, website link, and accent colour.</span>
+                <ul class="info-feature-bullets">
+                  <li data-i18n="info_feature_pdf_b1">Download your workout as a printable PDF</li>
+                  <li class="info-feature-bullet--auth"><span class="info-auth-badge"><i class="bi bi-person-check" aria-hidden="true"></i><span data-i18n="info_auth_badge">Signed in</span></span><span data-i18n="info_feature_pdf_b2">Personalise with your own logo and website link</span></li>
+                  <li class="info-feature-bullet--auth"><span class="info-auth-badge"><i class="bi bi-person-check" aria-hidden="true"></i><span data-i18n="info_auth_badge">Signed in</span></span><span data-i18n="info_feature_pdf_b3">Choose a custom accent colour</span></li>
+                </ul>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-search"></i></span>
               <div class="info-feature-body">
                 <strong class="info-feature-title" data-i18n="info_feature_search_title">Search and Filtering</strong>
-                <span class="info-feature-desc" data-i18n="info_feature_search_desc">Quickly find exercises by name, category, or body part.</span>
+                <ul class="info-feature-bullets">
+                  <li data-i18n="info_feature_search_b1">Search by name, category, or body part</li>
+                  <li data-i18n="info_feature_search_b2">Filter by primary muscle group</li>
+                </ul>
               </div>
             </li>
             <li class="info-feature">
               <span class="info-feature-icon"><i class="bi bi-calendar-event"></i></span>
               <div class="info-feature-body">
                 <strong class="info-feature-title" data-i18n="info_feature_calendar_title">Export to Calendar</strong>
-                <span class="info-feature-desc" data-i18n="info_feature_calendar_desc">Add your workouts to your calendar with a simple ICS export.</span>
+                <ul class="info-feature-bullets">
+                  <li data-i18n="info_feature_calendar_b1">Export workouts as ICS files</li>
+                  <li data-i18n="info_feature_calendar_b2">Compatible with most calendar apps</li>
+                </ul>
               </div>
             </li>
           </ul>

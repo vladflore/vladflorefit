@@ -1,21 +1,6 @@
-import csv
 import datetime
 
 from pyscript import document
-
-from exercise_records import normalize_exercise_record, normalize_exercise_records
-
-
-def csv_to_json(csv_file_path, exercise_id=None):
-    with open(csv_file_path, mode="r", encoding="utf-8") as csv_file:
-        reader = csv.DictReader(csv_file)
-        if exercise_id:
-            for row in reader:
-                if row.get("id") == exercise_id:
-                    return normalize_exercise_record(row, is_custom=False)
-            return {}
-        else:
-            return normalize_exercise_records([row for row in reader], is_custom=False)
 
 
 def copyright():
@@ -25,7 +10,23 @@ def copyright():
 
 
 def current_version():
-    return "<i>Version: 11.04.2026</i>"
+    return "<i>Version: 12.04.2026</i>"
+
+
+def is_valid_yt_url(value: str) -> bool:
+    """Return True if value is empty (optional) or a recognised YouTube URL."""
+    value = (value or "").strip()
+    if not value:
+        return True
+    is_yt_host = "youtube.com/" in value or "youtu.be/" in value
+    return is_yt_host and bool(extract_yt_id(value))
+
+
+def yt_id_to_url(video_id: str) -> str:
+    video_id = (video_id or "").strip()
+    if not video_id:
+        return ""
+    return f"https://www.youtube.com/watch?v={video_id}"
 
 
 def extract_yt_id(value: str) -> str:
@@ -34,6 +35,8 @@ def extract_yt_id(value: str) -> str:
         return ""
     if "youtu.be/" in value:
         return value.split("youtu.be/")[-1].split("?")[0].split("&")[0]
+    if "/shorts/" in value:
+        return value.split("/shorts/")[-1].split("?")[0].split("&")[0]
     if "embed/" in value:
         return value.split("embed/")[-1].split("?")[0].split("&")[0]
     if "v=" in value:

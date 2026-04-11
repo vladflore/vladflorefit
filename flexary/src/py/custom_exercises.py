@@ -4,7 +4,7 @@ from pyscript import document
 from pyweb import pydom
 
 import state
-from common import extract_yt_id, make_input_group, make_warning_el, show_warning
+from common import extract_yt_id, is_valid_yt_url, make_input_group, make_warning_el, show_warning, yt_id_to_url
 from exercise_records import normalize_exercise_record
 from filters import update as update_filters
 from i18n import t
@@ -133,7 +133,7 @@ def _open_custom_modal(ex: dict | None = None) -> None:
     video_input.type = "text"
     video_input.placeholder = t("video_placeholder")
     if is_edit:
-        video_input.value = ex.get("yt_video_id", "")
+        video_input.value = yt_id_to_url(ex.get("yt_video_id", ""))
     step1.appendChild(make_input_group(t("video_label"), video_input))
 
     warning1 = make_warning_el()
@@ -256,6 +256,10 @@ def _open_custom_modal(ex: dict | None = None) -> None:
         if not body_parts:
             show_warning(warning1, t("body_parts_required"))
             body_parts_input.focus()
+            return
+        if not is_valid_yt_url(video_input.value):
+            show_warning(warning1, t("video_invalid_url"))
+            video_input.focus()
             return
         warning1.style.display = "none"
         step1.style.display = "none"

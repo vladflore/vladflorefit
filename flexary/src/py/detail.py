@@ -4,6 +4,7 @@ from pyscript import window
 from pyweb import pydom
 from common import copyright, current_version, extract_yt_id
 from i18n import t, apply_html_translations
+from state import ls_custom_exercises_key
 
 category_to_badge = {
     "strength": "bg-dark",
@@ -17,21 +18,8 @@ exercise_id = query.get("exercise_id") or ""
 custom_video_id = query.get("custom_video_id") or ""
 
 
-def _is_authenticated() -> bool:
-    try:
-        if (
-            hasattr(window, "flexaryAuth")
-            and window.flexaryAuth
-            and window.flexaryAuth.state
-            and (window.flexaryAuth.state.user or window.flexaryAuth.state.session)
-        ):
-            return True
-    except Exception:
-        pass
-    return bool(localStorage.getItem("flexary_auth_session"))
 
-
-customs = catalog.parse_custom_exercises(localStorage.getItem("custom_exercises"))
+customs = catalog.parse_custom_exercises(localStorage.getItem(ls_custom_exercises_key))
 catalog.initialize(customs)
 data = catalog.get_exercise(exercise_id)
 
@@ -78,7 +66,7 @@ else:
     pydom["#equipment-not-available"][0]._js.classList.remove("d-none")
 
 yt_id = (
-    extract_yt_id(custom_video_id) if _is_authenticated() else ""
+    extract_yt_id(custom_video_id) if custom_video_id else ""
 ) or extract_yt_id(data.get("yt_video_id", ""))
 iframe = pydom["#exercise-video"][0]._js
 ratio_div = iframe.closest(".ratio")

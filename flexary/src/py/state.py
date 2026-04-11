@@ -19,9 +19,9 @@ exercises_per_primary_muscle_badges_row_id = "#exercises-per-primary-muscle-badg
 download_pdf_btn_id = "download-workouts"
 pdf_color_modal_id = "pdf-color-modal"
 
-ls_workouts_key = "workouts"
-ls_filters_key = "filters"
-ls_custom_exercises_key = "custom_exercises"
+ls_workouts_key = "flexary_workouts"
+ls_filters_key = "flexary_filters"
+ls_custom_exercises_key = "flexary_custom_exercises"
 ls_auth_session_key = "flexary_auth_session"
 
 

@@ -357,11 +357,11 @@
 
 .workout-sidebar {
   position: fixed;
-  top: 68px;
+  top: var(--navbar-height, 68px);
   left: 0;
   right: auto;
   width: 360px;
-  height: calc(100vh - 68px);
+  height: calc(100vh - var(--navbar-height, 68px));
   background-color: #1a1a1a;
   border-right: 1px solid #333;
   border-left: none;
@@ -981,6 +981,24 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
 .exercise-item-video-link:hover {
   color: #d4b07e;
   text-decoration: underline;
+}
+
+.sidebar-text-input {
+  background-color: rgba(255, 255, 255, 0.07) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e0e0e0 !important;
+  outline: none !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+
+.sidebar-text-input::placeholder {
+  color: #999 !important;
+  opacity: 1;
+}
+
+.sidebar-text-input:focus {
+  border-color: #ba945e !important;
+  box-shadow: 0 0 0 2px rgba(186, 148, 94, 0.2) !important;
 }
 
 .workout-sidebar-footer {
@@ -1706,7 +1724,7 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   padding: 0;
   width: 90%;
   max-width: 480px;
-  max-height: 85dvh;
+  max-height: 70dvh;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
 }
 
@@ -1843,16 +1861,58 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
   padding-top: 0.15rem;
 }
 
+.info-feature-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
 .info-feature-title {
   color: #e0d4c0;
   font-size: 0.875rem;
   font-weight: 600;
 }
 
-.info-feature-desc {
+.info-auth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ba945e;
+  background-color: rgba(186, 148, 94, 0.1);
+  border: 1px solid rgba(186, 148, 94, 0.35);
+  border-radius: 999px;
+  padding: 0.1em 0.5em;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.info-feature-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.info-feature-bullets > li {
   color: #777;
   font-size: 0.8rem;
   line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.info-feature-bullets > li:not(.info-feature-bullet--auth)::before {
+  content: "–";
+  color: #ba945e;
+  opacity: 0.7;
+  flex-shrink: 0;
 }
 
 @media (max-width: 991.98px) {

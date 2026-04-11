@@ -392,7 +392,8 @@ def render_workouts(workouts: list) -> None:
 
         ws_container.append(w_div)
 
-    has_mismatch = any(
+    has_content = any(w.exercises for w in workouts)
+    has_mismatch = has_content and any(
         ex.superset_id and ex.execution_mismatch(w.superset_rounds.get(ex.superset_id, 1))
         for w in workouts
         for ex in w.exercises
@@ -401,7 +402,7 @@ def render_workouts(workouts: list) -> None:
     for btn_id in ("download-workouts", "download-ics"):
         btn = document.getElementById(btn_id)
         if btn:
-            btn.disabled = has_mismatch
+            btn.disabled = not has_content or has_mismatch
             btn.title = mismatch_title
 
 

@@ -5,10 +5,11 @@ from pyodide.ffi import to_js
 from pyscript import document
 
 SUPPORTED = frozenset(["en", "es", "de", "ca"])
+LS_LANG_KEY = "flexary_lang"
 
 
 def _detect_lang() -> str:
-    stored = localStorage.getItem("flexary_lang")
+    stored = localStorage.getItem(LS_LANG_KEY)
     if stored and str(stored) in SUPPORTED:
         return str(stored)
     nav = str(window.navigator.language or "en").split("-")[0].lower()

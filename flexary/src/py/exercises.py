@@ -12,9 +12,6 @@ def open_exercise(event) -> None:
         window.open(f"detail.html?exercise_id={card.getAttribute('data-exercise-id')}", "_blank")
 
 
-def stop_propagation(event) -> None:
-    event.stopPropagation()
-
 
 def create_card_exercise(template, exercise_data: dict):
     from custom_exercises import delete_custom_exercise

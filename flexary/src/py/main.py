@@ -1,5 +1,6 @@
 import asyncio
 import importlib
+import json
 
 from pyodide.ffi import create_proxy
 from pyodide.ffi.wrappers import add_event_listener
@@ -27,6 +28,7 @@ from filters import (
 from ics import download_ics
 from workouts import add_workout, hide_sidebar, render_workouts, remove_workouts, update_workout_badge
 from custom_exercises import open_add_custom_modal
+from workout_export import download_workouts_json, save_workouts
 
 _pdf_module = None
 
@@ -62,6 +64,19 @@ apply_html_translations()
 
 catalog.initialize(state.custom_exercises)
 
+# Expose the full catalog as JSON so the PDF Web Worker can look up exercises
+# without needing its own copy of the CSV.
+window.flexaryCatalogJson = json.dumps(
+    {ex["id"]: dict(ex) for ex in catalog.all_exercises()}
+)
+
+# Expose a helper the JS PDF handler calls to flush pending DOM inputs (workout
+# name / date fields) into localStorage before serialising workout data.
+def _flush_for_pdf():
+    state.flush_workout_inputs()
+
+window.flexaryFlushForPdf = create_proxy(_flush_for_pdf)
+
 update_filters("")
 
 pydom["#skeleton-row"][0]._js.classList.add("d-none")
@@ -69,11 +84,16 @@ pydom["#filter-row"][0]._js.classList.remove("d-none")
 
 pydom[state.copyright_el_id][0]._js.innerHTML = copyright()
 pydom[state.version_el_id][0]._js.innerHTML = current_version()
-pydom[state.footer_el_id][0]._js.classList.remove("d-none")
+# Footer is revealed in _bootstrap() AFTER the exercise container, so the
+# footer never occupies viewport space before the cards push it to the bottom.
+# Revealing it here (while the container is still d-none) caused the footer to
+# sit near the top of the page, then shift ~6000 px down — the dominant CLS
+# culprit (score 0.145).
 
 add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", open_pdf_modal)
 add_event_listener(document.getElementById("download-ics"), "click", download_ics)
-add_event_listener(document.getElementById("pdf-download-btn"), "click", download_pdf_with_options)
+add_event_listener(document.getElementById("save-workouts"), "click", save_workouts)
+# pdf-download-btn is now handled by the Pyodide Web Worker via ui.js
 add_event_listener(document.getElementById("pdf-logo-input"), "change", on_logo_file_change)
 add_event_listener(document.getElementById("pdf-logo-clear"), "click", clear_logo)
 
@@ -98,6 +118,9 @@ async def _bootstrap() -> None:
     window.addEventListener("flexary-auth-change", create_proxy(_on_auth_change))
     document.getElementById("loading").close()
     document.getElementById("container").classList.remove("d-none")
+    # Reveal footer only after the container is visible so the footer is already
+    # off-screen (below the fold) when it appears — no layout shift.
+    document.getElementById("footer").classList.remove("d-none")
 
 
 asyncio.ensure_future(_bootstrap())

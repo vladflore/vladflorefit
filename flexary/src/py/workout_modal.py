@@ -8,7 +8,7 @@ from pyodide.ffi import create_proxy
 from pyscript import document
 
 import state
-from common import extract_yt_id, make_input_group, make_warning_el, show_warning
+from common import extract_yt_id, is_valid_yt_url, make_input_group, make_warning_el, show_warning, yt_id_to_url
 from i18n import t
 from models import Exercise, Workout
 from workout_domain import _cleanup_supersets, _event_attr, _find_exercise
@@ -912,12 +912,20 @@ def _build_exercise_modal(
     buttons_container.appendChild(confirm_btn)
     buttons_container.appendChild(cancel_btn)
 
+    video_warning = make_warning_el()
     modal.appendChild(inputs_container)
+    modal.appendChild(video_warning)
     modal.appendChild(buttons_container)
     overlay.appendChild(modal)
     document.body.appendChild(overlay)
 
     def _on_confirm(evt):
+        if state.is_authenticated() and input_video is not None:
+            if not is_valid_yt_url(input_video.value):
+                show_warning(video_warning, t("video_invalid_url"))
+                input_video.focus()
+                return
+        video_warning.style.display = "none"
         sets = int(input_sets.value) if input_sets.value.strip() else 1
         reps_val, time_val, distance_val = get_per_set_values[0]()
         rest_val = int(input_rest.value) if input_rest.value.strip() else 0
@@ -996,7 +1004,7 @@ def edit_exercise_in_workout(event) -> None:
         initial_time=target_ex.time or "",
         initial_distance=target_ex.distance or "",
         initial_notes=target_ex.notes or "",
-        initial_video=target_ex.custom_video_id or "",
+        initial_video=yt_id_to_url(target_ex.custom_video_id or ""),
         on_confirm=on_confirm,
     )
 
@@ -1016,11 +1024,13 @@ def remove_exercise_from_workout(event) -> None:
     anchor = event.target.closest("i") or event.target
 
     def _do():
+        from workout_export import sync_export
         ex_id = w.exercises[j].internal_id
         del w.exercises[j]
         w.breaks.pop(ex_id, None)
         _cleanup_supersets(w)
         state.save_workouts()
+        sync_export()
         render_workouts(state.workouts)
         if not state.workouts:
             state.active_workout = None
