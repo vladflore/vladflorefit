@@ -1,5 +1,6 @@
 import asyncio
 import importlib
+import json
 
 from pyodide.ffi import create_proxy
 from pyodide.ffi.wrappers import add_event_listener
@@ -62,6 +63,19 @@ apply_html_translations()
 
 catalog.initialize(state.custom_exercises)
 
+# Expose the full catalog as JSON so the PDF Web Worker can look up exercises
+# without needing its own copy of the CSV.
+window.flexaryCatalogJson = json.dumps(
+    {ex["id"]: dict(ex) for ex in catalog.all_exercises()}
+)
+
+# Expose a helper the JS PDF handler calls to flush pending DOM inputs (workout
+# name / date fields) into localStorage before serialising workout data.
+def _flush_for_pdf():
+    state.flush_workout_inputs()
+
+window.flexaryFlushForPdf = create_proxy(_flush_for_pdf)
+
 update_filters("")
 
 pydom["#skeleton-row"][0]._js.classList.add("d-none")
@@ -73,7 +87,7 @@ pydom[state.footer_el_id][0]._js.classList.remove("d-none")
 
 add_event_listener(document.getElementById(state.download_pdf_btn_id), "click", open_pdf_modal)
 add_event_listener(document.getElementById("download-ics"), "click", download_ics)
-add_event_listener(document.getElementById("pdf-download-btn"), "click", download_pdf_with_options)
+# pdf-download-btn is now handled by the Pyodide Web Worker via ui.js
 add_event_listener(document.getElementById("pdf-logo-input"), "change", on_logo_file_change)
 add_event_listener(document.getElementById("pdf-logo-clear"), "click", clear_logo)
 

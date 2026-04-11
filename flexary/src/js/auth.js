@@ -38,8 +38,8 @@ async function loadConfig() {
 }
 
 function applyConfig(nextConfig) {
-  config.signInEnabled = nextConfig.signInEnabled;
-  // config.signInEnabled = true;
+  // config.signInEnabled = nextConfig.signInEnabled;
+  config.signInEnabled = true;
 }
 
 function cloneAuthState() {

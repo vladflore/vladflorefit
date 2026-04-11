@@ -1,3 +1,157 @@
+// ---------------------------------------------------------------------------
+// Pyodide PDF Worker — started immediately so Pyodide + packages are warm by
+// the time the user opens the PDF modal and clicks Download.
+// ---------------------------------------------------------------------------
+
+(function startPdfWorker() {
+  let worker = null;
+  let workerReady = false;
+  const pending = new Map(); // id → { resolve, reject, btnEl, iconEl, origClass }
+  let nextId = 0;
+
+  function getWorker() {
+    if (!worker) {
+      worker = new Worker('./src/js/pyodide-worker.js');
+      worker.onmessage = (event) => {
+        const { type, id, bytes, message } = event.data;
+
+        if (type === 'ready') {
+          workerReady = true;
+          return;
+        }
+
+        const job = pending.get(id);
+        if (!job) return;
+        pending.delete(id);
+
+        if (type === 'pdf-result') {
+          job.resolve(bytes);
+        } else if (type === 'pdf-error') {
+          job.reject(new Error(message));
+        }
+      };
+      worker.onerror = (err) => {
+        // Reject all pending jobs on fatal worker error.
+        for (const [, job] of pending) job.reject(err);
+        pending.clear();
+        worker = null;
+      };
+    }
+    return worker;
+  }
+
+  function generatePdfViaWorker(payload) {
+    return new Promise((resolve, reject) => {
+      const id = nextId++;
+      pending.set(id, { resolve, reject });
+      const w = getWorker();
+      const transfer = payload.logoBytes instanceof Uint8Array
+        ? [payload.logoBytes.buffer]
+        : [];
+      w.postMessage({ type: 'generate-pdf', id, payload }, transfer);
+    });
+  }
+
+  // Attach PDF download button handler once the DOM is ready.
+  document.addEventListener('DOMContentLoaded', () => {
+    // Kick off worker initialisation immediately (pre-warm).
+    getWorker();
+
+    const pdfDownloadBtn = document.getElementById('pdf-download-btn');
+    if (!pdfDownloadBtn) return;
+
+    pdfDownloadBtn.addEventListener('click', async () => {
+      // 1. Flush pending DOM inputs into localStorage via Python helper.
+      if (typeof window.flexaryFlushForPdf === 'function') {
+        try { window.flexaryFlushForPdf(); } catch (_) {}
+      }
+
+      // 2. Read modal options.
+      const bwBtn = document.getElementById('pdf-bw-btn');
+      const blackAndWhite = bwBtn
+        ? bwBtn.classList.contains('pdf-toggle-btn--active')
+        : false;
+
+      const siteInput = document.getElementById('pdf-link-input');
+      const siteUrl = siteInput ? siteInput.value.trim() : '';
+
+      const borderColorInput = document.getElementById('pdf-border-color-input');
+      const borderColor =
+        borderColorInput && !borderColorInput.disabled
+          ? borderColorInput.value
+          : '';
+
+      // 3. Read logo bytes (must happen before modal closes which resets the input).
+      let logoBytes = null;
+      const logoInput = document.getElementById('pdf-logo-input');
+      if (logoInput && logoInput.files && logoInput.files.length > 0) {
+        try {
+          const buf = await logoInput.files[0].arrayBuffer();
+          logoBytes = new Uint8Array(buf);
+        } catch (_) {}
+      }
+
+      // 4. Close the modal.
+      const modal = document.getElementById('pdf-color-modal');
+      if (modal) modal.close();
+
+      // 5. Show spinner on the sidebar Download button.
+      const sidebarBtn = document.getElementById('download-workouts');
+      const sidebarIcon = sidebarBtn ? sidebarBtn.querySelector('i') : null;
+      const origClass = sidebarIcon ? sidebarIcon.className : '';
+      if (sidebarIcon) sidebarIcon.className = 'bi bi-arrow-repeat spin';
+      if (sidebarBtn) sidebarBtn.disabled = true;
+
+      try {
+        // 6. Collect workout + catalog + locale data for the worker.
+        const workoutsJson =
+          localStorage.getItem('workouts') || '[]';
+        const catalogJson =
+          typeof window.flexaryCatalogJson === 'string'
+            ? window.flexaryCatalogJson
+            : '{}';
+        const localeJson = JSON.stringify(window.flexaryI18n || {});
+        const isAuthenticated = !!(
+          window.flexaryAuth &&
+          window.flexaryAuth.state &&
+          window.flexaryAuth.state.user
+        ) || !!localStorage.getItem('flexary_auth_session');
+
+        // 7. Dispatch to the worker and await bytes.
+        const pdfBytes = await generatePdfViaWorker({
+          workoutsJson,
+          catalogJson,
+          localeJson,
+          isAuthenticated,
+          blackAndWhite,
+          siteUrl,
+          borderColor,
+          logoBytes,
+        });
+
+        // 8. Trigger browser download from the main thread.
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        const ts = new Date()
+          .toLocaleString('en-GB', { hour12: false })
+          .replace(/[/,: ]/g, (c) => (c === '/' ? '' : c === ' ' ? '_' : ''));
+        anchor.download = `workouts_${ts}.pdf`;
+        anchor.href = url;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('PDF generation failed:', err);
+      } finally {
+        if (sidebarIcon) sidebarIcon.className = origClass;
+        if (sidebarBtn) sidebarBtn.disabled = false;
+      }
+    });
+  });
+})();
+
+// ---------------------------------------------------------------------------
+
 document.addEventListener("DOMContentLoaded", function () {
   const pdfColorModal = document.getElementById("pdf-color-modal");
   document.getElementById("pdf-color-modal-close").addEventListener("click", () => pdfColorModal.close());
