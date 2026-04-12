@@ -10,7 +10,7 @@ def copyright():
 
 
 def current_version():
-    return "<i>Version: 12.04.2026</i>"
+    return "<i>Version: 13.04.2026</i>"
 
 
 def is_valid_yt_url(value: str) -> bool:
