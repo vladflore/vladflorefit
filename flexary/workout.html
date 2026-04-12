@@ -56,6 +56,18 @@
 
     <div id="wl-toast" class="wl-toast"></div>
 
+    <!-- Finish confirmation modal (bottom sheet) -->
+    <div id="wl-confirm-modal" class="wl-info-modal" hidden>
+      <div class="wl-info-backdrop" onclick="wlConfirmCancel()"></div>
+      <div class="wl-confirm-sheet">
+        <p id="wl-confirm-msg" class="wl-confirm-msg"></p>
+        <div class="wl-confirm-actions">
+          <button class="wl-confirm-btn wl-confirm-btn--ok" onclick="wlConfirmOk()">Finish anyway</button>
+          <button class="wl-confirm-btn wl-confirm-btn--cancel" onclick="wlConfirmCancel()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Exercise info modal (bottom sheet) -->
     <div id="wl-info-modal" class="wl-info-modal" hidden>
       <div class="wl-info-backdrop" onclick="wlCloseInfo()"></div>

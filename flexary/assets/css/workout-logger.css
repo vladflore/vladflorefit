@@ -367,8 +367,9 @@ html, body {
 .wl-set-row td {
   padding: 0.35rem 0.3rem;
   vertical-align: middle;
+  text-align: center;
 }
-.wl-set-row td:first-child { padding-left: 0.85rem; }
+.wl-set-row td:first-child { padding-left: 0.85rem; text-align: left; }
 .wl-set-row td:last-child { padding-right: 0.55rem; }
 
 .wl-set-row + .wl-set-row td {
@@ -416,6 +417,56 @@ html, body {
   box-shadow: 0 0 0 2px rgba(186, 148, 94, 0.2);
 }
 .wl-set-input.filled {
+  border-color: rgba(76, 175, 118, 0.5);
+  background: rgba(76, 175, 118, 0.06);
+}
+
+.wl-unit-input {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+.wl-unit-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.wl-time-input {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.wl-time-input.filled {
+  color: var(--text);
+}
+.wl-time-seg {
+  width: 3ch;
+  min-width: 3ch;
+  background: var(--surface-3);
+  border: 1px solid var(--surface-4);
+  border-radius: var(--radius-sm);
+  color: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.45rem 0.1rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -moz-appearance: textfield;
+}
+.wl-time-seg::-webkit-inner-spin-button,
+.wl-time-seg::-webkit-outer-spin-button { -webkit-appearance: none; }
+.wl-time-seg:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(186, 148, 94, 0.2);
+}
+.wl-time-input.filled .wl-time-seg {
   border-color: rgba(76, 175, 118, 0.5);
   background: rgba(76, 175, 118, 0.06);
 }
@@ -511,12 +562,11 @@ html, body {
   border-top: 1px solid rgba(186, 148, 94, 0.3);
   padding: 0.75rem 1rem max(0.75rem, env(safe-area-inset-bottom));
   display: flex;
-  gap: 0.65rem;
+  justify-content: center;
   z-index: 200;
 }
 
 .wl-finish-btn {
-  flex: 1;
   background: linear-gradient(135deg, #ba945e, #8a6530);
   border: none;
   border-radius: var(--radius);
@@ -550,9 +600,9 @@ html, body {
 /* ── Toast notification ──────────────────────────────────────────────── */
 .wl-toast {
   position: fixed;
-  bottom: 5rem;
+  top: 1rem;
   left: 50%;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateX(-50%) translateY(-20px);
   background: var(--surface-3);
   border: 1px solid rgba(186, 148, 94, 0.4);
   color: var(--text);
@@ -590,6 +640,54 @@ html, body {
   align-self: center;
 }
 .wl-info-btn:hover { opacity: 1; }
+
+/* ── Confirm modal (bottom sheet) ───────────────────────────────────── */
+.wl-confirm-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-radius: 1rem 1rem 0 0;
+  padding: 1.5rem 1.25rem max(2rem, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.wl-confirm-msg {
+  font-size: 0.95rem;
+  color: var(--text);
+  text-align: center;
+  margin: 0;
+}
+
+.wl-confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.wl-confirm-btn {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s;
+}
+.wl-confirm-btn:hover { opacity: 0.85; }
+
+.wl-confirm-btn--cancel {
+  background: var(--surface-3);
+  color: var(--text-dim);
+  border: 1px solid var(--surface-4);
+}
+
+.wl-confirm-btn--ok {
+  background: var(--gold);
+  color: #1a1108;
+}
 
 /* ── Info modal (bottom sheet) ───────────────────────────────────────── */
 .wl-info-modal {

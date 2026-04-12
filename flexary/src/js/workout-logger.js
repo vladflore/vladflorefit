@@ -46,6 +46,12 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ── Init a fresh log ────────────────────────────────────────────────── */
 // For superset exercises, each round is logged as a separate set entry.
 // So the effective set count is max(ex.sets, rounds).
+function parseDistTarget(raw) {
+  if (!raw) return { value: "", unit: "" };
+  const m = raw.trim().match(/^([0-9]*\.?[0-9]*)\s*([a-zA-Z]*)$/);
+  return m ? { value: m[1] || "", unit: m[2] || "" } : { value: raw, unit: "" };
+}
+
 function effectiveSets(ex, w) {
   if (!ex.superset_id) return ex.sets;
   const ss = w.supersets?.find((s) => s.id === ex.superset_id);
@@ -55,22 +61,22 @@ function effectiveSets(ex, w) {
 function initLog(w) {
   return {
     workout_id: w.id,
-    workout_name: w.name,
-    weight_unit: unit,
-    started_at: new Date().toISOString(),
+    started_at: localISOString(),
     completed_at: null,
     exercises: w.exercises.map((ex) => ({
       id: ex.id,
       name: ex.name,
       superset_id: ex.superset_id || null,
-      done: false,
       notes: "",
       sets: Array.from({ length: effectiveSets(ex, w) }, (_, i) => ({
         set: i + 1,
         target_reps: ex.reps?.[i] ?? "",
         target_time: ex.time?.[i] ?? "",
-        target_dist: ex.distance?.[i] ?? "",
-        reps: "",
+        target_dist: parseDistTarget(ex.distance?.[i]).value,
+        target_dist_unit: parseDistTarget(ex.distance?.[i]).unit,
+        actual_reps: "",
+        actual_time: "",
+        actual_dist: "",
         weight: "",
         done: false,
       })),
@@ -86,7 +92,6 @@ function initLog(w) {
 function mergeLog(savedLog, w) {
   return {
     ...savedLog,
-    workout_name: w.name,
     exercises: w.exercises.map((ex) => {
       const existing = savedLog.exercises.find(
         (l) => l.id === ex.id && l.name === ex.name,
@@ -99,8 +104,11 @@ function mergeLog(savedLog, w) {
           set: i + 1,
           target_reps: ex.reps?.[i] ?? "",
           target_time: ex.time?.[i] ?? "",
-          target_dist: ex.distance?.[i] ?? "",
-          reps: s?.reps ?? "",
+          target_dist: parseDistTarget(ex.distance?.[i]).value,
+          target_dist_unit: parseDistTarget(ex.distance?.[i]).unit,
+          actual_reps: s?.actual_reps ?? "",
+          actual_time: s?.actual_time ?? "",
+          actual_dist: s?.actual_dist ?? "",
           weight: s?.weight ?? "",
           done: s?.done ?? false,
         };
@@ -112,7 +120,6 @@ function mergeLog(savedLog, w) {
             id: ex.id,
             name: ex.name,
             superset_id: ex.superset_id || null,
-            done: false,
             notes: "",
             sets,
           };
@@ -507,15 +514,15 @@ function buildSetsTable(ex, logEx, roundIndex, restSecs = 0) {
     const targetParts = [
       setLog.target_reps ? `${setLog.target_reps} reps` : "",
       setLog.target_time || "",
-      setLog.target_dist || "",
+      setLog.target_dist ? `${setLog.target_dist}${setLog.target_dist_unit ? " " + setLog.target_dist_unit : ""}` : "",
     ].filter(Boolean);
     tdTarget.textContent = targetParts.join(" / ") || "—";
     tr.appendChild(tdTarget);
 
     if (hasReps) {
       const td = document.createElement("td");
-      const inp = setInput("numeric", setLog.reps, (val) => {
-        setLog.reps = val;
+      const inp = setInput("numeric", setLog.actual_reps, (val) => {
+        setLog.actual_reps = val;
         checkInputFilled(inp, val);
         scheduleAutosave();
       });
@@ -524,9 +531,8 @@ function buildSetsTable(ex, logEx, roundIndex, restSecs = 0) {
     }
     if (hasTime) {
       const td = document.createElement("td");
-      const inp = setInput("numeric", setLog.reps, (val) => {
-        setLog.reps = val;
-        checkInputFilled(inp, val);
+      const inp = timeInput(setLog.actual_time, (val) => {
+        setLog.actual_time = val;
         scheduleAutosave();
       });
       td.appendChild(inp);
@@ -534,12 +540,23 @@ function buildSetsTable(ex, logEx, roundIndex, restSecs = 0) {
     }
     if (hasDist) {
       const td = document.createElement("td");
-      const inp = setInput("decimal", setLog.reps, (val) => {
-        setLog.reps = val;
+      const wrap = document.createElement("div");
+      wrap.className = "wl-unit-input";
+      const inp = setInput("decimal", setLog.actual_dist, (val) => {
+        setLog.actual_dist = val;
         checkInputFilled(inp, val);
         scheduleAutosave();
       });
-      td.appendChild(inp);
+      const distUnitLabel = setLog.target_dist_unit || "";
+      if (distUnitLabel) {
+        const lbl = document.createElement("span");
+        lbl.className = "wl-unit-label";
+        lbl.textContent = distUnitLabel;
+        wrap.append(inp, lbl);
+      } else {
+        wrap.appendChild(inp);
+      }
+      td.appendChild(wrap);
       tr.appendChild(td);
     }
     if (hasWeight) {
@@ -603,6 +620,67 @@ function setInput(mode, value, onChange) {
 
 function checkInputFilled(input, val) {
   input.classList.toggle("filled", !!val);
+}
+
+// Renders three small h / m / s inputs. Stores value as "H:MM:SS" string.
+// Auto-advances focus after 2 digits; backspace on empty field goes back.
+function timeInput(value, onChange) {
+  const parts = (value || "").split(":").map((p) => p.replace(/^0+/, "") || "");
+  const [initH = "", initM = "", initS = ""] = parts;
+
+  const wrap = document.createElement("div");
+  wrap.className = "wl-time-input" + (value ? " filled" : "");
+
+  const mkSeg = (placeholder, initVal, maxVal, next, prev) => {
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.inputMode = "numeric";
+    inp.pattern = "[0-9]*";
+    inp.maxLength = 2;
+    inp.placeholder = placeholder;
+    inp.className = "wl-time-seg";
+    inp.value = initVal;
+
+    inp.addEventListener("input", () => {
+      // Strip non-digits
+      inp.value = inp.value.replace(/\D/g, "");
+      // Clamp
+      if (inp.value !== "" && Number(inp.value) > maxVal)
+        inp.value = String(maxVal);
+      // Auto-advance
+      if (inp.value.length === 2 && next) next.focus();
+      flush();
+    });
+
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && inp.value === "" && prev) {
+        e.preventDefault();
+        prev.focus();
+      }
+    });
+
+    return inp;
+  };
+
+  const hInp = mkSeg("h",  initH, 99, null,  null);
+  const mInp = mkSeg("m",  initM, 59, null,  hInp);
+  const sInp = mkSeg("s",  initS, 59, null,  mInp);
+
+  // Wire auto-advance now that all three exist
+  hInp.addEventListener("input", () => { if (hInp.value.length === 2) mInp.focus(); });
+  mInp.addEventListener("input", () => { if (mInp.value.length === 2) sInp.focus(); });
+
+  const flush = () => {
+    const h = hInp.value, m = mInp.value, s = sInp.value;
+    const val = (h || m || s)
+      ? `${h || "0"}:${(m || "0").padStart(2, "0")}:${(s || "0").padStart(2, "0")}`
+      : "";
+    wrap.classList.toggle("filled", !!val);
+    onChange(val);
+  };
+
+  wrap.append(hInp, document.createTextNode(":"), mInp, document.createTextNode(":"), sInp);
+  return wrap;
 }
 
 /* ── Unified rest row ────────────────────────────────────────────────── */
@@ -712,12 +790,34 @@ function saveLog() {
 
 /* ── Finish ───────────────────────────────────────────────────────────── */
 function finish() {
-  log.completed_at = new Date().toISOString();
+  const totalSets = log.exercises.reduce((s, e) => s + e.sets.length, 0);
+  const doneSets = log.exercises.reduce((s, e) => s + e.sets.filter((st) => st.done).length, 0);
+
+  if (doneSets < totalSets) {
+    const remaining = totalSets - doneSets;
+    const msg = `${remaining} set${remaining !== 1 ? "s" : ""} not yet marked as done. Finish anyway?`;
+    document.getElementById("wl-confirm-msg").textContent = msg;
+    document.getElementById("wl-confirm-modal").hidden = false;
+    return;
+  }
+
+  saveWorkout();
+}
+
+function saveWorkout() {
+  log.completed_at = localISOString();
   saveLog();
   showToast("Workout saved!");
-  setTimeout(() => {
-    location.href = "index.html";
-  }, 1800);
+}
+
+/* ── Confirm modal ────────────────────────────────────────────────────── */
+function wlConfirmOk() {
+  document.getElementById("wl-confirm-modal").hidden = true;
+  saveWorkout();
+}
+
+function wlConfirmCancel() {
+  document.getElementById("wl-confirm-modal").hidden = true;
 }
 
 /* ── Error / empty states ────────────────────────────────────────────── */
@@ -736,6 +836,19 @@ function showToast(msg) {
 }
 
 /* ── Helpers ──────────────────────────────────────────────────────────── */
+function localISOString() {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  const offset = -d.getTimezoneOffset();
+  const sign = offset >= 0 ? "+" : "-";
+  const absOff = Math.abs(offset);
+  return (
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+    `T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}` +
+    `${sign}${pad(Math.floor(absOff / 60))}:${pad(absOff % 60)}`
+  );
+}
+
 function fmtSecs(s) {
   if (!s || s < 0) return "0:00";
   const m = Math.floor(s / 60);
@@ -861,5 +974,7 @@ function closeInfoModal() {
 
 /* ── Expose to HTML ──────────────────────────────────────────────────── */
 window.wlFinish = finish;
+window.wlConfirmOk = wlConfirmOk;
+window.wlConfirmCancel = wlConfirmCancel;
 window.wlToggleAll = toggleAll;
 window.wlCloseInfo = closeInfoModal;
