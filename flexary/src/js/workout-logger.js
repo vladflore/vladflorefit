@@ -7,7 +7,7 @@ const LOG_PREFIX = "flexary_log_";
 let workout = null; // workout object from export
 let log = null; // log being built
 const unit = "kg";
-let timers = {}; // timerKey → { interval, remaining, totalSecs }
+let timers = {}; // timerKey → { raf }
 let autosaveTimeout = null;
 
 /* ── Boot ────────────────────────────────────────────────────────────── */
@@ -47,9 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
 // For superset exercises, each round is logged as a separate set entry.
 // So the effective set count is max(ex.sets, rounds).
 function parseDistTarget(raw) {
-  if (!raw) return { value: "", unit: "" };
+  if (!raw) return { target_dist: "", target_dist_unit: "" };
   const m = raw.trim().match(/^([0-9]*\.?[0-9]*)\s*([a-zA-Z]*)$/);
-  return m ? { value: m[1] || "", unit: m[2] || "" } : { value: raw, unit: "" };
+  return m
+    ? { target_dist: m[1] || "", target_dist_unit: m[2] || "" }
+    : { target_dist: raw, target_dist_unit: "" };
 }
 
 function effectiveSets(ex, w) {
@@ -72,8 +74,7 @@ function initLog(w) {
         set: i + 1,
         target_reps: ex.reps?.[i] ?? "",
         target_time: ex.time?.[i] ?? "",
-        target_dist: parseDistTarget(ex.distance?.[i]).value,
-        target_dist_unit: parseDistTarget(ex.distance?.[i]).unit,
+        ...parseDistTarget(ex.distance?.[i]),
         actual_reps: "",
         actual_time: "",
         actual_dist: "",
@@ -104,8 +105,7 @@ function mergeLog(savedLog, w) {
           set: i + 1,
           target_reps: ex.reps?.[i] ?? "",
           target_time: ex.time?.[i] ?? "",
-          target_dist: parseDistTarget(ex.distance?.[i]).value,
-          target_dist_unit: parseDistTarget(ex.distance?.[i]).unit,
+          ...parseDistTarget(ex.distance?.[i]),
           actual_reps: s?.actual_reps ?? "",
           actual_time: s?.actual_time ?? "",
           actual_dist: s?.actual_dist ?? "",
@@ -137,6 +137,23 @@ function render() {
 
   renderExercises();
   updateProgress();
+}
+
+/* ── Collapse helper ─────────────────────────────────────────────────── */
+// Wires a trigger element to toggle the "collapsed" class on body,
+// and "rotated" on the first .wl-collapse-chevron inside trigger.
+function wireCollapsible(trigger, body) {
+  const chevron = trigger.querySelector(".wl-collapse-chevron");
+  trigger.setAttribute("role", "button");
+  trigger.setAttribute("tabindex", "0");
+  const toggle = () => {
+    const collapsed = body.classList.toggle("collapsed");
+    chevron?.classList.toggle("rotated", collapsed);
+  };
+  trigger.addEventListener("click", toggle);
+  trigger.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+  });
 }
 
 /* ── Build a flat render plan ────────────────────────────────────────── */
@@ -226,8 +243,6 @@ function renderExercises() {
 
         const hdr = document.createElement("div");
         hdr.className = "wl-superset-block-header";
-        hdr.setAttribute("role", "button");
-        hdr.setAttribute("tabindex", "0");
         hdr.innerHTML =
           `<i class="bi bi-intersect"></i>` +
           `<span>Superset · ${item.rounds} round${item.rounds !== 1 ? "s" : ""}</span>` +
@@ -237,18 +252,7 @@ function renderExercises() {
         ssBody.className = "wl-collapsible-body";
         ssContentEl = ssBody;
 
-        const chevron = hdr.querySelector(".wl-collapse-chevron");
-        const toggle = () => {
-          const collapsed = ssBody.classList.toggle("collapsed");
-          chevron.classList.toggle("rotated", collapsed);
-        };
-        hdr.addEventListener("click", toggle);
-        hdr.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            toggle();
-          }
-        });
+        wireCollapsible(hdr, ssBody);
 
         wrap.append(hdr, ssBody);
         container.appendChild(wrap);
@@ -269,26 +273,10 @@ function renderExercises() {
       case "round-start": {
         roundContentEl = document.createElement("div");
         roundContentEl.className = "wl-collapsible-body";
-
         if (pendingRoundHdr) {
-          const chevron = pendingRoundHdr.querySelector(".wl-collapse-chevron");
-          pendingRoundHdr.setAttribute("role", "button");
-          pendingRoundHdr.setAttribute("tabindex", "0");
-          const content = roundContentEl; // capture for closure
-          const toggle = () => {
-            const collapsed = content.classList.toggle("collapsed");
-            chevron?.classList.toggle("rotated", collapsed);
-          };
-          pendingRoundHdr.addEventListener("click", toggle);
-          pendingRoundHdr.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              toggle();
-            }
-          });
+          wireCollapsible(pendingRoundHdr, roundContentEl);
           pendingRoundHdr = null;
         }
-
         ssContentEl.appendChild(roundContentEl);
         break;
       }
@@ -298,7 +286,7 @@ function renderExercises() {
         break;
 
       case "rest":
-        target().appendChild(restBadge(item.secs));
+        target().appendChild(buildRestRow(item.secs));
         break;
 
       case "superset-ex":
@@ -338,8 +326,6 @@ function exerciseCard(ex, roundIndex) {
   // ── Header (acts as collapse toggle) ──
   const header = document.createElement("div");
   header.className = "wl-exercise-header";
-  header.setAttribute("role", "button");
-  header.setAttribute("tabindex", "0");
 
   const titleWrap = document.createElement("div");
   titleWrap.className = "wl-exercise-title-wrap";
@@ -367,10 +353,7 @@ function exerciseCard(ex, roundIndex) {
 
   const meta = document.createElement("div");
   meta.className = "wl-exercise-meta";
-  const metaParts = [];
-  if (!isSupersetCard && ex.sets > 1)
-    metaParts.push(`<span>${ex.sets} sets</span>`);
-  meta.innerHTML = metaParts.join("");
+  meta.innerHTML = (!isSupersetCard && ex.sets > 1) ? `<span>${ex.sets} sets</span>` : "";
 
   titleWrap.append(nameRow, meta);
 
@@ -382,18 +365,7 @@ function exerciseCard(ex, roundIndex) {
   // ── Collapsible body ──
   const cardBody = document.createElement("div");
   cardBody.className = "wl-collapsible-body";
-
-  const toggleCard = () => {
-    const collapsed = cardBody.classList.toggle("collapsed");
-    headerChevron.classList.toggle("rotated", collapsed);
-  };
-  header.addEventListener("click", toggleCard);
-  header.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggleCard();
-    }
-  });
+  wireCollapsible(header, cardBody);
 
   // ── Sets table ──
   const restSecs = isSupersetCard ? 0 : ex.rest_between_sets_seconds || 0;
@@ -631,7 +603,7 @@ function timeInput(value, onChange) {
   const wrap = document.createElement("div");
   wrap.className = "wl-time-input" + (value ? " filled" : "");
 
-  const mkSeg = (placeholder, initVal, maxVal, next, prev) => {
+  const mkSeg = (placeholder, initVal, maxVal, prev) => {
     const inp = document.createElement("input");
     inp.type = "text";
     inp.inputMode = "numeric";
@@ -642,13 +614,9 @@ function timeInput(value, onChange) {
     inp.value = initVal;
 
     inp.addEventListener("input", () => {
-      // Strip non-digits
       inp.value = inp.value.replace(/\D/g, "");
-      // Clamp
       if (inp.value !== "" && Number(inp.value) > maxVal)
         inp.value = String(maxVal);
-      // Auto-advance
-      if (inp.value.length === 2 && next) next.focus();
       flush();
     });
 
@@ -662,9 +630,9 @@ function timeInput(value, onChange) {
     return inp;
   };
 
-  const hInp = mkSeg("h",  initH, 99, null,  null);
-  const mInp = mkSeg("m",  initM, 59, null,  hInp);
-  const sInp = mkSeg("s",  initS, 59, null,  mInp);
+  const hInp = mkSeg("h", initH, 99, null);
+  const mInp = mkSeg("m", initM, 59, hInp);
+  const sInp = mkSeg("s", initS, 59, mInp);
 
   // Wire auto-advance now that all three exist
   hInp.addEventListener("input", () => { if (hInp.value.length === 2) mInp.focus(); });
@@ -758,24 +726,22 @@ function buildRestRow(secs, { key = null, inline = false } = {}) {
   return el;
 }
 
-// Convenience wrapper
-function restBadge(secs) {
-  return buildRestRow(secs);
-}
 
 /* ── Progress bar ────────────────────────────────────────────────────── */
 function updateProgress() {
-  const totalSets = log.exercises.reduce((s, e) => s + e.sets.length, 0);
-  const doneSets = log.exercises.reduce(
-    (s, e) => s + e.sets.filter((st) => st.done).length,
-    0,
-  );
-  const pct = totalSets ? Math.round((doneSets / totalSets) * 100) : 0;
-
+  const { total, done } = countSets();
+  const pct = total ? Math.round((done / total) * 100) : 0;
   const fill = document.getElementById("wl-progress-fill");
   const lbl = document.getElementById("wl-progress-label");
   if (fill) fill.style.width = pct + "%";
-  if (lbl) lbl.textContent = `${doneSets} / ${totalSets} sets`;
+  if (lbl) lbl.textContent = `${done} / ${total} sets`;
+}
+
+/* ── Set counting ─────────────────────────────────────────────────────── */
+function countSets() {
+  const total = log.exercises.reduce((s, e) => s + e.sets.length, 0);
+  const done = log.exercises.reduce((s, e) => s + e.sets.filter((st) => st.done).length, 0);
+  return { total, done };
 }
 
 /* ── Autosave ─────────────────────────────────────────────────────────── */
@@ -790,11 +756,9 @@ function saveLog() {
 
 /* ── Finish ───────────────────────────────────────────────────────────── */
 function finish() {
-  const totalSets = log.exercises.reduce((s, e) => s + e.sets.length, 0);
-  const doneSets = log.exercises.reduce((s, e) => s + e.sets.filter((st) => st.done).length, 0);
-
-  if (doneSets < totalSets) {
-    const remaining = totalSets - doneSets;
+  const { total, done } = countSets();
+  if (done < total) {
+    const remaining = total - done;
     const msg = `${remaining} set${remaining !== 1 ? "s" : ""} not yet marked as done. Finish anyway?`;
     document.getElementById("wl-confirm-msg").textContent = msg;
     document.getElementById("wl-confirm-modal").hidden = false;
@@ -870,22 +834,22 @@ function fmtDate(iso) {
 }
 
 /* ── Collapse / expand all ────────────────────────────────────────────── */
-let _allCollapsed = false;
+let allCollapsed = false;
 
 function toggleAll() {
-  _allCollapsed = !_allCollapsed;
+  allCollapsed = !allCollapsed;
 
   document.querySelectorAll(".wl-collapsible-body").forEach((el) => {
-    el.classList.toggle("collapsed", _allCollapsed);
+    el.classList.toggle("collapsed", allCollapsed);
   });
   document.querySelectorAll(".wl-collapse-chevron").forEach((el) => {
-    el.classList.toggle("rotated", _allCollapsed);
+    el.classList.toggle("rotated", allCollapsed);
   });
 
   const btn = document.getElementById("wl-collapse-all");
   const icon = btn.querySelector("i");
   const text = btn.querySelector("span");
-  if (_allCollapsed) {
+  if (allCollapsed) {
     icon.className = "bi bi-arrows-expand";
     text.textContent = "Expand all";
   } else {
