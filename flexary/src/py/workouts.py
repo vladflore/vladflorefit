@@ -38,6 +38,7 @@ from workout_rendering import (
     render_workouts,
     workout_edit,
 )
+from workout_recurrence import open_recurrence_popup
 
 __all__ = [
     "_can_move",
@@ -74,4 +75,5 @@ __all__ = [
     "toggle_superset",
     "update_workout_badge",
     "workout_edit",
+    "open_recurrence_popup",
 ]

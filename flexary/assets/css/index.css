@@ -406,10 +406,18 @@
 }
 
 .workout input[type="date"] {
-  background-color: #333;
-  border-color: #555;
+  background-color: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.15);
   color: #e0e0e0;
+  border-radius: 6px;
   color-scheme: dark;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.workout input[type="date"]:focus {
+  border-color: #ba945e;
+  box-shadow: 0 0 0 2px rgba(186, 148, 94, 0.2);
+  outline: none;
 }
 
 .workout .list-group-item {
@@ -2005,4 +2013,362 @@ body:has(#workout-sidebar):not(:has(#workout-sidebar.d-none)) main {
     font-size: 0.85rem;
     padding: 0.4rem 0.9rem;
   }
+}
+
+/* ── Repeat button ─────────────────────────────────────────────────────── */
+.workout-repeat-btn {
+  font-size: 0.74rem;
+  color: #666;
+  background: transparent;
+  border: none;
+  padding: 2px 0;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.workout-repeat-btn:hover {
+  color: #aaa;
+  background: transparent;
+  border: none;
+}
+
+.workout-repeat-btn:active {
+  color: #ccc;
+  background: transparent;
+}
+
+/* ── Recurrence info text ──────────────────────────────────────────────── */
+.workout-recurrence-info {
+  font-size: 0.74rem;
+  color: #666;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.workout-recurrence-info::before {
+  content: "\F116";
+  font-family: "bootstrap-icons";
+  font-size: 0.72rem;
+}
+
+/* ── Recurrence popup overlay ──────────────────────────────────────────── */
+.recurrence-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recurrence-modal {
+  background: #1a1a1a;
+  border: 1px solid #ba945e;
+  border-radius: 12px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  color: #e0e0e0;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  animation: recurrence-modal-in 0.2s ease;
+}
+
+@keyframes recurrence-modal-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+/* ── Header ───────────────────────────────────────────────────────────── */
+.recurrence-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #ba945e;
+  flex-shrink: 0;
+}
+
+.recurrence-modal-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ba945e;
+}
+
+.recurrence-modal-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+  padding: 0;
+}
+
+.recurrence-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────────── */
+.recurrence-modal-body {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────── */
+.recurrence-modal-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #2a2a2a;
+  flex-shrink: 0;
+}
+
+/* ── Dividers & labels ────────────────────────────────────────────────── */
+.recurrence-divider {
+  border: none;
+  border-top: 1px solid #2a2a2a;
+  margin: 2px 0;
+}
+
+.recurrence-section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+/* ── Shared base for all recurrence form elements ─────────────────────── */
+.recurrence-input {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  padding: 5px 9px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.recurrence-input:focus {
+  border-color: #ba945e;
+  box-shadow: 0 0 0 2px rgba(186, 148, 94, 0.2);
+}
+
+.recurrence-input:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* ── Interval row ─────────────────────────────────────────────────────── */
+.recurrence-interval-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.recurrence-number-input {
+  width: 68px;
+  flex-shrink: 0;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.recurrence-number-input::-webkit-inner-spin-button,
+.recurrence-number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.recurrence-select {
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23888' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+
+.recurrence-select option {
+  background: #2a2a2a;
+  color: #e0e0e0;
+}
+
+/* ── Weekly section ───────────────────────────────────────────────────── */
+.recurrence-weekly-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recurrence-day-pills {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.recurrence-day-pill {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #444;
+  background: transparent;
+  color: #aaa;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.recurrence-day-pill:hover {
+  border-color: #ba945e;
+  color: #ba945e;
+}
+
+.recurrence-day-pill--active {
+  background: #ba945e;
+  border-color: #ba945e;
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+.recurrence-day-pill--active:hover {
+  background: #a07840;
+  border-color: #a07840;
+  color: #fff;
+}
+
+/* ── Monthly section ──────────────────────────────────────────────────── */
+.recurrence-monthly-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Shared: radio rows ───────────────────────────────────────────────── */
+.recurrence-radio-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.recurrence-radio-row input[type="radio"] {
+  accent-color: #ba945e;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.recurrence-radio-row label {
+  font-size: 0.85rem;
+  color: #e0e0e0;
+  cursor: pointer;
+}
+
+/* ── Starts display ───────────────────────────────────────────────────── */
+.recurrence-date-display {
+  font-size: 0.85rem;
+  color: #aaa;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* ── Ends ─────────────────────────────────────────────────────────────── */
+.recurrence-ends-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recurrence-date-input {
+  width: 148px;
+  color-scheme: dark;
+}
+
+.recurrence-after-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recurrence-count-input {
+  width: 60px;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.recurrence-count-input::-webkit-inner-spin-button,
+.recurrence-count-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.recurrence-occ-label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ── Footer buttons ───────────────────────────────────────────────────── */
+.recurrence-btn--clear {
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 4px 2px;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.recurrence-btn--clear:hover {
+  color: #e05252;
+}
+
+.recurrence-btn--cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.recurrence-btn--cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
 }

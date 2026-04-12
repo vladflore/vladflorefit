@@ -89,6 +89,8 @@ def _set_nav_state(user) -> None:
     signed.classList.toggle("d-none", not is_signed_in)
     if save_btn:
         save_btn.classList.toggle("d-none", not is_signed_in)
+    for btn in document.querySelectorAll(".workout-open-btn"):
+        btn.classList.toggle("d-none", not is_signed_in)
 
     if is_signed_in:
         email = str(user.email) if getattr(user, "email", None) else t("account")
@@ -150,7 +152,18 @@ async def _sign_out() -> None:
     if not await _wait_for_bridge():
         return
     await window.flexaryAuth.signOut()
+    _clear_user_storage()
     await refresh_auth_ui()
+
+
+def _clear_user_storage() -> None:
+    storage = window.localStorage
+    keys_to_remove = [
+        k for k in [storage.key(i) for i in range(int(storage.length))]
+        if k == "flexary_export" or (k is not None and k.startswith("flexary_log_"))
+    ]
+    for k in keys_to_remove:
+        storage.removeItem(k)
 
 
 def sign_out(event=None) -> None:

@@ -11,6 +11,7 @@ from i18n import t
 from workout_domain import _can_move, _event_attr, toggle_superset
 from workout_modal import _format_break, _show_break_popup, _show_confirm_popup
 from workout_persistence import remove_workout
+from workout_recurrence import open_recurrence_popup, recurrence_summary
 
 
 def workout_edit(event) -> None:
@@ -389,6 +390,29 @@ def render_workouts(workouts: list) -> None:
         else:
             w_ul._js.classList.add("d-none")
             hint.classList.remove("d-none")
+
+        # Recurrence info badge
+        rec_info = w_div.find("#workout-recurrence-info")[0]
+        rec_info._js.setAttribute("id", f"workout-recurrence-info-{w.id}")
+        summary = recurrence_summary(w.recurrence)
+        if summary:
+            rec_info._js.textContent = summary
+            rec_info._js.classList.remove("d-none")
+        else:
+            rec_info._js.classList.add("d-none")
+
+        # Repeat button
+        w_repeat_btn = w_div.find("#workout-repeat")[0]
+        w_repeat_btn._js.setAttribute("data-workout-id", str(w.id))
+        w_repeat_btn._js.removeAttribute("id")
+        w_repeat_btn._js.addEventListener("click", create_proxy(open_recurrence_popup))
+
+        # Open-workout link (authenticated only)
+        open_btn = w_div.find("#workout-open-btn")[0]
+        open_btn._js.removeAttribute("id")
+        if state.is_authenticated():
+            open_btn._js.setAttribute("href", f"workout.html?wid={w.id}")
+            open_btn._js.classList.remove("d-none")
 
         ws_container.append(w_div)
 

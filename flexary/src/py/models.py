@@ -107,6 +107,8 @@ class Workout:
     superset_rounds: dict = field(default_factory=dict)
     name: str = ""
     breaks: dict = field(default_factory=dict)
+    recurrence: dict = field(default_factory=dict)
+    recurrence_id: str = ""
 
 
 def workouts_to_json(workouts: list) -> str:
@@ -133,6 +135,8 @@ def workouts_to_json(workouts: list) -> str:
             "superset_rounds": w.superset_rounds,
             "name": w.name,
             "breaks": w.breaks,
+            "recurrence": w.recurrence,
+            "recurrence_id": w.recurrence_id,
         }
 
     return json.dumps([_w(w) for w in workouts])
@@ -196,6 +200,9 @@ def _parse_workout(w_data) -> Workout:
     if not isinstance(exercises_raw, list):
         raise ValueError("Workout exercises must be a list")
 
+    rec_raw = w_data.get("recurrence", {})
+    recurrence = rec_raw if isinstance(rec_raw, dict) else {}
+
     return Workout(
         id=UUID(_coerce_str(w_data["id"])),
         execution_date=datetime.date.fromisoformat(_coerce_str(w_data["execution_date"])),
@@ -203,6 +210,8 @@ def _parse_workout(w_data) -> Workout:
         superset_rounds=_parse_int_mapping(w_data.get("superset_rounds", {})),
         name=_coerce_str(w_data.get("name", "")),
         breaks=_parse_int_mapping(w_data.get("breaks", {})),
+        recurrence=recurrence,
+        recurrence_id=_coerce_str(w_data.get("recurrence_id", "")),
     )
 
 

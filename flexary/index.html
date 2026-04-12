@@ -341,16 +341,14 @@
                 placeholder="Name (optional)"
                 data-i18n-ph="workout_name_placeholder"
               />
-              <label
-                for="workout-date"
-                class="mb-1 text-nowrap"
-                style="font-size: 0.9rem"
-                data-i18n="scheduled_for"
-                >Scheduled for:</label
-              >
-              <div
-                class="d-flex justify-content-between align-items-center mb-1"
-              >
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <label
+                  for="workout-date"
+                  class="text-nowrap mb-0"
+                  style="font-size: 0.9rem"
+                  data-i18n="scheduled_for"
+                  >Scheduled for:</label
+                >
                 <input
                   id="workout-date"
                   type="date"
@@ -358,14 +356,6 @@
                   style="max-width: 160px"
                   value=""
                 />
-                <button
-                  id="workout-remove"
-                  class="btn btn-sm btn-outline-danger"
-                  data-i18n-title="remove_workout"
-                  title="Remove workout"
-                >
-                  <i id="workout-remove-icon" class="bi bi-dash-circle"></i>
-                </button>
               </div>
               <div class="mb-2">
                 <span class="workout-exercise-count"></span>
@@ -409,6 +399,38 @@
                   </div>
                 </li>
               </ul>
+              <div id="workout-recurrence-info" class="workout-recurrence-info d-none"></div>
+              <div class="d-flex align-items-center justify-content-between mt-1">
+                <button
+                  id="workout-repeat"
+                  type="button"
+                  class="btn btn-sm workout-repeat-btn"
+                  data-i18n-title="rec_repeat_btn"
+                  title="Customize occurrences"
+                >
+                  <i class="bi bi-arrow-repeat me-1"></i><span data-i18n="rec_repeat_btn">Customize occurrences</span>
+                </button>
+                <div class="d-flex gap-2 align-items-center">
+                  <a
+                    id="workout-open-btn"
+                    href="#"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-gold d-none workout-open-btn"
+                    data-i18n-title="open_workout"
+                    title="Open workout"
+                  >
+                    <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                  <button
+                    id="workout-remove"
+                    class="btn btn-sm btn-outline-danger"
+                    data-i18n-title="remove_workout"
+                    title="Remove workout"
+                  >
+                    <i id="workout-remove-icon" class="bi bi-dash-circle"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </template>
         </div>
