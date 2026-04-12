@@ -167,7 +167,11 @@ async function syncUserFromSession() {
     return user;
   } catch (error) {
     state.lastError = error instanceof Error ? error.message : String(error);
-    clearSession();
+    // Only clear the session on explicit auth errors (HTTP responses), not on
+    // network-level failures (TypeError) which can happen on quick page refreshes.
+    if (!(error instanceof TypeError)) {
+      clearSession();
+    }
     emitAuthChange();
     return null;
   }

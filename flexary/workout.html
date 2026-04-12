@@ -12,16 +12,17 @@
   </head>
 
   <body>
-    <div id="wl-root">
+    <div id="wl-loading" class="wl-loading">
+      <div class="wl-spinner"></div>
+    </div>
+
+    <div id="wl-root" hidden>
 
       <!-- Sticky header: topbar + progress + toolbar -->
       <div class="wl-sticky-header">
         <nav class="wl-topbar">
-          <a id="wl-topbar-back" href="index.html" class="wl-topbar-back" aria-label="Back">
-            <i class="bi bi-arrow-left"></i>
-          </a>
-          <div class="wl-topbar-info">
-            <div id="wl-workout-name" class="wl-topbar-name">Loading…</div>
+<div class="wl-topbar-info">
+            <div id="wl-workout-name" class="wl-topbar-name"></div>
             <div id="wl-workout-date" class="wl-topbar-date"></div>
           </div>
         </nav>
@@ -82,6 +83,7 @@
       </div>
     </div>
 
+    <script type="module" src="./src/js/auth.js"></script>
     <script src="./src/js/workout-logger.js"></script>
   </body>
 </html>

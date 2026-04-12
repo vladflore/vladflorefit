@@ -11,7 +11,19 @@ let timers = {}; // timerKey → { raf }
 let autosaveTimeout = null;
 
 /* ── Boot ────────────────────────────────────────────────────────────── */
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const { user } = await window.flexaryAuth.ready;
+  const hasSession = !!window.flexaryAuth.state.session;
+
+  // No user and no local session means genuinely unauthenticated.
+  // No user but session present means the network call failed (e.g. quick refresh) —
+  // trust the local session rather than incorrectly showing the auth gate.
+  if (!user && !hasSession) {
+    showState("auth", `Sign in to log your workout. <a href="index.html">Go to sign in</a>`);
+    showPage();
+    return;
+  }
+
   const params = new URLSearchParams(location.search);
   const wid = params.get("wid");
 
@@ -26,10 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!workout) {
     showState("error", "No workout data found.");
+    showPage();
     return;
   }
 
-  // Restore or init log, then reconcile with current workout definition
   const saved = localStorage.getItem(LOG_PREFIX + wid);
   if (saved) {
     try {
@@ -41,7 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
   log = log ? mergeLog(log, workout) : initLog(workout);
 
   render();
+  showPage();
 });
+
+function showPage() {
+  document.getElementById("wl-loading").hidden = true;
+  document.getElementById("wl-root").hidden = false;
+}
 
 /* ── Init a fresh log ────────────────────────────────────────────────── */
 // For superset exercises, each round is logged as a separate set entry.
@@ -130,10 +148,7 @@ function mergeLog(savedLog, w) {
 /* ── Main render ─────────────────────────────────────────────────────── */
 function render() {
   document.getElementById("wl-workout-name").textContent = workout.name;
-  document.getElementById("wl-workout-date").textContent = fmtDate(
-    workout.scheduled_date,
-  );
-  document.getElementById("wl-topbar-back").href = "index.html";
+  document.getElementById("wl-workout-date").textContent = fmtDate(workout.scheduled_date);
 
   renderExercises();
   updateProgress();
@@ -786,7 +801,9 @@ function wlConfirmCancel() {
 
 /* ── Error / empty states ────────────────────────────────────────────── */
 function showState(type, html) {
-  const icon = type === "error" ? "bi-exclamation-circle" : "bi-inbox";
+  const icon = type === "error" ? "bi-exclamation-circle"
+             : type === "auth"  ? "bi-lock"
+             : "bi-inbox";
   document.getElementById("wl-root").innerHTML =
     `<div class="wl-state"><i class="bi ${icon}"></i><p>${html}</p></div>`;
 }
