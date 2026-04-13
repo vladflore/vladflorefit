@@ -29,12 +29,16 @@ def q(selector, root=document):
     return root.querySelector(selector)
 
 
-exercises_row = pydom[exercises_row_id][0]
-exercise_template = pydom.Element(
-    q(exercise_card_template_id).content.querySelector("#card-exercise")
+exercises_row = pydom[exercises_row_id][0] if pydom[exercises_row_id] else None
+exercise_template = (
+    pydom.Element(q(exercise_card_template_id).content.querySelector("#card-exercise"))
+    if q(exercise_card_template_id)
+    else None
 )
-w_template = pydom.Element(
-    q("#workout-template").content.querySelector("#workout")
+w_template = (
+    pydom.Element(q("#workout-template").content.querySelector("#workout"))
+    if q("#workout-template")
+    else None
 )
 
 _raw = localStorage.getItem(ls_workouts_key)
