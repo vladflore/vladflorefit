@@ -21,7 +21,7 @@ CLIENT_NAME = "generic-client"
 OWNER = "vladflore"
 GH_PAGES_ROOT = f"https://{OWNER}.github.io/{CLIENT_NAME}"
 
-DATA_SOURCE_MODE = DataSourceMode.GH_PAGES
+DATA_SOURCE_MODE = DataSourceMode.LOCAL
 
 
 TRANSLATIONS: dict[str, dict[str, str | dict[str, str]]] = {
