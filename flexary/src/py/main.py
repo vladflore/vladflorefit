@@ -9,9 +9,10 @@ from pyweb import pydom
 
 import catalog
 from common import copyright, current_version
-from js import window
+from js import JSON, window
 from i18n import apply_html_translations
 import state
+from models import workouts_from_json
 from auth import (
     close_auth_modal,
     initialize_auth_ui,
@@ -97,6 +98,9 @@ add_event_listener(document.getElementById("save-workouts"), "click", save_worko
 add_event_listener(document.getElementById("pdf-logo-input"), "change", on_logo_file_change)
 add_event_listener(document.getElementById("pdf-logo-clear"), "click", clear_logo)
 
+_was_authenticated: bool = False
+
+
 def _refresh_workouts_ui() -> None:
     if state.workouts:
         render_workouts(state.workouts)
@@ -105,14 +109,47 @@ def _refresh_workouts_ui() -> None:
         hide_sidebar()
 
 
-def _on_auth_change(event) -> None:
-    if not state.is_authenticated() and state.strip_custom_video_overrides():
+async def _load_workouts_from_api() -> None:
+    try:
+        remote_raw = await window.flexaryWorkoutApi.getWorkouts()
+        remote_list = json.loads(str(JSON.stringify(remote_raw)))
+        if not remote_list:
+            return
+        remote = workouts_from_json(json.dumps(remote_list))
+        if not remote:
+            return
+        state.workouts.clear()
+        state.workouts.extend(remote)
+        state.active_workout = state.workouts[0].id
+        state.save_workouts()
         _refresh_workouts_ui()
+    except Exception:
+        pass  # Keep local workouts on API failure
+
+
+def _on_auth_change(event) -> None:
+    global _was_authenticated
+
+    is_auth = state.is_authenticated()
+    just_signed_in = is_auth and not _was_authenticated
+    _was_authenticated = is_auth
+
+    if not is_auth:
+        if state.strip_custom_video_overrides():
+            _refresh_workouts_ui()
+        return
+
+    if just_signed_in:
+        asyncio.ensure_future(_load_workouts_from_api())
 
 
 async def _bootstrap() -> None:
+    global _was_authenticated
     await initialize_auth_ui()
-    if not state.is_authenticated():
+    if state.is_authenticated():
+        _was_authenticated = True
+        asyncio.ensure_future(_load_workouts_from_api())
+    else:
         state.strip_custom_video_overrides()
     _refresh_workouts_ui()
     window.addEventListener("flexary-auth-change", create_proxy(_on_auth_change))

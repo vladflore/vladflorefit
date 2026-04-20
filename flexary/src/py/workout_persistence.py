@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 from uuid import uuid4
 
@@ -52,6 +53,13 @@ def update_workout_badge() -> None:
         btn.appendChild(badge)
 
 
+async def _delete_workout_from_api(workout_id: str) -> None:
+    try:
+        await window.flexaryWorkoutApi.deleteWorkout(workout_id)
+    except Exception:
+        pass  # localStorage already updated; API failure is non-blocking
+
+
 def remove_workout(event) -> None:
     from workout_modal import _show_confirm_popup
     from workout_rendering import render_workouts
@@ -75,6 +83,8 @@ def remove_workout(event) -> None:
         update_workout_badge()
         if not state.workouts:
             hide_sidebar()
+        if state.is_authenticated():
+            asyncio.ensure_future(_delete_workout_from_api(workout_id))
 
     target = next((w for w in state.workouts if str(w.id) == workout_id), None)
     if target and target.exercises:
@@ -91,6 +101,7 @@ def remove_workouts(event) -> None:
 
     def _do():
         from workout_export import sync_export
+        ids_to_delete = [str(w.id) for w in state.workouts] if state.is_authenticated() else []
         state.workouts.clear()
         state.active_workout = None
         localStorage.removeItem(state.ls_workouts_key)
@@ -101,6 +112,8 @@ def remove_workouts(event) -> None:
         update_workout_badge()
         update_action_buttons()
         hide_sidebar()
+        for wid in ids_to_delete:
+            asyncio.ensure_future(_delete_workout_from_api(wid))
 
     if any(w.exercises for w in state.workouts):
         _show_confirm_popup(anchor, t("remove_all_confirm"), _do, confirm_label=t("remove_btn"), cancel_label=t("cancel_btn"))

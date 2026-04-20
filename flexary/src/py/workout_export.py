@@ -1,8 +1,9 @@
+import asyncio
 import datetime
 import io
 import json
 
-from js import File, URL, Uint8Array, document, localStorage as _ls
+from js import JSON, File, URL, Uint8Array, document, localStorage as _ls, window
 
 import catalog
 import state
@@ -108,12 +109,82 @@ def _build_payload() -> dict:
     }
 
 
-def save_workouts(*args) -> None:
-    """Persist the current workouts to localStorage without downloading."""
+def _workout_to_dict(w) -> dict:
+    def _ex(ex):
+        return {
+            "id": ex.id,
+            "internal_id": ex.internal_id,
+            "name": ex.name,
+            "sets": ex.sets,
+            "reps": ex.reps,
+            "time": ex.time,
+            "distance": ex.distance,
+            "notes": ex.notes,
+            "superset_id": ex.superset_id,
+            "rest_between_sets": ex.rest_between_sets,
+            "custom_video_id": ex.custom_video_id,
+        }
+    return {
+        "id": str(w.id),
+        "execution_date": w.execution_date.isoformat(),
+        "exercises": [_ex(ex) for ex in w.exercises],
+        "superset_rounds": w.superset_rounds,
+        "name": w.name,
+        "breaks": w.breaks,
+        "recurrence": w.recurrence,
+        "recurrence_id": w.recurrence_id,
+    }
+
+
+def _set_save_btn_state(btn, btn_state: str) -> None:
+    if not btn:
+        return
+    icon = btn.querySelector("i")
+    span = btn.querySelector("span")
+    disabled, icon_cls, label = {
+        "saving": (True,  "bi bi-arrow-clockwise", "Saving..."),
+        "saved":  (False, "bi bi-check-lg",        "Saved"),
+        "error":  (False, "bi bi-exclamation-triangle", "Failed"),
+        "idle":   (False, "bi bi-floppy",           "Save"),
+    }.get(btn_state, (False, "bi bi-floppy", "Save"))
+    btn.disabled = disabled
+    if icon:
+        icon.className = icon_cls
+    if span:
+        span.textContent = label
+
+
+async def _reset_save_btn_after(btn, delay: float) -> None:
+    await asyncio.sleep(delay)
+    _set_save_btn_state(btn, "idle")
+
+
+async def _save_workouts_async() -> None:
     state.flush_workout_inputs()
     if not any(w.exercises for w in state.workouts):
         return
+
     _ls.setItem("flexary_export", json.dumps(_build_payload(), ensure_ascii=False))
+
+    if not state.is_authenticated():
+        return
+
+    btn = document.getElementById("save-workouts")
+    _set_save_btn_state(btn, "saving")
+    try:
+        for w in state.workouts:
+            workout_js = JSON.parse(json.dumps(_workout_to_dict(w)))
+            await window.flexaryWorkoutApi.saveWorkout(workout_js)
+        _set_save_btn_state(btn, "saved")
+        asyncio.ensure_future(_reset_save_btn_after(btn, 2.0))
+    except Exception:
+        _set_save_btn_state(btn, "error")
+        asyncio.ensure_future(_reset_save_btn_after(btn, 3.0))
+
+
+def save_workouts(*args) -> None:
+    """Persist workouts to localStorage and, for authenticated users, to the API."""
+    asyncio.ensure_future(_save_workouts_async())
 
 
 def download_workouts_json(*args) -> None:
