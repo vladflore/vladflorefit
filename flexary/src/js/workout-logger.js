@@ -1,6 +1,5 @@
 /* ── Workout Logger ─────────────────────────────────────────────────── */
 
-const EXPORT_KEY = "flexary_export";
 const LOG_PREFIX = "flexary_log_";
 
 /* ── State ───────────────────────────────────────────────────────────── */
@@ -9,6 +8,9 @@ let log = null; // log being built
 const unit = "kg";
 let timers = {}; // timerKey → { raf }
 let autosaveTimeout = null;
+
+const toArray = (v) =>
+  Array.isArray(v) ? v : typeof v === "string" && v.includes(",") ? v.split(",").map((s) => s.trim()) : v != null && v !== "" ? [v] : [];
 
 /* ── Boot ────────────────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", async () => {
@@ -27,17 +29,38 @@ document.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(location.search);
   const wid = params.get("wid");
 
-  const raw = wid ? localStorage.getItem(EXPORT_KEY) : null;
-  let payload;
-  try {
-    payload = raw ? JSON.parse(raw) : null;
-  } catch {
-    payload = null;
+  if (!wid) {
+    showState("error", "No workout specified.");
+    showPage();
+    return;
   }
-  workout = (payload?.workouts || []).find((w) => w.id === wid) || null;
+
+  try {
+    const workouts = await window.flexaryWorkoutApi.getWorkouts();
+    const found = workouts.find((w) => w.id === wid) || null;
+    if (found) {
+      const breaks = found.breaks || {};
+      found.exercises = (found.exercises || []).map((ex) => ({
+        ...ex,
+        reps: toArray(ex.reps),
+        time: toArray(ex.time),
+        distance: toArray(ex.distance),
+        rest_between_sets_seconds: ex.rest_between_sets_seconds ?? ex.rest_between_sets ?? 0,
+        rest_before_seconds: ex.rest_before_seconds ?? breaks[ex.internal_id] ?? 0,
+      }));
+      found.supersets = (found.supersets || []).map((ss) => ({
+        ...ss,
+        rest_before_seconds: ss.rest_before_seconds ?? breaks[`_before_${ss.id}`] ?? 0,
+        rest_after_seconds: ss.rest_after_seconds ?? breaks[`_after_${ss.id}`] ?? 0,
+      }));
+    }
+    workout = found;
+  } catch {
+    workout = null;
+  }
 
   if (!workout) {
-    showState("error", "No workout data found.");
+    showState("error", "Workout not found.");
     showPage();
     return;
   }
@@ -90,9 +113,9 @@ function initLog(w) {
       notes: "",
       sets: Array.from({ length: effectiveSets(ex, w) }, (_, i) => ({
         set: i + 1,
-        target_reps: ex.reps?.[i] ?? "",
-        target_time: ex.time?.[i] ?? "",
-        ...parseDistTarget(ex.distance?.[i]),
+        target_reps: ex.reps?.[i] ?? ex.reps?.[0] ?? "",
+        target_time: ex.time?.[i] ?? ex.time?.[0] ?? "",
+        ...parseDistTarget(ex.distance?.[i] ?? ex.distance?.[0]),
         actual_reps: "",
         actual_time: "",
         actual_dist: "",
@@ -121,9 +144,9 @@ function mergeLog(savedLog, w) {
         const s = existing?.sets[i];
         return {
           set: i + 1,
-          target_reps: ex.reps?.[i] ?? "",
-          target_time: ex.time?.[i] ?? "",
-          ...parseDistTarget(ex.distance?.[i]),
+          target_reps: ex.reps?.[i] ?? ex.reps?.[0] ?? "",
+          target_time: ex.time?.[i] ?? ex.time?.[0] ?? "",
+          ...parseDistTarget(ex.distance?.[i] ?? ex.distance?.[0]),
           actual_reps: s?.actual_reps ?? "",
           actual_time: s?.actual_time ?? "",
           actual_dist: s?.actual_dist ?? "",
