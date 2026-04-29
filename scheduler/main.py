@@ -48,48 +48,95 @@ def render_fitness_classes(classes: list[FitnessClass], highlighted_date: date) 
         days = [week_start_day + timedelta(days=i) for i in range(7)]
     days = sorted(days)
 
-    time_intervals = set()
+    # Build 15-minute slots covering the full duration of every class
+    all_slot_starts = set()
     for cls in classes:
-        time_intervals.add((cls.start.time(), cls.end.time()))
-    time_intervals = sorted(time_intervals)
+        start_m = cls.start.hour * 60 + cls.start.minute
+        end_m = cls.end.hour * 60 + cls.end.minute
+        current = start_m
+        while current < end_m:
+            all_slot_starts.add(current)
+            current += 15
 
+    if all_slot_starts:
+        # Pad every touched hour to all 4 quarter-slots so the hour label always
+        # spans a full 4-row block, making partial coverage visually obvious.
+        hour_starts = {s - (s % 60) for s in all_slot_starts}
+        extended = {h + q * 15 for h in hour_starts for q in range(4)}
+        max_slot = max(hour_starts) + 45
+        hour_slots = sorted(s for s in extended if s <= max_slot)
+    else:
+        hour_slots = []
+
+    # (day, slot_start_minutes) -> (FitnessClass, row_span)
     class_lookup = {}
+    # slots that are interior to a multi-hour class (don't render a cell here)
+    covered_slots = set()
+
     for day in days:
         for cls in classes_by_day[day]:
-            interval = (cls.start.time(), cls.end.time())
-            class_lookup[(day, interval)] = cls
+            start_m = cls.start.hour * 60 + cls.start.minute
+            end_m = cls.end.hour * 60 + cls.end.minute
+            slots_for_class = []
+            current = start_m
+            while current < end_m:
+                slots_for_class.append(current)
+                current += 15
+            span = len(slots_for_class)
+            class_lookup[(day, start_m)] = (cls, span)
+            for slot in slots_for_class[1:]:
+                covered_slots.add((day, slot))
 
     html = []
-
     html.append('<div class="schedule-grid">')
+
+    # Header row — explicit grid-column so skipped cells don't shift anything
     html.append(
-        f'<div class="schedule-header">{TRANSLATIONS[LANGUAGE]["time"]} / {TRANSLATIONS[LANGUAGE]["date"]}</div>'
+        f'<div class="schedule-header" style="grid-column: 1; grid-row: 1;">'
+        f'{TRANSLATIONS[LANGUAGE]["time"]} / {TRANSLATIONS[LANGUAGE]["date"]}'
+        f'</div>'
     )
-    for day in days:
+    for col, day in enumerate(days, start=2):
         week_day = day.strftime("%A")
         date_num = day.strftime("%d")
         if day == highlighted_date:
             html.append(
-                f'<div class="schedule-header">'
+                f'<div class="schedule-header" style="grid-column: {col}; grid-row: 1;">'
                 f"{TRANSLATIONS[LANGUAGE]['week_days'][week_day.lower()]}<br>"
                 f'<span class="schedule-today">{date_num}</span>'
                 f"</div>"
             )
         else:
             html.append(
-                f'<div class="schedule-header">'
+                f'<div class="schedule-header" style="grid-column: {col}; grid-row: 1;">'
                 f"{TRANSLATIONS[LANGUAGE]['week_days'][week_day.lower()]}<br>"
                 f'<span style="font-size: 1.5em; font-weight: bold;">{date_num}</span>'
                 f"</div>"
             )
 
-    for interval in time_intervals:
-        start_str = interval[0].strftime("%H:%M")
-        end_str = interval[1].strftime("%H:%M")
-        html.append(f'<div class="schedule-time">{start_str}-{end_str}</div>')
-        for day in days:
-            fitness_class: FitnessClass | None = class_lookup.get((day, interval))
-            if fitness_class:
+    for row, slot_start_m in enumerate(hour_slots, start=2):
+        slot_h = slot_start_m // 60
+        slot_m_min = slot_start_m % 60
+        start_str = f"{slot_h:02d}:{slot_m_min:02d}"
+
+        if slot_m_min == 0:
+            hour_span = sum(1 for s in hour_slots if slot_start_m <= s < slot_start_m + 60)
+            end_label = f"{slot_h + 1:02d}:00"
+            row_spec = f"{row} / span {hour_span}" if hour_span > 1 else str(row)
+            html.append(
+                f'<div class="schedule-time" style="grid-column: 1; grid-row: {row_spec};">'
+                f'{start_str}-{end_label}'
+                f'</div>'
+            )
+
+        for col, day in enumerate(days, start=2):
+            if (day, slot_start_m) in covered_slots:
+                # interior slot of a multi-hour class — the spanning cell covers this space
+                continue
+
+            class_info = class_lookup.get((day, slot_start_m))
+            if class_info:
+                fitness_class, span = class_info
                 config = fitness_class.render_config
                 whatsapp_number = WHATSAPP_NUMBER
                 message_template: str = TRANSLATIONS[LANGUAGE]["whatsapp_message"]
@@ -123,15 +170,18 @@ def render_fitness_classes(classes: list[FitnessClass], highlighted_date: date) 
                 else:
                     instructor_text = ""
 
+                row_span = f"grid-row: {row} / span {span}; " if span > 1 else f"grid-row: {row}; "
+                class_time_range = f"{fitness_class.start.strftime('%H:%M')}–{fitness_class.end.strftime('%H:%M')}"
+
                 html.append(
-                    f'<div class="schedule-cell" style="color:{config.text_color}; background:{config.background_color};">'
+                    f'<div class="schedule-cell" style="{row_span}grid-column: {col}; color:{config.text_color}; background:{config.background_color};">'
                     f"<strong>{fitness_class.name}</strong><br>"
                     f"{instructor_text}<br>"
                     f"{book_via_whatsapp + '<br>' if book_via_whatsapp else ''}"
+                    f'<span class="cell-time-range">{class_time_range}</span>'
                     "</div>"
                 )
-            else:
-                html.append('<div class="schedule-cell schedule-cell-empty"></div>')
+
     html.append("</div>")
     return "\n".join(html)
 
