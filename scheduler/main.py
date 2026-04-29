@@ -101,19 +101,22 @@ def render_fitness_classes(classes: list[FitnessClass], highlighted_date: date) 
                 )
                 whatsapp_url = f"https://wa.me/{whatsapp_number}?text={message.replace(' ', '%20')}"
 
-                if BOOK_VIA_WHATSAPP:
+                has_whatsapp = bool(whatsapp_number and whatsapp_number != "n/a")
+                if has_whatsapp and BOOK_VIA_WHATSAPP:
                     book_via_whatsapp = (
                         f'<a class="whatsapp-link" href="{whatsapp_url}" target="_blank">'
                         f"{TRANSLATIONS[LANGUAGE]['book_via_whatsapp']}"
                         f"</a>"
                     )
-                else:
+                elif has_whatsapp:
                     book_via_whatsapp = (
                         f'<span style="color:gray; font-style:italic; cursor:not-allowed;" '
                         f'title="Feature disabled.">'
                         f"{TRANSLATIONS[LANGUAGE]['book_via_whatsapp']}"
                         f"</span>"
                     )
+                else:
+                    book_via_whatsapp = ""
 
                 if fitness_class.instructor:
                     instructor_text = f"{TRANSLATIONS[LANGUAGE]['instructor']}: {fitness_class.instructor}"
@@ -124,7 +127,7 @@ def render_fitness_classes(classes: list[FitnessClass], highlighted_date: date) 
                     f'<div class="schedule-cell" style="color:{config.text_color}; background:{config.background_color};">'
                     f"<strong>{fitness_class.name}</strong><br>"
                     f"{instructor_text}<br>"
-                    f"{book_via_whatsapp}<br>"
+                    f"{book_via_whatsapp + '<br>' if book_via_whatsapp else ''}"
                     "</div>"
                 )
             else:
@@ -396,7 +399,10 @@ def on_date_change(evt):
 
 schedule_date_input._js.addEventListener("change", create_proxy(on_date_change))
 
-pydom["#whatsapp-btn"][0]._js.href = f"https://wa.me/{WHATSAPP_NUMBER}"
+if WHATSAPP_NUMBER and WHATSAPP_NUMBER != "n/a":
+    pydom["#whatsapp-btn"][0]._js.href = f"https://wa.me/{WHATSAPP_NUMBER}"
+else:
+    pydom["#whatsapp-btn"][0]._js.style.display = "none"
 modal = pydom["#infoModalLabel"][0]
 modal._js.innerHTML = TRANSLATIONS[LANGUAGE]["info_modal_title"]
 
