@@ -1,363 +1,241 @@
 {
   "fitness_classes": [
     {
-      "name": "Cardio Blast",
-      "start": "2025-08-18T09:00:00",
-      "end": "2025-08-18T10:00:00",
-      "instructor": "Bob Johnson",
+      "name": "Work",
+      "start": "2026-05-04T08:00:00",
+      "end": "2026-05-04T16:30:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
     {
-      "name": "Core Strengthening",
-      "start": "2025-08-18T10:30:00",
-      "end": "2025-08-18T11:15:00",
-      "instructor": "Cathy Lee",
+      "name": "Commuting",
+      "start": "2026-05-04T17:15:00",
+      "end": "2026-05-04T18:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
     {
-      "name": "Zumba",
-      "start": "2025-08-18T18:00:00",
-      "end": "2025-08-18T19:00:00",
-      "instructor": "Alice Smith",
+      "name": "1-1 Training",
+      "start": "2026-05-04T18:00:00",
+      "end": "2026-05-04T19:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#000000"
       }
     },
     {
-      "name": "Spinning",
-      "start": "2025-08-19T08:00:00",
-      "end": "2025-08-19T09:00:00",
-      "instructor": "Eva Green",
+      "name": "Commuting",
+      "start": "2026-05-04T19:00:00",
+      "end": "2026-05-04T19:45:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
     {
-      "name": "Pilates",
-      "start": "2025-08-19T09:30:00",
-      "end": "2025-08-19T10:30:00",
-      "instructor": "Cathy Lee",
+      "name": "Work",
+      "start": "2026-05-04T20:00:00",
+      "end": "2026-05-04T23:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
     {
-      "name": "Boxing Basics",
-      "start": "2025-08-19T18:00:00",
-      "end": "2025-08-19T19:00:00",
-      "instructor": "Bob Johnson",
+      "name": "Work",
+      "start": "2026-05-05T08:00:00",
+      "end": "2026-05-05T16:30:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
     {
-      "name": "Yoga",
-      "start": "2025-08-20T07:30:00",
-      "end": "2025-08-20T08:30:00",
-      "instructor": "Alice Smith",
+      "name": "Commuting",
+      "start": "2026-05-05T18:15:00",
+      "end": "2026-05-05T19:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
     {
-      "name": "Strength Training",
-      "start": "2025-08-20T09:00:00",
-      "end": "2025-08-20T10:00:00",
-      "instructor": "Bob Johnson",
+      "name": "Legs & Core",
+      "start": "2026-05-05T19:00:00",
+      "end": "2026-05-05T20:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#12cce0"
       }
     },
     {
-      "name": "Dance Fitness",
-      "start": "2025-08-20T18:30:00",
-      "end": "2025-08-20T19:30:00",
-      "instructor": "Eva Green",
+      "name": "Commuting",
+      "start": "2026-05-05T20:00:00",
+      "end": "2026-05-05T20:45:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
     {
-      "name": "Pilates",
-      "start": "2025-08-21T09:00:00",
-      "end": "2025-08-21T10:00:00",
-      "instructor": "Cathy Lee",
+      "name": "Work",
+      "start": "2026-05-05T21:30:00",
+      "end": "2026-05-05T23:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
     {
-      "name": "Functional Training",
-      "start": "2025-08-21T10:30:00",
-      "end": "2025-08-21T11:15:00",
-      "instructor": "Bob Johnson",
+      "name": "Work",
+      "start": "2026-05-06T08:00:00",
+      "end": "2026-05-06T16:30:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
     {
-      "name": "Evening Yoga",
-      "start": "2025-08-21T18:00:00",
-      "end": "2025-08-21T19:00:00",
-      "instructor": "Alice Smith",
+      "name": "Driving",
+      "start": "2026-05-06T18:00:00",
+      "end": "2026-05-06T19:30:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#16a635"
+      }
+    },
+
+    {
+      "name": "Work",
+      "start": "2026-05-06T21:00:00",
+      "end": "2026-05-06T23:00:00",
+      "instructor": "",
+      "render_config": {
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
+      }
+    },
+
+    {
+      "name": "Work",
+      "start": "2026-05-07T08:00:00",
+      "end": "2026-05-07T16:30:00",
+      "instructor": "",
+      "render_config": {
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
     {
-      "name": "Yoga",
-      "start": "2025-08-22T08:00:00",
-      "end": "2025-08-22T09:00:00",
-      "instructor": "Alice Smith",
+      "name": "Commuting",
+      "start": "2026-05-07T18:15:00",
+      "end": "2026-05-07T19:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
     {
-      "name": "Bootcamp",
-      "start": "2025-08-22T09:30:00",
-      "end": "2025-08-22T10:30:00",
-      "instructor": "Bob Johnson",
+      "name": "Running",
+      "start": "2026-05-07T19:00:00",
+      "end": "2026-05-07T20:15:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#a33c97"
       }
     },
     {
-      "name": "Stretch & Mobility",
-      "start": "2025-08-22T11:00:00",
-      "end": "2025-08-22T12:00:00",
-      "instructor": "Eva Green",
+      "name": "Commuting",
+      "start": "2026-05-07T20:15:00",
+      "end": "2026-05-07T21:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
+
     {
-      "name": "Pilates",
-      "start": "2025-08-23T09:00:00",
-      "end": "2025-08-23T10:00:00",
-      "instructor": "Cathy Lee",
+      "name": "Work",
+      "start": "2026-05-07T22:00:00",
+      "end": "2026-05-07T23:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
+
     {
-      "name": "Family Fitness",
-      "start": "2025-08-23T10:30:00",
-      "end": "2025-08-23T11:15:00",
-      "instructor": "Alice Smith",
+      "name": "Work",
+      "start": "2026-05-08T08:00:00",
+      "end": "2026-05-08T16:30:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     },
+
     {
-      "name": "Meditation",
-      "start": "2025-08-23T18:00:00",
-      "end": "2025-08-23T18:45:00",
-      "instructor": "Eva Green",
+      "name": "Commuting",
+      "start": "2026-05-08T18:15:00",
+      "end": "2026-05-08T19:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
+
     {
-      "name": "Cardio Blast",
-      "start": "2025-08-25T09:00:00",
-      "end": "2025-08-25T10:00:00",
-      "instructor": "Bob Johnson",
+      "name": "Calisthenics",
+      "start": "2026-05-08T19:00:00",
+      "end": "2026-05-08T20:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#e09512"
       }
     },
+
     {
-      "name": "Core Strengthening",
-      "start": "2025-08-25T10:30:00",
-      "end": "2025-08-25T11:15:00",
-      "instructor": "Cathy Lee",
+      "name": "Commuting",
+      "start": "2026-05-08T20:00:00",
+      "end": "2026-05-08T20:45:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#ff0000"
       }
     },
+
     {
-      "name": "Zumba",
-      "start": "2025-08-25T18:00:00",
-      "end": "2025-08-25T19:00:00",
-      "instructor": "Alice Smith",
+      "name": "Work",
+      "start": "2026-05-08T22:00:00",
+      "end": "2026-05-08T23:00:00",
+      "instructor": "",
       "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Spinning",
-      "start": "2025-08-26T08:00:00",
-      "end": "2025-08-26T09:00:00",
-      "instructor": "Eva Green",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Pilates",
-      "start": "2025-08-26T09:30:00",
-      "end": "2025-08-26T10:30:00",
-      "instructor": "Cathy Lee",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Boxing Basics",
-      "start": "2025-08-26T18:00:00",
-      "end": "2025-08-26T19:00:00",
-      "instructor": "Bob Johnson",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Yoga",
-      "start": "2025-08-27T07:30:00",
-      "end": "2025-08-27T08:30:00",
-      "instructor": "Alice Smith",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Strength Training",
-      "start": "2025-08-27T09:00:00",
-      "end": "2025-08-27T10:00:00",
-      "instructor": "Bob Johnson",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Dance Fitness",
-      "start": "2025-08-27T18:30:00",
-      "end": "2025-08-27T19:30:00",
-      "instructor": "Eva Green",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Pilates",
-      "start": "2025-08-28T09:00:00",
-      "end": "2025-08-28T10:00:00",
-      "instructor": "Cathy Lee",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Functional Training",
-      "start": "2025-08-28T10:30:00",
-      "end": "2025-08-28T11:15:00",
-      "instructor": "Bob Johnson",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Evening Yoga",
-      "start": "2025-08-28T18:00:00",
-      "end": "2025-08-28T19:00:00",
-      "instructor": "Alice Smith",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Yoga",
-      "start": "2025-08-29T08:00:00",
-      "end": "2025-08-29T09:00:00",
-      "instructor": "Alice Smith",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Bootcamp",
-      "start": "2025-08-29T09:30:00",
-      "end": "2025-08-29T10:30:00",
-      "instructor": "Bob Johnson",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Stretch & Mobility",
-      "start": "2025-08-29T11:00:00",
-      "end": "2025-08-29T12:00:00",
-      "instructor": "Eva Green",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Pilates",
-      "start": "2025-08-30T09:00:00",
-      "end": "2025-08-30T10:00:00",
-      "instructor": "Cathy Lee",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Family Fitness",
-      "start": "2025-08-30T10:30:00",
-      "end": "2025-08-30T11:15:00",
-      "instructor": "Alice Smith",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
-      }
-    },
-    {
-      "name": "Meditation",
-      "start": "2025-08-30T18:00:00",
-      "end": "2025-08-30T18:45:00",
-      "instructor": "Eva Green",
-      "render_config": {
-        "text_color": "#000000",
-        "background_color": "#FFFFFF"
+        "text_color": "#FFFF00",
+        "background_color": "#3278cf"
       }
     }
   ]
