@@ -17,7 +17,7 @@ const state = {
 function normalizeConfig(raw) {
   const source = raw && typeof raw === "object" ? raw : {};
   return {
-    signInEnabled: source.enableSignIn !== false,
+    signInEnabled: source.enableSignIn === true,
   };
 }
 
@@ -129,20 +129,25 @@ async function refreshSessionIfNeeded() {
   if (!state.session?.refresh_token) return null;
   if (!sessionExpired(state.session)) return state.session;
 
-  const payload = await authRequest("/token?grant_type=refresh_token", {
-    method: "POST",
-    body: {
-      refresh_token: state.session.refresh_token,
-    },
-  });
+  try {
+    const payload = await authRequest("/token?grant_type=refresh_token", {
+      method: "POST",
+      body: {
+        refresh_token: state.session.refresh_token,
+      },
+    });
 
-  const refreshed = payload?.access_token
-    ? {
-        ...payload,
-        refresh_token: payload.refresh_token || state.session.refresh_token,
-      }
-    : null;
-  saveSession(refreshed);
+    const refreshed = payload?.access_token
+      ? {
+          ...payload,
+          refresh_token: payload.refresh_token || state.session.refresh_token,
+        }
+      : null;
+    saveSession(refreshed);
+  } catch {
+    // Refresh failed — leave the existing session in place; let the caller decide.
+    return null;
+  }
   return state.session;
 }
 
@@ -286,16 +291,24 @@ async function signOut() {
 
 async function getCurrentUser() {
   await ensureReady();
-  await refreshSessionIfNeeded();
-  if (!state.user && state.session?.access_token) {
-    await getUserFromToken(state.session.access_token);
+  try {
+    await refreshSessionIfNeeded();
+    if (!state.user && state.session?.access_token) {
+      await getUserFromToken(state.session.access_token);
+    }
+  } catch {
+    // Network or auth failure — return whatever user state we have.
   }
   return state.user;
 }
 
 async function getAccessToken() {
   await ensureReady();
-  await refreshSessionIfNeeded();
+  try {
+    await refreshSessionIfNeeded();
+  } catch {
+    // Network or auth failure — return current token if still valid.
+  }
   return state.session?.access_token || null;
 }
 
