@@ -25,6 +25,7 @@
       body,
       html {
         height: 100%;
+        font-family: "Poppins", sans-serif;
         background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 1)),
           url("logo.jpeg") center center / cover no-repeat;
         /* Must come after the shorthand — shorthand resets background-color to transparent */
@@ -167,6 +168,9 @@
       }
 
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/png" href="favicon.jpeg" />
   </head>
   <body>
@@ -191,7 +195,7 @@
             A compendium of fitness exercises.
           </div>
         </a>
-        <a
+        <!-- <a
           href="./scheduler/index.html"
           target="_blank"
           rel="noopener noreferrer"
@@ -207,7 +211,7 @@
           <div class="tile-note">
             Optimized for portrait orientation screens.
           </div>
-        </a>
+        </a> -->
       </div>
     </div>
     <div
@@ -225,6 +229,7 @@
         padding-bottom: calc(16px + env(safe-area-inset-bottom));
       "
     >
+      <div style="transform: scale(0.75); transform-origin: center bottom;">
       <script
         type="text/javascript"
         src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js"
@@ -238,6 +243,7 @@
         data-font-color="#000000"
         data-coffee-color="#FFDD00"
       ></script>
+      </div>
     </div>
   </body>
 </html>
